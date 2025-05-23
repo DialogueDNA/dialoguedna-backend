@@ -15,7 +15,7 @@ This replaces the file-based SummaryManager with a more flexible service compone
 
 from typing import List, Dict
 from openai import AzureOpenAI, RateLimitError
-from app.config import (
+from app.core.config import (
     AZURE_OPENAI_API_KEY,
     AZURE_OPENAI_API_VERSION,
     AZURE_OPENAI_ENDPOINT,

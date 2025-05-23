@@ -12,7 +12,7 @@ Responsibilities:
 
 from typing import List, Dict
 from app.services.summarizer_engine import SummarizerEngine
-from app.config import SUMMARY_DIR
+from app.core.config import SUMMARY_DIR
 
 class Summarizer:
     def __init__(self):
