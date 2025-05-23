@@ -1,28 +1,42 @@
 """
 transcriber.py
 
-This module defines the Transcriber service, responsible for converting audio input to text.
+Transcriber service using Azure Speech-to-Text with speaker diarization.
 
 Responsibilities:
-- Receive a path to an audio file (e.g., WAV, MP3)
-- Transcribe the audio using a configurable backend:
-    - Whisper (local inference)
-    - or Azure Speech-to-Text (cloud-based)
-
-Returns:
-- A transcript string representing the spoken content in the audio
-
-Note:
-The actual integration (Whisper or Azure) will be implemented in later development stages.
+- Upload the audio file to Azure Blob Storage
+- Create transcription job with diarization
+- Poll until job is complete
+- Download and return the final transcript
 """
 
+from pathlib import Path
+from app.services.azure_uploader import AzureUploader
+from app.services.transcribe_with_diarization_manager import TranscribeAndDiarizeManager
+from app.config import (
+    AZURE_STORAGE_CONNECTION_STRING,
+    AZURE_CONTAINER_NAME,
+    TRANSCRIPTS_DIR,
+)
+
 class Transcriber:
+    def __init__(self):
+        self.uploader = AzureUploader(
+            connection_string=AZURE_STORAGE_CONNECTION_STRING,
+            container_name=AZURE_CONTAINER_NAME
+        )
+        self.azure_transcriber = TranscribeAndDiarizeManager(output_dir=TRANSCRIPTS_DIR)
+
     def transcribe(self, audio_path: str) -> str:
         """
-        Perform transcription on the given audio file.
-
-        :param audio_path: Full path to the input audio file
-        :return: Transcribed text as a string
+        Uploads the audio file to Azure, transcribes it with diarization,
+        and returns the transcript as plain text.
         """
-        # TODO: Integrate Whisper or Azure Speech-to-Text here
-        return "This is a dummy transcript (backend integration pending)"
+        audio_path = Path(audio_path)
+        print("☁️ Uploading audio to Azure...")
+        sas_url = self.uploader.upload_file_and_get_sas(audio_path)
+
+        print("📝 Transcribing with Azure Speech Service...")
+        transcript_path = self.azure_transcriber.transcribe(sas_url)
+
+        return transcript_path.read_text(encoding="utf-8")
