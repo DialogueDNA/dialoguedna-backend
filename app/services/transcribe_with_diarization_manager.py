@@ -4,7 +4,7 @@ import os
 import json
 from urllib.parse import urlparse
 from pathlib import Path
-from Yarden_05_05_205.AppRun.config import SPEECH_KEY, REGION
+from app.core.config import SPEECH_KEY, REGION
 
 class TranscribeAndDiarizeManager:
     def __init__(self, output_dir: Path):
