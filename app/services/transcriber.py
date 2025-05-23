@@ -13,7 +13,7 @@ Responsibilities:
 from pathlib import Path
 from app.services.azure_uploader import AzureUploader
 from app.services.transcribe_with_diarization_manager import TranscribeAndDiarizeManager
-from app.config import (
+from app.core.config import (
     AZURE_STORAGE_CONNECTION_STRING,
     AZURE_CONTAINER_NAME,
     TRANSCRIPTS_DIR,
