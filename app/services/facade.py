@@ -13,6 +13,8 @@ Responsibilities:
 - Return a structured result to the API.
 """
 
+from pathlib import Path
+from app.services.db_loader import DBLoader
 from app.services.transcriber import Transcriber
 from app.services.diarizer import Diarizer
 from app.services.emotion_analyzer import EmotionAnalyzer
@@ -20,6 +22,7 @@ from app.services.summarizer import Summarizer
 
 class DialogueProcessor:
     def __init__(self):
+        self.DBLoader = DBLoader()
         self.transcriber = Transcriber()
         self.diarizer = Diarizer()
         self.emotion_analyzer = EmotionAnalyzer()
@@ -44,3 +47,7 @@ class DialogueProcessor:
             "emotions": emotions,
             "summary": summary
         }
+
+    def upload_audio_file_in_db(self, audio_path: str) -> str:
+        return self.DBLoader.load_audio(audio_path)
+
