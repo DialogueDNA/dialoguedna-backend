@@ -9,17 +9,51 @@ POST /analyze:
 - Returns structured JSON with results
 """
 
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi import APIRouter, UploadFile, File, HTTPException, Form
 import shutil
 import os
 import uuid
+
+from app.client.ClientsManager import ClientsManager
 from app.services.facade import DialogueProcessor
+from app.services.AudioConverter import AudioConverter
 
 router = APIRouter()
 processor = DialogueProcessor()
+clients_manager = ClientsManager()
 
 TEMP_DIR = "temp_uploads"
 os.makedirs(TEMP_DIR, exist_ok=True)
+
+@router.post("/upload-audio")
+async def upload_audio(
+    file: UploadFile = File(...),
+    client_name: str = Form(...),
+    session_name: str = Form(...)
+):
+    # Get client and create session/audio directory
+    client = clients_manager.get_client(client_name)
+    session_audio_path = os.path.join(client.get_base_path(), session_name, "audio")
+    os.makedirs(session_audio_path, exist_ok=True)
+
+    # Temp file path (save original upload before conversion)
+    temp_path = os.path.join(session_audio_path, file.filename)
+    with open(temp_path, "wb") as temp_file:
+        content = await file.read()
+        temp_file.write(content)
+
+    # Convert to WAV and save as original.wav
+    output_path = os.path.join(session_audio_path, "original.wav")
+    try:
+        AudioConverter.convert_to_wav(temp_path, output_path)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Conversion failed: {str(e)}")
+
+    # Remove the original temp file
+    os.remove(temp_path)
+
+    return {"status": "success", "path": output_path}
+
 
 @router.post("/analyze")
 async def analyze_audio(file: UploadFile = File(...)):
