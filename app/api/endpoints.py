@@ -42,3 +42,4 @@ async def analyze_audio(file: UploadFile = File(...)):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
