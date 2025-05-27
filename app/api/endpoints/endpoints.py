@@ -69,7 +69,3 @@ async def upload_audio(file: UploadFile = File(...)):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-# @router.get("/result/{audio_id}")
-# async def get_audio_result(audio_id: str):
-#     return await get_result(audio_id)
