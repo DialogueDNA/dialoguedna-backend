@@ -34,7 +34,7 @@ class Transcriber:
         """
         audio_path = Path(audio_path)
         print("☁️ Uploading audio to Azure...")
-        sas_url = self.uploader.upload_file_and_get_sas(audio_path)
+        sas_url = self.uploader.upload_file_and_get_sas(audio_path, blob_name=audio_path.name)
 
         print("📝 Transcribing with Azure Speech Service...")
         transcript_path = self.azure_transcriber.transcribe(sas_url)

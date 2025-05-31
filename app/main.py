@@ -1,18 +1,28 @@
 """
 main.py
 
-This is the entry point of the DialogueDNA backend service.
-It initializes the FastAPI app and includes the API router.
-
-Responsibilities:
-- Create and configure the FastAPI app
-- Include routers from app.api
-- Set up any global middlewares or startup events (in the future)
+Entry point of the DialogueDNA backend service.
+Initializes FastAPI, loads environment, adds middleware, and registers routers.
 """
 
 from fastapi import FastAPI
-from app.api import endpoints
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+
+from app.api.endpoints import router as api_router
+
+load_dotenv()
 
 app = FastAPI(title="DialogueDNA Backend")
 
-app.include_router(endpoints.router)
+# CORS middleware (customize origins in production)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production: ["https://your-frontend-domain.com"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Register all API routers
+app.include_router(api_router)
