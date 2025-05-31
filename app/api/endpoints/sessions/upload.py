@@ -21,19 +21,13 @@ async def create_session(
 ):
     user_id = current_user["id"]
 
-    # 🆔 Create session ID manually for folder naming (not saved unless upload succeeds)
-    session_id = str(uuid.uuid4())
-
-    # Force audio file extension to always be '.wav', ignoring uploaded filename
-    blob_name = f"AZURE_CONTAINER_NAME/{session_id}/audio.wav"
     try:
-        audio_path = processor.upload_audio_file_in_db(file=file, blob_name=blob_name)
+        audio_path = processor.upload_audio_file_in_db(file=file)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audio upload failed: {str(e)}")
 
     # ✅ Create session record in DB
     new_session = {
-        "id": session_id,  # use our manually created session ID
         "user_id": user_id,
         "title": title,
         "metadata_status": "not_started",

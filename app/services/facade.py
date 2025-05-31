@@ -23,14 +23,11 @@ class DialogueProcessor:
     def upload_audio_file_in_db(
         self,
         audio_path: Optional[str] = None,
-        file: Optional[UploadFile] = None,
-        blob_name: Optional[str] = None
+        file: Optional[UploadFile] = None
     ) -> str:
-        if not blob_name:
-            raise ValueError("blob_name must be provided for Azure upload.")
 
         if file:
-            self._saved_audio_path = self.DBLoader.load_audio_from_file(file,blob_name)
+            self._saved_audio_path = self.DBLoader.load_audio_from_file(file)
         elif audio_path:
             self._saved_audio_path = self.DBLoader.load_audio(audio_path)
         else:
