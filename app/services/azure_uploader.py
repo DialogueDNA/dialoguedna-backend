@@ -2,6 +2,8 @@ from typing import Union, IO
 from pathlib import Path
 from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
 from datetime import datetime, timedelta
+from pathlib import Path
+from pydub import AudioSegment
 
 class AzureUploader:
     def __init__(self, connection_string: str, container_name: str):
@@ -46,3 +48,14 @@ class AzureUploader:
             if part.startswith("AccountKey="):
                 return part.split("=", 1)[1]
         raise ValueError("AccountKey not found in connection string")
+
+
+    def convert_to_wav(input_path: Path) -> Path:
+        """
+        Converts any audio file to WAV format using pydub.
+        Returns the path to the converted .wav file.
+        """
+        output_path = input_path.with_suffix(".wav")
+        audio = AudioSegment.from_file(input_path)
+        audio.export(output_path, format="wav")
+        return output_path

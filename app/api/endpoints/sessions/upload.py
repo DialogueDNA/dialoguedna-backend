@@ -4,10 +4,13 @@ from fastapi import UploadFile, File, Form, HTTPException, Depends, BackgroundTa
 from app.api.dependencies.auth import get_current_user
 from app.services.facade import DialogueProcessor
 from app.services.sessionDB import SessionDB
+from app.core import config
 
 router = APIRouter()
 processor = DialogueProcessor()
 session_db = SessionDB()
+AZURE_CONTAINER_NAME = config.AZURE_CONTAINER_NAME
+
 
 @router.post("/")
 async def create_session(
@@ -21,8 +24,8 @@ async def create_session(
     # 🆔 Create session ID manually for folder naming (not saved unless upload succeeds)
     session_id = str(uuid.uuid4())
 
-    # 🎯 Upload audio file to Azure using session ID in path
-    blob_name = f"sessions/{session_id}/audio.wav"
+    # Force audio file extension to always be '.wav', ignoring uploaded filename
+    blob_name = f"AZURE_CONTAINER_NAME/{session_id}/audio.wav"
     try:
         audio_path = processor.upload_audio_file_in_db(file=file, blob_name=blob_name)
     except Exception as e:
