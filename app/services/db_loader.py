@@ -42,6 +42,7 @@ class DBLoader:
 
             # Upload the file to Azure using the provided blob name
             sas_url = self.uploader.upload_file_and_get_sas(wav_path, blob_name=blob_name)
+            print(sas_url)
             if not sas_url:
                 raise ValueError("Azure upload failed — no SAS URL returned")
 
