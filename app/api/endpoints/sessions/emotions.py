@@ -1,22 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.core.config import supabase
 from app.api.dependencies.auth import get_current_user
+from app.services.sessionDB import SessionDB
 
 router = APIRouter()
+session_db = SessionDB()
 
 @router.get("/{session_id}")
 def get_emotions(session_id: str, current_user: dict = Depends(get_current_user)):
-    result = supabase.table("sessions") \
-        .select("emotion_breakdown") \
-        .eq("id", session_id) \
-        .eq("user_id", current_user["id"]) \
-        .single() \
-        .execute()
+    session = session_db.get_session(session_id)
 
-    print("Emotions data: ", result.data)
+    if not session or session["user_id"] != current_user["id"]:
+        raise HTTPException(status_code=404, detail="Emotion data not found or access denied")
 
-    if not result.data:
-        raise HTTPException(status_code=404, detail="Session not found")
-
-    return result.data["emotion_breakdown"]
-
+    return {
+        "status": session.get("emotion_breakdown_status"),
+        "data": session.get("emotion_breakdown")
+    }
