@@ -4,12 +4,15 @@ from app.services.emotion_analysis_text_manager import EmotionAnalysisTextManage
 import tempfile
 import requests
 from pathlib import Path
-from app.core.config import EMOTIONS_TEXT_DIR
+from app.core.config import EMOTIONS_TEXT_DIR,AZURE_STORAGE_CONNECTION_STRING,AZURE_CONTAINER_NAME
 from app.services.emotion_analysis_text_manager import EmotionAnalysisTextManager
 
 class EmotionsAnalysisManager:
-    def __init__(self, uploader: AzureUploader):
-        self.uploader = uploader
+    def __init__(self, uploader: AzureUploader = None):
+        self.uploader = uploader or AzureUploader(
+            connection_string=AZURE_STORAGE_CONNECTION_STRING,
+            container_name=AZURE_CONTAINER_NAME
+        )
         self.text_analyzer = None
 
         # # Find the transcript text file

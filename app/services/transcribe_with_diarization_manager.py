@@ -4,34 +4,31 @@ import os
 import json
 from urllib.parse import urlparse
 from pathlib import Path
-from app.core.config import SPEECH_KEY, REGION ,AZURE_CONTAINER_URL
+from app.core.config import SPEECH_KEY, REGION ,AZURE_CONTAINER_URL,AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
+from app.services.azure_uploader import AzureUploader
+
 
 class TranscribeAndDiarizeManager:
-    def __init__(self, output_dir: Path, uploader):
-        self.output_dir = output_dir
-        self.uploader = uploader  # AzureBlobUploader instance
+    def __init__(self, output_dir: Path = None, uploader=None):
+        self.output_dir = output_dir or Path("temp_uploads")
+        self.uploader = uploader or AzureUploader(
+            connection_string=AZURE_STORAGE_CONNECTION_STRING,
+            container_name=AZURE_CONTAINER_NAME
+        )
         os.makedirs(self.output_dir, exist_ok=True)
 
-    def create_transcription_job(self, container_sas_url: str, session_id: str, filename="audio.wav",
-                                 name="MyTranscription"):
+    def create_transcription_job(self, sas_url: str, name="MyTranscription"):
         url = f"https://{REGION}.api.cognitive.microsoft.com/speechtotext/v3.1/transcriptions"
         headers = {
             "Ocp-Apim-Subscription-Key": SPEECH_KEY,
             "Content-Type": "application/json"
         }
 
-        # 🛠 Separate base URL and query string
-        parsed = urlparse(container_sas_url)
-        base_url = f"{parsed.scheme}://{parsed.netloc}{parsed.path}".rstrip("/")
-        query_string = parsed.query
-
-        # ✅ Correctly combine path + SAS token
-        content_url = f"{base_url}/{session_id}/{filename}?{query_string}"
-
-        print("📨 Sent job with URL:", content_url)
+        # ✅ פשוט השתמש ב־sas_url כמו שהוא
+        print("📨 Sent job with URL:", sas_url)
 
         body = {
-            "contentUrls": [content_url],
+            "contentUrls": [sas_url],
             "locale": "en-US",
             "displayName": name,
             "properties": {
@@ -112,19 +109,20 @@ class TranscribeAndDiarizeManager:
     #     self.save_transcript(result_json, output_path)
     #     return output_path
 
-    def transcribe(self, session_id: str, container_sas_url: str = AZURE_CONTAINER_URL ,filename: str = "audio.wav") -> str:
+    def transcribe(self,sas_url: str, session_id: str, container_sas_url: str = AZURE_CONTAINER_URL ,filename: str = "audio.wav") -> str:
 
         # 🔍 Extract session_id from SAS URL
         print(container_sas_url)
+        print(sas_url)
         print (session_id)
 
+        #recordings_url = f"{container_sas_url.rstrip('/')}/{session_id}"
 
         #audio_path_in_container = f"{session_id}/{filename}"
-        print("📤 Creating transcription job...")
 
         # 📤 Create transcription job
         print("📤 Creating transcription job...")
-        job_data = self.create_transcription_job(container_sas_url, session_id, filename)
+        job_data = self.create_transcription_job(sas_url)
         print("📦 job_data:", job_data)
         result_data = self.poll_until_complete(job_data)
 

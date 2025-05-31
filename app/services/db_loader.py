@@ -8,7 +8,7 @@ from app.services.azure_uploader import AzureUploader
 from app.core.config import (
     AZURE_STORAGE_CONNECTION_STRING,
     AZURE_CONTAINER_NAME,
-    TRANSCRIPTS_DIR,
+    TRANSCRIPTS_DIR, AZURE_CONTAINER_URL,
 )
 
 class DBLoader:
@@ -48,6 +48,8 @@ class DBLoader:
 
             # Upload the file to Azure using the provided blob name
             sas_url = self.uploader.upload_file_and_get_sas(wav_path, blob_name=blob_name)
+            #folder_sas_url = f"{AZURE_CONTAINER_URL}/{session_id}"
+
             print(sas_url)
             if not sas_url:
                 raise ValueError("Azure upload failed — no SAS URL returned")
