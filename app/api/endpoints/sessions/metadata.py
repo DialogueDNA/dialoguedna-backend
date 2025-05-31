@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.api.dependencies.auth import get_current_user
 from app.services.sessionDB import SessionDB
+from app.api.dependencies.auth import get_current_user
 
 router = APIRouter()
 session_db = SessionDB()
@@ -9,13 +9,26 @@ session_db = SessionDB()
 @router.get("/")
 def get_sessions_metadata(current_user: dict = Depends(get_current_user)):
     try:
-        # Fetch sessions for the current user, selecting only safe metadata fields
-        response = session_db.table \
-            .select("id, title, duration, participants, created_at, updated_at") \
-            .eq("user_id", current_user["id"]) \
-            .execute()
+        sessions = session_db.get_all_sessions_for_user(current_user["id"])
 
-        return response.data
+        metadata_only = [
+            {
+                "id": s["id"],
+                "title": s["title"],
+                "duration": s.get("duration"),
+                "participants": s.get("participants", []),
+                "created_at": s["created_at"],
+                "updated_at": s["updated_at"],
+                "transcript_status": s.get("transcript_status", "Pending"),
+                "summary_status": s.get("summary_status", "Pending"),
+                "emotion_breakdown_status": s.get("emotion_breakdown_status", "Pending"),
+                "metadata_status": s.get("metadata_status", "Ready")
+            }
+            for s in sessions
+        ]
+
+        return metadata_only
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch sessions: {str(e)}")
 

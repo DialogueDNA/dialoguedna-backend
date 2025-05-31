@@ -13,8 +13,6 @@ def get_transcript(session_id: str, current_user: dict = Depends(get_current_use
         raise HTTPException(status_code=404, detail="Transcript not found or access denied")
 
     return {
-        "status": session.get("transcript_status", "Ready"),
-        "data": {
-            "transcript": session.get("transcript")
-        }
+        "status": session.get("transcript_status"),
+        "data": session.get("transcript"),
     }
