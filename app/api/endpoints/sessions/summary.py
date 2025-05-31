@@ -14,6 +14,8 @@ def get_summary(session_id: str, current_user: dict = Depends(get_current_user))
     if not session.data:
         raise HTTPException(status_code=404, detail="Summary not found")
 
+    print("Summary data: ", session.data)
+
     return {"summary": session.data["summary"]}
 
 # GET: download summary as PDF
@@ -23,6 +25,8 @@ def download_summary_pdf(session_id: str, current_user: dict = Depends(get_curre
 
     if not session.data:
         raise HTTPException(status_code=404, detail="Session not found")
+
+    print("Summary data: ", session.data)
 
     # Generate and serve the PDF
     pdf_path = generate_session_pdf(session.data)

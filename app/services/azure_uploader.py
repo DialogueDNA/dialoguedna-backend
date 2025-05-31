@@ -1,3 +1,5 @@
+from typing import Union, IO
+from pathlib import Path
 from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
 from datetime import datetime, timedelta
 
@@ -8,12 +10,25 @@ class AzureUploader:
         self.client = BlobServiceClient.from_connection_string(self.connection_string)
         self.container = self.client.get_container_client(container_name)
 
-    def upload_file_and_get_sas(self, file_obj, blob_name: str, expiry_minutes: int = 60) -> str:
+    def upload_file_and_get_sas(
+        self,
+        file_obj: Union[str, Path, IO[bytes]],
+        blob_name: str,
+        expiry_minutes: int = 60
+    ) -> str:
         """
-        Upload a file-like object to Azure Blob Storage and return a SAS URL.
+        Uploads a file to Azure Blob Storage and returns a SAS URL.
+        Supports both file paths and file-like objects.
         """
         blob_client = self.container.get_blob_client(blob_name)
-        blob_client.upload_blob(file_obj, overwrite=True)
+
+        if isinstance(file_obj, (str, Path)):
+            with open(file_obj, "rb") as f:
+                blob_client.upload_blob(f, overwrite=True)
+        elif hasattr(file_obj, "read"):  # file-like object (e.g. UploadFile.file or BytesIO)
+            blob_client.upload_blob(file_obj, overwrite=True)
+        else:
+            raise ValueError("file_obj must be a file path or file-like object")
 
         sas_token = generate_blob_sas(
             account_name=self.client.account_name,
@@ -23,6 +38,7 @@ class AzureUploader:
             permission=BlobSasPermissions(read=True),
             expiry=datetime.utcnow() + timedelta(minutes=expiry_minutes)
         )
+
         return f"https://{self.client.account_name}.blob.core.windows.net/{self.container_name}/{blob_name}?{sas_token}"
 
     def _get_account_key(self) -> str:
