@@ -5,6 +5,7 @@ from fastapi import UploadFile
 from app.services.db_loader import DBLoader
 from app.services.diarizer import Diarizer
 from app.services.emotion_analyzer import EmotionAnalyzer
+from app.services.emotions_analysis_manager import EmotionsAnalysisManager
 from app.services.sessionDB import SessionDB
 from app.services.summarizer import Summarizer
 from app.services.transcribe_with_diarization_manager import TranscribeAndDiarizeManager
@@ -18,7 +19,7 @@ class DialogueProcessor:
         #self.transcriber = Transcriber()
         self.transcriber = TranscribeAndDiarizeManager()
         self.diarizer = Diarizer()
-        self.emotion_analyzer = EmotionAnalyzer()
+        self.emotion_analyzer = EmotionsAnalysisManager()
         self.summarizer = Summarizer()
         self._saved_audio_path = None
 
@@ -48,7 +49,6 @@ class DialogueProcessor:
         try:
             print(f"📥 Processing audio: {path_to_use}")
 
-            #change transcribe
             self.session_db.set_status(session_id, "transcript_status", "processing")
             transcriber_sas_url = self.transcriber.transcribe(path_to_use,session_id)
             print("✅ Transcription complete.")
@@ -56,16 +56,20 @@ class DialogueProcessor:
 
             #change emotion
             self.session_db.set_status(session_id, "emotion_breakdown_status", "processing")
-            speaker_segments = self.diarizer.identify(path_to_use)
-            emotions = self.emotion_analyzer.analyze(path_to_use, speaker_segments)
+            # speaker_segments = self.diarizer.identify(path_to_use)
+            emotions_url = self.emotion_analyzer.analyze(transcriber_sas_url,session_id)
             print("✅ Diarization and emotion analysis complete.")
             self.session_db.set_status(session_id, "emotion_breakdown_status", "completed")
 
-            speaker_ids = list(emotions.keys())
+
+
+
+
+            speaker_ids = list(emotions_url.keys())
 
             #change summery
             self.session_db.set_status(session_id, "summary_status", "processing")
-            summary = self.summarizer.generate(transcriber_sas_url, emotions, speaker_ids)
+            summary = self.summarizer.generate(transcriber_sas_url, emotions_url, speaker_ids)
             print("✅ Summarization complete.")
             self.session_db.set_status(session_id, "summary_status", "completed")
 
@@ -74,7 +78,7 @@ class DialogueProcessor:
             self.session_db.update_session(session_id, {
                 "transcript": transcriber_sas_url,
                 "participants": list(set(speaker_ids)),
-                "emotion_breakdown": emotions,
+                "emotion_breakdown": emotions_url,
                 "summary": summary,
                 "status": "Ready",
                 "processing_error": None
