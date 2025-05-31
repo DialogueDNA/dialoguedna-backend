@@ -4,7 +4,7 @@ from pathlib import Path
 import os
 import uuid
 from fastapi import UploadFile
-from app.services.AudioConverter import AudioConverter
+from app.services.audio_converter import AudioConverter
 
 class AzureUploader:
     def __init__(self, connection_string: str, container_name: str):
@@ -57,38 +57,75 @@ class AzureUploader:
         AudioConverter.convert_to_wav(str(input_path), str(output_path))
         return self.upload_file_and_get_sas(output_path)
 
-def handle_upload_file(
-    file: UploadFile,
-    upload_folder: Path,
-    uploader: AzureUploader
-) -> str:
-    """
-    Save the uploaded file temporarily, convert it to WAV using its original filename,
-    upload the converted file to Azure Blob Storage, and return the SAS URL.
-    """
-    # Ensure the upload folder exists
-    os.makedirs(upload_folder, exist_ok=True)
+    def handle_upload_file(
+            self,
+            file: UploadFile,
+            upload_folder: Path,
+            session_id: str
+    ) -> str:
+        """
+        Save the uploaded file temporarily, convert it to WAV,
+        upload to Azure Blob Storage under <session_id>/audio.wav,
+        and return the SAS URL.
+        """
+        # Ensure the upload folder exists
+        os.makedirs(upload_folder, exist_ok=True)
 
-    # Create a temporary unique filename for the uploaded file
-    temp_filename = f"{uuid.uuid4()}_{file.filename}"
-    temp_path = upload_folder / temp_filename
+        # Create a temporary unique filename for the uploaded file
+        temp_filename = f"{uuid.uuid4()}_{file.filename}"
+        temp_path = upload_folder / temp_filename
 
-    # Save the uploaded file to disk
-    with open(temp_path, "wb") as f_out:
-        f_out.write(file.file.read())
+        # Save the uploaded file to the temporary path
+        with open(temp_path, "wb") as f_out:
+            f_out.write(file.file.read())
 
-    # Use the original filename (but ensure it's WAV) for final upload
-    original_filename = Path(file.filename).stem + ".wav"
-    wav_path = upload_folder / original_filename
+        # Convert the saved file to WAV format
+        wav_path = upload_folder / "audio.wav"
+        AudioConverter.convert_to_wav(str(temp_path), str(wav_path))
 
-    # Convert to WAV format
-    AudioConverter.convert_to_wav(str(temp_path), str(wav_path))
+        # Define blob name using session_id
+        blob_name = f"{session_id}/audio.wav"
 
-    # Upload the WAV file to Azure
-    sas_url = uploader.upload_file_and_get_sas(wav_path)
+        # Upload the WAV file to Azure and get SAS URL
+        sas_url = self.upload_file_and_get_sas(wav_path, blob_name)
 
-    # Remove the temporary uploaded file
-    os.remove(temp_path)
+        # Clean up the temporary file
+        os.remove(temp_path)
 
-    return sas_url
+        return sas_url
+#
+# def handle_upload_file(
+#     file: UploadFile,
+#     upload_folder: Path,
+#     uploader: AzureUploader
+# ) -> str:
+#     """
+#     Save the uploaded file temporarily, convert it to WAV using its original filename,
+#     upload the converted file to Azure Blob Storage, and return the SAS URL.
+#     """
+#     # Ensure the upload folder exists
+#     os.makedirs(upload_folder, exist_ok=True)
+#
+#     # Create a temporary unique filename for the uploaded file
+#     temp_filename = f"{uuid.uuid4()}_{file.filename}"
+#     temp_path = upload_folder / temp_filename
+#
+#     # Save the uploaded file to disk
+#     with open(temp_path, "wb") as f_out:
+#         f_out.write(file.file.read())
+#
+#     # Use the original filename (but ensure it's WAV) for final upload
+#     original_filename = Path(file.filename).stem + ".wav"
+#     wav_path = upload_folder / original_filename
+#
+#     # Convert to WAV format
+#     AudioConverter.convert_to_wav(str(temp_path), str(wav_path))
+#
+#     # Upload the WAV file to Azure
+#     sas_url = uploader.upload_file_and_get_sas(wav_path)
+#
+#     # Remove the temporary uploaded file
+#     os.remove(temp_path)
+#
+#     return sas_url
 

@@ -28,7 +28,7 @@ from fastapi import APIRouter
 from app.api import upload_audio
 from app.client.ClientsManager import ClientsManager
 from app.services.facade import DialogueProcessor
-from app.services.AudioConverter import AudioConverter
+from app.services.audio_converter import AudioConverter
 
 router = APIRouter()
 # Include the audio upload route

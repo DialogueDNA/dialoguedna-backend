@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 from pathlib import Path
 import os
 import uuid
-from app.services.azure_uploader import AzureUploader, handle_upload_file
+from app.services.azure_uploader import AzureUploader
 from app.core import config
 
 
@@ -27,14 +27,17 @@ async def upload_audio(file: UploadFile = File(...)):
     Endpoint that receives an audio file, uploads it to Azure Blob Storage,
     and returns a SAS URL for accessing the uploaded file.
     """
+
+    session_id = str(uuid.uuid4())
+
     try:
         print(f"📥 Received file: {file.filename}")
 
         # Use the helper function to save, convert, upload, and get SAS URL
-        sas_url = handle_upload_file(
+        sas_url = azure_uploader.handle_upload_file(
             file=file,
             upload_folder=UPLOAD_FOLDER,
-            uploader=azure_uploader
+            session_id=session_id
         )
 
         print(f"✅ Upload successful. SAS URL: {sas_url}")
