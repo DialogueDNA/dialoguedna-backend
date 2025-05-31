@@ -23,7 +23,7 @@ class DBLoader:
         print("☁️ Uploading audio to Azure...")
         return self.uploader.upload_file_and_get_sas(audio_path, blob_name=audio_path.name)
 
-    def load_audio_from_file(self, file: UploadFile) -> str:
+    def load_audio_from_file(self, file: UploadFile) -> tuple[str, str]:
         tmp_path = None
         wav_path = None  # 🔧 Initialize wav_path to avoid UnboundLocalError
 
@@ -52,7 +52,7 @@ class DBLoader:
             if not sas_url:
                 raise ValueError("Azure upload failed — no SAS URL returned")
 
-            return sas_url
+            return session_id, sas_url
 
         finally:
             for path in [tmp_path, wav_path]:
