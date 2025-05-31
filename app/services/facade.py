@@ -54,20 +54,15 @@ class DialogueProcessor:
             print("✅ Transcription complete.")
             self.session_db.set_status(session_id, "transcript_status", "completed")
 
-            #change emotion
             self.session_db.set_status(session_id, "emotion_breakdown_status", "processing")
             # speaker_segments = self.diarizer.identify(path_to_use)
             emotions_url = self.emotion_analyzer.analyze(transcriber_sas_url,session_id)
             print("✅ Diarization and emotion analysis complete.")
             self.session_db.set_status(session_id, "emotion_breakdown_status", "completed")
 
-
-
-
-
             speaker_ids = list(emotions_url.keys())
 
-            #change summery
+            #change summery with amal
             self.session_db.set_status(session_id, "summary_status", "processing")
             summary = self.summarizer.generate(transcriber_sas_url, emotions_url, speaker_ids)
             print("✅ Summarization complete.")

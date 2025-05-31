@@ -24,7 +24,7 @@ async def create_session(
 
     # ✅ Create session record in DB
     new_session = {
-        "session_id": session_id,
+        "id": session_id,
         "user_id": user_id,
         "title": title,
         "metadata_status": "not_started",

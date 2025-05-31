@@ -1,3 +1,4 @@
+import os
 from typing import Union, IO
 from pathlib import Path
 from azure.storage.blob import BlobServiceClient, generate_blob_sas, BlobSasPermissions
@@ -49,13 +50,24 @@ class AzureUploader:
                 return part.split("=", 1)[1]
         raise ValueError("AccountKey not found in connection string")
 
-
     def convert_to_wav(self, input_path: Path) -> Path:
         """
-        Converts any audio file to WAV format using pydub.
-        Returns the path to the converted .wav file.
+        Converts any audio file to WAV format with standard parameters for Azure STT.
+        Ensures sample rate, format, and channel count are valid.
         """
         output_path = input_path.with_suffix(".wav")
+
+        # Load the audio
         audio = AudioSegment.from_file(input_path)
+
+        # Convert to mono and set sample rate to 16000Hz
+        audio = audio.set_channels(1).set_frame_rate(16000)
+
+        # Export with WAV format
         audio.export(output_path, format="wav")
+
+        # Optional: check file size
+        if os.path.getsize(output_path) < 1024:  # less than 1KB
+            raise Exception("❌ Converted WAV file is too small – invalid audio")
+
         return output_path
