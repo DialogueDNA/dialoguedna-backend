@@ -41,11 +41,26 @@ class DialogueProcessor:
 
         try:
             print(f"📥 Processing audio: {path_to_use}")
+
+            self.session_db.set_status(session_id, "transcript_status", "processing")
             text = self.transcriber.transcribe(path_to_use)
+            print("✅ Transcription complete.")
+            self.session_db.set_status(session_id, "transcript_status", "completed")
+
+            self.session_db.set_status(session_id, "emotion_breakdown_status", "processing")
             speaker_segments = self.diarizer.identify(path_to_use)
             emotions = self.emotion_analyzer.analyze(path_to_use, speaker_segments)
+            print("✅ Diarization and emotion analysis complete.")
+            self.session_db.set_status(session_id, "emotion_breakdown_status", "completed")
+
             speaker_ids = list(emotions.keys())
+
+            self.session_db.set_status(session_id, "summary_status", "processing")
             summary = self.summarizer.generate(text, emotions, speaker_ids)
+            print("✅ Summarization complete.")
+            self.session_db.set_status(session_id, "summary_status", "completed")
+
+            print("✅ Transcription, diarization, emotion analysis, and summarization complete.")
 
             self.session_db.update_session(session_id, {
                 "transcript": text,
