@@ -1,16 +1,11 @@
-import uuid
-
 from fastapi import UploadFile, File, Form, HTTPException, Depends, BackgroundTasks, APIRouter
 from app.api.dependencies.auth import get_current_user
 from app.services.facade import DialogueProcessor
 from app.services.sessionDB import SessionDB
-from app.core import config
 
 router = APIRouter()
 processor = DialogueProcessor()
 session_db = SessionDB()
-AZURE_CONTAINER_NAME = config.AZURE_CONTAINER_NAME
-
 
 @router.post("/")
 async def create_session(
@@ -21,6 +16,7 @@ async def create_session(
 ):
     user_id = current_user["id"]
 
+    # ✅ Upload file using the processor, returns Azure SAS URL
     try:
         audio_path = processor.upload_audio_file_in_db(file=file)
     except Exception as e:
@@ -50,7 +46,7 @@ async def create_session(
     }
 
     try:
-        session_db.create_session(new_session)
+        session_id = session_db.create_session(new_session)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create session record: {str(e)}")
 

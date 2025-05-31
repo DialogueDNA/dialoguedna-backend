@@ -25,7 +25,7 @@ class DBLoader:
 
     def load_audio_from_file(self, file: UploadFile) -> str:
         tmp_path = None
-        wav_path = None
+        wav_path = None  # 🔧 Initialize wav_path to avoid UnboundLocalError
 
         try:
             extension = Path(file.filename).suffix or ".tmp"
@@ -35,20 +35,20 @@ class DBLoader:
                 shutil.copyfileobj(file.file, tmp)
                 tmp_path = Path(tmp.name)
 
-            # 🎧 Convert to WAV format (ensures valid format)
+            # Convert to WAV format using pydub (ensures valid format)
             wav_path = self.uploader.convert_to_wav(tmp_path)
 
-            # 🆔 Generate unique session ID
+            # 🆔 Generate a unique session ID
             session_id = str(uuid.uuid4())
 
-            # 🧱 Build structured blob name
-            blob_name = f"sessions/{session_id}/audio.wav"
+            # 📁 Set blob name to "sessions/{session_id}/audio.wav"
+            blob_name = f"{session_id}/audio.wav"
 
-            print(f"☁️ Uploading audio '{file.filename}' to Azure at '{blob_name}'...")
+            print(f"☁️ Uploading audio '{file.filename}' to Azure...")
 
-            # ☁️ Upload to Azure and get SAS URL
+            # Upload the file to Azure using the provided blob name
             sas_url = self.uploader.upload_file_and_get_sas(wav_path, blob_name=blob_name)
-
+            print(sas_url)
             if not sas_url:
                 raise ValueError("Azure upload failed — no SAS URL returned")
 

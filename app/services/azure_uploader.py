@@ -50,7 +50,7 @@ class AzureUploader:
         raise ValueError("AccountKey not found in connection string")
 
 
-    def convert_to_wav(input_path: Path) -> Path:
+    def convert_to_wav(self, input_path: Path) -> Path:
         """
         Converts any audio file to WAV format using pydub.
         Returns the path to the converted .wav file.
