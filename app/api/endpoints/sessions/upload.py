@@ -36,8 +36,8 @@ async def create_session(
         "id": session_id,  # use our manually created session ID
         "user_id": user_id,
         "title": title,
-        "metadata_status": "not started",
-        "language": "not started",
+        "metadata_status": "not_started",
+        "language": "not_started",
         "duration": None,
         "participants": [],
         "source": "web",
@@ -45,13 +45,13 @@ async def create_session(
         "tags": [],
         "audio_file_status": "completed",
         "audio_file_url": audio_path,
-        "transcript_status": "not started",
+        "transcript_status": "not_started",
         "transcript_url": None,
-        "emotion_breakdown_status": "not started",
+        "emotion_breakdown_status": "not_started",
         "emotion_breakdown_url": None,
-        "summary_status": "not started",
+        "summary_status": "not_started",
         "summary_url": None,
-        "session_status": "Processing",
+        "session_status": "processing",
         "processing_error": None,
     }
 

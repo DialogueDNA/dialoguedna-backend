@@ -22,5 +22,18 @@ class SessionDB:
         }).eq("id", session_id).execute()
 
     def get_session(self, session_id: str) -> dict:
-        response = self.table.select("*").eq("id", session_id).single().execute()
+        response = self.table \
+            .select("*") \
+            .eq("id", session_id) \
+            .single() \
+            .execute()
         return response.data
+
+    def get_all_sessions_for_user(self, user_id: str) -> list:
+        response = self.table \
+            .select("*") \
+            .eq("user_id", user_id) \
+            .execute()
+        return response.data
+
+
