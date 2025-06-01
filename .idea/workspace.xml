@@ -4,14 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="feat(emotion): integrate SAS-based emotion analysis flow&#10;&#10;- Updated EmotionsAnalysisManager to support SAS URL input and session-based output&#10;- Downloads transcript via SAS and analyzes emotions using transformers&#10;- Saves emotion_analyzer.txt and uploads it back to Azure Blob Storage&#10;- Returns SAS URL of uploaded emotion result&#10;- Modified EmotionAnalysisTextManager to organize results per session_id&#10;- Added emotion_test.py script for standalone testing of the emotion pipeline">
+    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="✅ Audio pipeline milestone:&#10;- Upload to Azure Blob Storage completed&#10;- Transcription with speaker diarization completed and uploaded&#10;- Emotion analysis completed and uploaded&#10;&#10;🔜 Next tasks:&#10;- [Me + Amal] Generate summary and upload to Azure&#10;- [Me + Amal] Extract metadata (e.g. duration, speaker count) and store in DB&#10;- [Yaniv] Display metadata and results in UI using SAS URL">
+      <change afterPath="$PROJECT_DIR$/app/services/audio_duration.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/upload.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/upload.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/azure_uploader.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/azure_uploader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/db_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/db_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions_analysis_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions_analysis_manager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/services/facade.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/facade.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/services/transcribe_with_diarization_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/transcribe_with_diarization_manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -343,7 +342,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748727109557</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="✅ Audio pipeline milestone:&#10;- Upload to Azure Blob Storage completed&#10;- Transcription with speaker diarization completed and uploaded&#10;- Emotion analysis completed and uploaded&#10;&#10;🔜 Next tasks:&#10;- [Me + Amal] Generate summary and upload to Azure&#10;- [Me + Amal] Extract metadata (e.g. duration, speaker count) and store in DB&#10;- [Yaniv] Display metadata and results in UI using SAS URL">
+      <option name="closed" value="true" />
+      <created>1748733371478</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1748733371478</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -389,7 +396,8 @@
     <MESSAGE value="feat(debug):&#10;transcribe_with_diarization_test.py&#10;and &#10;print result.py&#10;&#10;tested transcribe feature" />
     <MESSAGE value="not big changes.." />
     <MESSAGE value="feat(emotion): integrate SAS-based emotion analysis flow&#10;&#10;- Updated EmotionsAnalysisManager to support SAS URL input and session-based output&#10;- Downloads transcript via SAS and analyzes emotions using transformers&#10;- Saves emotion_analyzer.txt and uploads it back to Azure Blob Storage&#10;- Returns SAS URL of uploaded emotion result&#10;- Modified EmotionAnalysisTextManager to organize results per session_id&#10;- Added emotion_test.py script for standalone testing of the emotion pipeline" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(emotion): integrate SAS-based emotion analysis flow&#10;&#10;- Updated EmotionsAnalysisManager to support SAS URL input and session-based output&#10;- Downloads transcript via SAS and analyzes emotions using transformers&#10;- Saves emotion_analyzer.txt and uploads it back to Azure Blob Storage&#10;- Returns SAS URL of uploaded emotion result&#10;- Modified EmotionAnalysisTextManager to organize results per session_id&#10;- Added emotion_test.py script for standalone testing of the emotion pipeline" />
+    <MESSAGE value="✅ Audio pipeline milestone:&#10;- Upload to Azure Blob Storage completed&#10;- Transcription with speaker diarization completed and uploaded&#10;- Emotion analysis completed and uploaded&#10;&#10; Next tasks:&#10;- [Me + Amal] Generate summary and upload to Azure&#10;- [Me + Amal] Extract metadata (e.g. duration, speaker count) and store in DB&#10;- [Yaniv] Display metadata and results in UI using SAS URL" />
+    <option name="LAST_COMMIT_MESSAGE" value="✅ Audio pipeline milestone:&#10;- Upload to Azure Blob Storage completed&#10;- Transcription with speaker diarization completed and uploaded&#10;- Emotion analysis completed and uploaded&#10;&#10; Next tasks:&#10;- [Me + Amal] Generate summary and upload to Azure&#10;- [Me + Amal] Extract metadata (e.g. duration, speaker count) and store in DB&#10;- [Yaniv] Display metadata and results in UI using SAS URL" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -406,16 +414,6 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app/services/facade.py</url>
-          <line>60</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/services/facade.py</url>
-          <line>43</line>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/services/facade.py</url>
           <line>25</line>
           <option name="timeStamp" value="22" />
         </line-breakpoint>
@@ -425,34 +423,9 @@
           <option name="timeStamp" value="23" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/services/facade.py</url>
-          <line>53</line>
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/services/facade.py</url>
-          <line>52</line>
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app/services/transcribe_with_diarization_manager.py</url>
-          <line>132</line>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/services/transcribe_with_diarization_manager.py</url>
-          <line>126</line>
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/services/transcribe_with_diarization_manager.py</url>
-          <line>147</line>
+          <line>176</line>
           <option name="timeStamp" value="31" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/services/facade.py</url>
-          <line>58</line>
-          <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app/services/emotions_analysis_manager.py</url>
