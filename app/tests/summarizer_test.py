@@ -12,11 +12,9 @@ def run_summary_generation():
     summarizer = Summarizer()
 
     # 📥 Emotion JSON SAS URL (from emotion analysis stage)
-    emotion_json_url = (
-        "https://audiorecordstorage.blob.core.windows.net/sessions/0e139d18-0266-4be1-b569-c46b34c9af82/text_emotions.json"
-        "?sp=rl&st=2025-05-31T21:25:30Z&se=2025-10-01T05:25:30Z&spr=https&sv=2024-11-04&sr=c"
-        "&sig=XXXX_REPLACE_WITH_REAL_SIGNATURE"
-    )
+    emotion_json_url = "https://audiorecordstorage.blob.core.windows.net/sessions/607c3aad-0d95-4f3e-8294-1e9d71d1cc19/emotion_analyzer.json?sp=r&st=2025-06-01T13:24:11Z&se=2025-06-01T21:24:11Z&spr=https&sv=2024-11-04&sr=b&sig=ZLsvCjC9aWtFZP%2BSJnUic3s%2BRH%2BrEZuwYGV2Fkre5HU%3D"
+
+
 
     # 👥 Speaker IDs (must match those used during transcription/emotion analysis)
     speaker_ids = ["0", "1"]
