@@ -24,6 +24,7 @@ SUMMARY_DIR = SESSION_DIR / "outputs" / "summary"
 # === Azure Speech-to-Text credentials ===
 SPEECH_KEY = os.getenv("SPEECH_KEY")
 REGION = os.getenv("REGION")
+AZURE_CONTAINER_URL = os.getenv("AZURE_CONTAINER_URL")
 
 # === Azure Blob Storage ===
 AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_STORAGE_CONNECTION_STRING")

@@ -1,0 +1,27 @@
+📊 Overall Emotions:
+- neutral: 467.97%
+- surprise: 142.60%
+- joy: 242.65%
+- sadness: 24.80%
+- anger: 39.65%
+- disgust: 70.44%
+- fear: 11.94%
+
+👤 Speaker 1:
+  - neutral: 186.63%
+  - surprise: 86.98%
+  - joy: 7.02%
+  - sadness: 2.45%
+  - anger: 6.27%
+  - disgust: 6.09%
+  - fear: 4.57%
+
+👤 Speaker 2:
+  - joy: 235.63%
+  - surprise: 55.62%
+  - neutral: 281.34%
+  - sadness: 22.35%
+  - anger: 33.38%
+  - fear: 7.37%
+  - disgust: 64.35%
+
