@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="/.s" />
+    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="Finished UI connection to logic.&#10;Waiting for blob path to complete by Yarden and Amal">
+      <change beforePath="$PROJECT_DIR$/app/services/facade.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/facade.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,7 +22,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Yaniv's-Changes" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -57,9 +59,11 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Python.run.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Yaniv",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -115,7 +119,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="a7ca635e-db8f-4a61-848f-63314e4a8a7e" name="Changes" comment="" />
+      <changelist id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="/.s" />
       <created>1748074922453</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -126,6 +130,7 @@
       <workItem from="1748694741144" duration="225000" />
       <workItem from="1748694979895" duration="5875000" />
       <workItem from="1748769008579" duration="11108000" />
+      <workItem from="1748783208955" duration="5038000" />
     </task>
     <task id="LOCAL-00001" summary="Initial setup for audio file upload endpoint and directory structure">
       <option name="closed" value="true" />
@@ -239,7 +244,23 @@
       <option name="project" value="LOCAL" />
       <updated>1748769333680</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Finished UI connection to logic.&#10;Waiting for blob path to complete by Yarden and Amal">
+      <option name="closed" value="true" />
+      <created>1748783374060</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1748783374060</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Finished UI connection to logic.&#10;Waiting for blob path to complete by Yarden and Amal">
+      <option name="closed" value="true" />
+      <created>1748783587910</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1748783587910</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -282,7 +303,8 @@
     <MESSAGE value="feat(audio): enforce .wav conversion and structured blob naming using session ID&#10;&#10;- Generate session_id manually and use it consistently for both DB and Azure paths&#10;- Upload audio to Azure under sessions/&lt;session_id&gt;/audio.wav&#10;- Convert all uploaded audio files to WAV format using pydub&#10;- Ensure original file extension is preserved temporarily for correct format detection&#10;- Clean up both original and converted temporary files after upload" />
     <MESSAGE value="/." />
     <MESSAGE value="/.s" />
-    <option name="LAST_COMMIT_MESSAGE" value="/.s" />
+    <MESSAGE value="Finished UI connection to logic.&#10;Waiting for blob path to complete by Yarden and Amal" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finished UI connection to logic.&#10;Waiting for blob path to complete by Yarden and Amal" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -307,7 +329,7 @@
     <SUITE FILE_PATH="coverage/dialoguedna_backend$endpoints.coverage" NAME="endpoints Coverage Results" MODIFIED="1748180404971" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/api" />
     <SUITE FILE_PATH="coverage/dialoguedna_backend$transcribe_with_diarization_manager.coverage" NAME="transcribe_with_diarization_manager Coverage Results" MODIFIED="1748175908964" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/services" />
     <SUITE FILE_PATH="coverage/dialoguedna_backend$__init__.coverage" NAME="__init__ Coverage Results" MODIFIED="1748361131983" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/api/endpoints" />
-    <SUITE FILE_PATH="coverage/dialoguedna_backend$run.coverage" NAME="run Coverage Results" MODIFIED="1748782541237" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
+    <SUITE FILE_PATH="coverage/dialoguedna_backend$run.coverage" NAME="run Coverage Results" MODIFIED="1748783686986" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/dialoguedna_backend$azure_blob.coverage" NAME="azure_blob Coverage Results" MODIFIED="1748174689075" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/storage" />
   </component>
 </project>
