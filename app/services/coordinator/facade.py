@@ -2,14 +2,12 @@ from typing import Optional
 
 from fastapi import UploadFile
 
-from app.services.db_loader import DBLoader
-from app.services.diarizer import Diarizer
-from app.services.emotion_analyzer import EmotionAnalyzer
-from app.services.emotions_analysis_manager import EmotionsAnalysisManager
-from app.services.sessionDB import SessionDB
-from app.services.summarizer import Summarizer
-from app.services.transcribe_with_diarization_manager import TranscribeAndDiarizeManager
-from app.services.transcriber import Transcriber
+from app.services.infrastructure.db_loader import DBLoader
+from app.services.transcription.diarizer import Diarizer
+from app.services.emotion_analysis.emotions_analysis_manager import EmotionsAnalysisManager
+from app.services.infrastructure.sessionDB import SessionDB
+from app.services.summarization.summarizer import Summarizer
+from app.services.transcription.transcribe_with_diarization_manager import TranscribeAndDiarizeManager
 
 
 class DialogueProcessor:

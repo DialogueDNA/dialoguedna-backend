@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.api.dependencies.auth import get_current_user
-from app.services.sessionDB import SessionDB
+from app.services.infrastructure.sessionDB import SessionDB
 
 router = APIRouter()
 session_db = SessionDB()
