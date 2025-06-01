@@ -4,16 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="feat: Add Summarizer support with Azure upload and test script&#10;&#10;- Updated Summarizer to load emotion data from SAS URL, parse JSON, and extract per-speaker emotion segments.&#10;- Integrated AzureUploader to upload the final summary markdown file to Azure Blob Storage.&#10;- Refactored generate() method to return SAS URL of the uploaded summary.&#10;- Added summarizer_test.py to validate summarization flow with real Azure inputs.">
-      <change beforePath="$PROJECT_DIR$/.idea/dialoguedna-backend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dialoguedna-backend.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_31_2025_3_29_PM__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_5_31_2025_3_29_PM__Changes_.xml" afterDir="false" />
+    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="refactor: reconnect and test summarizer with updated system structure&#10;&#10;- Adapted existing Summarizer and SummarizerEngine to fit new modular architecture&#10;- Replaced SAS URL loading with temporary local JSON file for emotion data&#10;- Fixed key mismatch issues (&quot;Speaker 1&quot;/&quot;Speaker 2&quot;) and emotion nesting structure&#10;- Verified summarization flow using summarizer_test.py&#10;- Generated and reviewed conversation_summary.md output&#10;&#10; Note: Emotion data is currently loaded from a local JSON path; SAS URL support should be restored later.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotion_analysis_text_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotion_analysis_text_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summarizer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/services/summarizer_engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summarizer_engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/summarizer_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/summarizer_test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -373,7 +366,15 @@
       <option name="project" value="LOCAL‎" />
       <updated>1748783121962</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL‎-00017" summary="refactor: reconnect and test summarizer with updated system structure&#10;&#10;- Adapted existing Summarizer and SummarizerEngine to fit new modular architecture&#10;- Replaced SAS URL loading with temporary local JSON file for emotion data&#10;- Fixed key mismatch issues (&quot;Speaker 1&quot;/&quot;Speaker 2&quot;) and emotion nesting structure&#10;- Verified summarization flow using summarizer_test.py&#10;- Generated and reviewed conversation_summary.md output&#10;&#10; Note: Emotion data is currently loaded from a local JSON path; SAS URL support should be restored later.">
+      <option name="closed" value="true" />
+      <created>1748815302806</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL‎-00017" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1748815302806</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -421,7 +422,8 @@
     <MESSAGE value="feat(emotion): integrate SAS-based emotion analysis flow&#10;&#10;- Updated EmotionsAnalysisManager to support SAS URL input and session-based output&#10;- Downloads transcript via SAS and analyzes emotions using transformers&#10;- Saves emotion_analyzer.txt and uploads it back to Azure Blob Storage&#10;- Returns SAS URL of uploaded emotion result&#10;- Modified EmotionAnalysisTextManager to organize results per session_id&#10;- Added emotion_test.py script for standalone testing of the emotion pipeline" />
     <MESSAGE value="commit for checkout" />
     <MESSAGE value="feat: Add Summarizer support with Azure upload and test script&#10;&#10;- Updated Summarizer to load emotion data from SAS URL, parse JSON, and extract per-speaker emotion segments.&#10;- Integrated AzureUploader to upload the final summary markdown file to Azure Blob Storage.&#10;- Refactored generate() method to return SAS URL of the uploaded summary.&#10;- Added summarizer_test.py to validate summarization flow with real Azure inputs." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: Add Summarizer support with Azure upload and test script&#10;&#10;- Updated Summarizer to load emotion data from SAS URL, parse JSON, and extract per-speaker emotion segments.&#10;- Integrated AzureUploader to upload the final summary markdown file to Azure Blob Storage.&#10;- Refactored generate() method to return SAS URL of the uploaded summary.&#10;- Added summarizer_test.py to validate summarization flow with real Azure inputs." />
+    <MESSAGE value="refactor: reconnect and test summarizer with updated system structure&#10;&#10;- Adapted existing Summarizer and SummarizerEngine to fit new modular architecture&#10;- Replaced SAS URL loading with temporary local JSON file for emotion data&#10;- Fixed key mismatch issues (&quot;Speaker 1&quot;/&quot;Speaker 2&quot;) and emotion nesting structure&#10;- Verified summarization flow using summarizer_test.py&#10;- Generated and reviewed conversation_summary.md output&#10;&#10; Note: Emotion data is currently loaded from a local JSON path; SAS URL support should be restored later." />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: reconnect and test summarizer with updated system structure&#10;&#10;- Adapted existing Summarizer and SummarizerEngine to fit new modular architecture&#10;- Replaced SAS URL loading with temporary local JSON file for emotion data&#10;- Fixed key mismatch issues (&quot;Speaker 1&quot;/&quot;Speaker 2&quot;) and emotion nesting structure&#10;- Verified summarization flow using summarizer_test.py&#10;- Generated and reviewed conversation_summary.md output&#10;&#10; Note: Emotion data is currently loaded from a local JSON path; SAS URL support should be restored later." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
