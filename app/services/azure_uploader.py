@@ -6,6 +6,14 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from pydub import AudioSegment
 
+#___________________________________________#
+from azure.storage.blob import BlobClient
+from fastapi.responses import Response
+from azure.storage.blob import BlobClient
+import mimetypes
+#___________________________________________#
+
+
 class AzureUploader:
     def __init__(self, connection_string: str, container_name: str):
         self.connection_string = connection_string
@@ -71,3 +79,25 @@ class AzureUploader:
             raise Exception("❌ Converted WAV file is too small – invalid audio")
 
         return output_path
+
+
+
+    #-----------------------------------------------------------------------------------------#
+    def get_file_response_from_azure_blob_storage(self, blob_name: str) -> Response:
+        """
+        Downloads a file from Azure Blob Storage and returns it as a FastAPI Response
+        with the appropriate MIME type based on the file extension.
+        """
+        blob_client: BlobClient = self.container.get_blob_client(blob_name)
+
+        if not blob_client.exists():
+            raise FileNotFoundError(f"Blob '{blob_name}' not found in container '{self.container_name}'")
+
+        content = blob_client.download_blob().readall()
+
+        # Guess MIME type based on the file extension (e.g., .txt, .json, .wav)
+        mime_type, _ = mimetypes.guess_type(blob_name)
+        if mime_type is None:
+            mime_type = "application/octet-stream"  # Fallback for unknown types
+
+        return Response(content=content, media_type=mime_type)
