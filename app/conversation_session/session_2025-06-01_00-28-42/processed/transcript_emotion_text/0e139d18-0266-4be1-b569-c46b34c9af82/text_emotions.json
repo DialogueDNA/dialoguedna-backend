@@ -1,0 +1,362 @@
+[
+  {
+    "speaker": "Speaker 1",
+    "text": "You made two Wonder Woman movies since the last time I'm.",
+    "emotions": [
+      [
+        {
+          "label": "neutral",
+          "score": 0.8540939092636108
+        },
+        {
+          "label": "surprise",
+          "score": 0.09700390696525574
+        },
+        {
+          "label": "joy",
+          "score": 0.03028339147567749
+        },
+        {
+          "label": "sadness",
+          "score": 0.009074302390217781
+        },
+        {
+          "label": "anger",
+          "score": 0.004645700566470623
+        },
+        {
+          "label": "disgust",
+          "score": 0.0026292139664292336
+        },
+        {
+          "label": "fear",
+          "score": 0.002269549062475562
+        }
+      ]
+    ]
+  },
+  {
+    "speaker": "Speaker 2",
+    "text": "So excited.",
+    "emotions": [
+      [
+        {
+          "label": "joy",
+          "score": 0.7525990009307861
+        },
+        {
+          "label": "surprise",
+          "score": 0.1937861293554306
+        },
+        {
+          "label": "neutral",
+          "score": 0.04180403798818588
+        },
+        {
+          "label": "sadness",
+          "score": 0.0067581054754555225
+        },
+        {
+          "label": "anger",
+          "score": 0.0030317301861941814
+        },
+        {
+          "label": "fear",
+          "score": 0.0013586877612397075
+        },
+        {
+          "label": "disgust",
+          "score": 0.0006622100481763482
+        }
+      ]
+    ]
+  },
+  {
+    "speaker": "Speaker 1",
+    "text": "You've been Wonder Woman, are you?",
+    "emotions": [
+      [
+        {
+          "label": "surprise",
+          "score": 0.6918940544128418
+        },
+        {
+          "label": "neutral",
+          "score": 0.24727365374565125
+        },
+        {
+          "label": "anger",
+          "score": 0.017714690417051315
+        },
+        {
+          "label": "disgust",
+          "score": 0.015150479972362518
+        },
+        {
+          "label": "joy",
+          "score": 0.013870727270841599
+        },
+        {
+          "label": "fear",
+          "score": 0.008041488006711006
+        },
+        {
+          "label": "sadness",
+          "score": 0.006054891273379326
+        }
+      ]
+    ]
+  },
+  {
+    "speaker": "Speaker 2",
+    "text": "I feel like I would spit it out of a tornado.",
+    "emotions": [
+      [
+        {
+          "label": "neutral",
+          "score": 0.438856840133667
+        },
+        {
+          "label": "disgust",
+          "score": 0.30690646171569824
+        },
+        {
+          "label": "anger",
+          "score": 0.1732729971408844
+        },
+        {
+          "label": "fear",
+          "score": 0.03168874233961105
+        },
+        {
+          "label": "surprise",
+          "score": 0.030994433909654617
+        },
+        {
+          "label": "sadness",
+          "score": 0.015820300206542015
+        },
+        {
+          "label": "joy",
+          "score": 0.002460245043039322
+        }
+      ]
+    ]
+  },
+  {
+    "speaker": "Speaker 2",
+    "text": "It's been a hell of a year.",
+    "emotions": [
+      [
+        {
+          "label": "disgust",
+          "score": 0.3079848289489746
+        },
+        {
+          "label": "surprise",
+          "score": 0.20097866654396057
+        },
+        {
+          "label": "neutral",
+          "score": 0.1840626448392868
+        },
+        {
+          "label": "sadness",
+          "score": 0.1785500943660736
+        },
+        {
+          "label": "anger",
+          "score": 0.08888334035873413
+        },
+        {
+          "label": "fear",
+          "score": 0.023698346689343452
+        },
+        {
+          "label": "joy",
+          "score": 0.015842096880078316
+        }
+      ]
+    ]
+  },
+  {
+    "speaker": "Speaker 2",
+    "text": "I'm so happy and grateful for this year that I had.",
+    "emotions": [
+      [
+        {
+          "label": "joy",
+          "score": 0.9833251237869263
+        },
+        {
+          "label": "surprise",
+          "score": 0.008700601756572723
+        },
+        {
+          "label": "sadness",
+          "score": 0.003803832456469536
+        },
+        {
+          "label": "neutral",
+          "score": 0.002294816542416811
+        },
+        {
+          "label": "anger",
+          "score": 0.001106930896639824
+        },
+        {
+          "label": "disgust",
+          "score": 0.00048564834287390113
+        },
+        {
+          "label": "fear",
+          "score": 0.0002829531440511346
+        }
+      ]
+    ]
+  },
+  {
+    "speaker": "Speaker 2",
+    "text": "We shot right after keeping up with the Joneses.",
+    "emotions": [
+      [
+        {
+          "label": "neutral",
+          "score": 0.8780667185783386
+        },
+        {
+          "label": "surprise",
+          "score": 0.048197392374277115
+        },
+        {
+          "label": "anger",
+          "score": 0.040496084839105606
+        },
+        {
+          "label": "joy",
+          "score": 0.01655629277229309
+        },
+        {
+          "label": "fear",
+          "score": 0.007872759364545345
+        },
+        {
+          "label": "disgust",
+          "score": 0.005595316179096699
+        },
+        {
+          "label": "sadness",
+          "score": 0.0032153157517313957
+        }
+      ]
+    ]
+  },
+  {
+    "speaker": "Speaker 2",
+    "text": "We shot the Wonder Woman movie, the solo one, which is going to be out in June.",
+    "emotions": [
+      [
+        {
+          "label": "joy",
+          "score": 0.5618903040885925
+        },
+        {
+          "label": "neutral",
+          "score": 0.3572585880756378
+        },
+        {
+          "label": "surprise",
+          "score": 0.053043149411678314
+        },
+        {
+          "label": "sadness",
+          "score": 0.012837476097047329
+        },
+        {
+          "label": "anger",
+          "score": 0.007184150163084269
+        },
+        {
+          "label": "disgust",
+          "score": 0.00406118668615818
+        },
+        {
+          "label": "fear",
+          "score": 0.003725141054019332
+        }
+      ]
+    ]
+  },
+  {
+    "speaker": "Speaker 2",
+    "text": "And right when I finished that one, I started to shoot Justice League with everyone.",
+    "emotions": [
+      [
+        {
+          "label": "neutral",
+          "score": 0.9108698964118958
+        },
+        {
+          "label": "joy",
+          "score": 0.02358054928481579
+        },
+        {
+          "label": "surprise",
+          "score": 0.020514491945505142
+        },
+        {
+          "label": "anger",
+          "score": 0.01983044296503067
+        },
+        {
+          "label": "disgust",
+          "score": 0.017664728686213493
+        },
+        {
+          "label": "fear",
+          "score": 0.005033801309764385
+        },
+        {
+          "label": "sadness",
+          "score": 0.002506098710000515
+        }
+      ]
+    ]
+  },
+  {
+    "speaker": "Speaker 1",
+    "text": "Right back in the costume.",
+    "emotions": [
+      [
+        {
+          "label": "neutral",
+          "score": 0.7648904323577881
+        },
+        {
+          "label": "surprise",
+          "score": 0.08088406175374985
+        },
+        {
+          "label": "disgust",
+          "score": 0.04312649369239807
+        },
+        {
+          "label": "anger",
+          "score": 0.040398020297288895
+        },
+        {
+          "label": "fear",
+          "score": 0.03539394959807396
+        },
+        {
+          "label": "joy",
+          "score": 0.02600310556590557
+        },
+        {
+          "label": "sadness",
+          "score": 0.009303975850343704
+        }
+      ]
+    ]
+  }
+]
