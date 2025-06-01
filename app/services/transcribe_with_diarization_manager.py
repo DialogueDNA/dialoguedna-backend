@@ -131,13 +131,14 @@ class TranscribeAndDiarizeManager:
 
 
     def transcribe(self,sas_url: str, session_id: str, container_sas_url: str = AZURE_CONTAINER_URL ,filename: str = "audio.wav") -> \
-    tuple[str, list[str],str]:
+    tuple[str, str, list[str],str]:
 
         # 🔍 Extract session_id from SAS URL
         print(container_sas_url)
         print(sas_url)
         print (session_id)
 
+        audio_blob_name = f"{session_id}/audio.txt"
         #recordings_url = f"{container_sas_url.rstrip('/')}/{session_id}"
 
         #audio_path_in_container = f"{session_id}/{filename}"
@@ -174,7 +175,7 @@ class TranscribeAndDiarizeManager:
 
         print("✅ Transcript uploaded successfully.")
 
-        return sas_url, speakers,blob_name
+        return audio_blob_name,sas_url, speakers,blob_name
 
 
 

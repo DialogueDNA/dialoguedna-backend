@@ -49,10 +49,9 @@ class DialogueProcessor:
         try:
             print(f"📥 Processing audio: {path_to_use}")
 
-
-
             self.session_db.set_status(session_id, "transcript_status", "processing")
-            transcriber_sas_url, speaker_ids,transcriber_blob_name= self.transcriber.transcribe(path_to_use,session_id)
+            #transcriber_sas_url, speaker_ids, transcriber_blob_name = self.transcriber.transcribe(path_to_use,session_id)
+            audio_blob_name, transcriber_sas_url, speaker_ids,transcriber_blob_name= self.transcriber.transcribe(path_to_use,session_id)
             print("✅ Transcription complete.")
             self.session_db.set_status(session_id, "transcript_status", "completed")
 
