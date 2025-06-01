@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 import shutil
 import os
 import uuid
-from app.services.facade import DialogueProcessor
+from app.services.coordinator.facade import DialogueProcessor
 
 router = APIRouter()
 processor = DialogueProcessor()

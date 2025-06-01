@@ -1,11 +1,9 @@
-from app.core.config import TRANSCRIPTS_DIR, EMOTIONS_TEXT_DIR
-from app.services.azure_uploader import AzureUploader
-from app.services.emotion_analysis_text_manager import EmotionAnalysisTextManager
+from app.services.infrastructure.azure_uploader import AzureUploader
 import tempfile
 import requests
 from pathlib import Path
 from app.core.config import EMOTIONS_TEXT_DIR,AZURE_STORAGE_CONNECTION_STRING,AZURE_CONTAINER_NAME
-from app.services.emotion_analysis_text_manager import EmotionAnalysisTextManager
+from app.services.emotion_analysis.emotion_analysis_text_manager import EmotionAnalysisTextManager
 
 class EmotionsAnalysisManager:
     def __init__(self, uploader: AzureUploader = None):

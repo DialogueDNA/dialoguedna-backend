@@ -1,10 +1,9 @@
 # summarizer.py
 
 from typing import List, Dict
-from app.services.summarizer_engine import SummarizerEngine
-from app.services.azure_uploader import AzureUploader
+from app.services.summarization.summarizer_engine import SummarizerEngine
+from app.services.infrastructure.azure_uploader import AzureUploader
 from app.core.config import SUMMARY_DIR, AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
-import requests
 import json
 from pathlib import Path
 from pprint import pprint
@@ -24,7 +23,7 @@ class Summarizer:
         # data = response.json()
 
         json_path = Path(
-            r"C:\Users\Amal Amsis\Desktop\AmalA\Computer Science\DNA_DIALOGE\dialoguedna-backend\app\conversation_session\session_2025-06-01_00-28-42\processed\transcript_emotion_text\0e139d18-0266-4be1-b569-c46b34c9af82\text_emotions.json"
+            r"/app/conversation_session/session_2025-06-01_00-28-42/processed/transcript_emotion_text/0e139d18-0266-4be1-b569-c46b34c9af82/text_emotions.json"
         )
 
         print("📂 Trying to load:", json_path)

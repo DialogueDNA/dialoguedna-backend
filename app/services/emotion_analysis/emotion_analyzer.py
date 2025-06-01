@@ -11,7 +11,7 @@ Responsibilities:
 
 from typing import List, Dict
 from pathlib import Path
-from app.services.emotion_text_engine import EmotionTextEngine
+from app.services.emotion_analysis.emotion_text_engine import EmotionTextEngine
 from app.core.config import EMOTIONS_TEXT_DIR
 from app.services.utils import save_json
 
