@@ -10,8 +10,7 @@ Responsibilities:
 - Download and return the final transcript
 """
 
-from pathlib import Path
-from app.services.azure_uploader import AzureUploader
+from app.storage.azure.blob.azure_blob_uploader import AzureUploader
 from app.services.transcribe_with_diarization_manager import TranscribeAndDiarizeManager
 from app.core.config import (
     AZURE_STORAGE_CONNECTION_STRING,

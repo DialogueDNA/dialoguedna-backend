@@ -13,7 +13,7 @@ from typing import List, Dict
 from pathlib import Path
 from app.services.emotion_text_engine import EmotionTextEngine
 from app.core.config import EMOTIONS_TEXT_DIR
-from app.services.utils import save_json
+from app.utils.utils import save_json
 
 class EmotionAnalyzer:
     def __init__(self):

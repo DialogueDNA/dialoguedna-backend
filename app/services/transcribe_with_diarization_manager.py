@@ -1,20 +1,20 @@
 import requests
 import time
 import os
-import json
 from urllib.parse import urlparse
 from pathlib import Path
 from app.core.config import SPEECH_KEY, REGION ,AZURE_CONTAINER_URL,AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
-from app.services.azure_uploader import AzureUploader
+from app.storage.azure.blob.azure_blob_service import AzureBlobService
+from app.storage.azure.blob.azure_blob_uploader import AzureUploader
 
 
 class TranscribeAndDiarizeManager:
     def __init__(self, output_dir: Path = None, uploader=None):
         self.output_dir = output_dir or Path("temp_uploads")
-        self.uploader = uploader or AzureUploader(
-            connection_string=AZURE_STORAGE_CONNECTION_STRING,
-            container_name=AZURE_CONTAINER_NAME
-        )
+        self.uploader = uploader or AzureUploader()
+        os.makedirs(self.output_dir, exist_ok=True)
+        self.output_dir = output_dir or Path("temp_uploads")
+        self.azure = AzureBlobService()
         os.makedirs(self.output_dir, exist_ok=True)
 
     def create_transcription_job(self, sas_url: str, name="MyTranscription"):
@@ -90,42 +90,18 @@ class TranscribeAndDiarizeManager:
                 text = phrase.get("nBest", [{}])[0].get("display", "")
                 f.write(f"Speaker {speaker}: {text}\n")
 
-    #
-    # def transcribe(self, audio_url: str) -> Path:
-    #     print("📤 Creating transcription job...")
-    #     job_data = self.create_transcription_job(audio_url)
-    #     result_data = self.poll_until_complete(job_data)
-    #
-    #     if result_data.get("status") != "Succeeded":
-    #         raise Exception("Transcription job failed.")
-    #
-    #     files_url = result_data["links"]["files"]
-    #     result_json = self.fetch_transcription_file(files_url)
-    #
-    #     if not result_json:
-    #         raise Exception("No transcription result returned.")
-    #
-    #     output_path = self.generate_transcript_path(audio_url)
-    #     self.save_transcript(result_json, output_path)
-    #     return output_path
+    def transcribe(self, blob_path: str, session_id: str) -> str:
+        """
+        Transcribes the given blob audio file and returns the new transcript blob path.
+        """
+        # 🔑 Generate a secure SAS URL for the Azure Speech API
+        sas_url = self.azure.generate_sas_url(blob_path)
 
-    def transcribe(self,sas_url: str, session_id: str, container_sas_url: str = AZURE_CONTAINER_URL ,filename: str = "audio.wav") -> str:
-
-        # 🔍 Extract session_id from SAS URL
-        print(container_sas_url)
-        print(sas_url)
-        print (session_id)
-
-        #recordings_url = f"{container_sas_url.rstrip('/')}/{session_id}"
-
-        #audio_path_in_container = f"{session_id}/{filename}"
-
-        # 📤 Create transcription job
         print("📤 Creating transcription job...")
         job_data = self.create_transcription_job(sas_url)
         print("📦 job_data:", job_data)
-        result_data = self.poll_until_complete(job_data)
 
+        result_data = self.poll_until_complete(job_data)
         if result_data.get("status") != "Succeeded":
             raise Exception("Transcription job failed.")
 
@@ -139,32 +115,10 @@ class TranscribeAndDiarizeManager:
         output_path = self.output_dir / f"{session_id}_transcribe_with_diarization.txt"
         self.save_transcript(result_json, output_path)
 
-        # ☁️ Upload to Azure
-        blob_name = f"{session_id}/transcribe_with_diarization.txt"
-        print(f"☁️ Uploading transcript to Azure as {blob_name}...")
-        sas_url = self.uploader.upload_file_and_get_sas(output_path, blob_name=blob_name)
+        # ☁️ Upload transcript to Azure
+        transcript_blob = f"{session_id}/transcribe_with_diarization.txt"
+        print(f"☁️ Uploading transcript to Azure as {transcript_blob}...")
+        self.azure.upload_file(output_path, transcript_blob)
 
         print("✅ Transcript uploaded successfully.")
-        return sas_url
-
-
-
-
-    #
-    #
-    # def extract_session_and_filename(self, sas_url: str):
-    #     parsed = urlparse(sas_url)
-    #     blob_path = parsed.path.lstrip("/")  # removes leading slash
-    #
-    #     parts = blob_path.split("/")
-    #     if len(parts) < 3:
-    #         raise ValueError(f"Invalid blob path in SAS URL: {blob_path}")
-    #
-    #     # parts = [container, session_id, filename]
-    #     container = parts[0]
-    #     session_id = parts[1]
-    #     filename = "/".join(parts[2:])  # in case there are subfolders
-    #
-    #     return session_id, filename
-    #
-
+        return transcript_blob

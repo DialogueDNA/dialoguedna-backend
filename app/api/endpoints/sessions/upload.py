@@ -1,7 +1,7 @@
 from fastapi import UploadFile, File, Form, HTTPException, Depends, BackgroundTasks, APIRouter
+from app.services.facade.facade import DialogueProcessor
+from app.db.session_db import SessionDB
 from app.api.dependencies.auth import get_current_user
-from app.services.facade import DialogueProcessor
-from app.services.sessionDB import SessionDB
 
 router = APIRouter()
 processor = DialogueProcessor()
@@ -16,9 +16,9 @@ async def create_session(
 ):
     user_id = current_user["id"]
 
-    # ✅ Upload file using the processor, returns Azure SAS URL
+    # ✅ Upload file and get session_id + blob path
     try:
-        session_id, audio_path = processor.upload_audio_file_in_db(file=file)
+        session_id, audio_path = processor.upload_audio_file(file=file)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audio upload failed: {str(e)}")
 
@@ -47,11 +47,11 @@ async def create_session(
     }
 
     try:
-        session_id = session_db.create_session(new_session)
+        session_db.create_session(new_session)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create session record: {str(e)}")
 
-    # ✅ Start async background processing
+    # ✅ Start background processing
     background_tasks.add_task(
         processor.process_audio,
         session_id=session_id,

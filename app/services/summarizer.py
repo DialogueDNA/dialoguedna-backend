@@ -18,7 +18,7 @@ class Summarizer:
     def __init__(self):
         self.engine = SummarizerEngine(output_dir=SUMMARY_DIR)
 
-    def generate(self, text: str, emotions: Dict[str, List[Dict]], speakers: List[str]) -> Dict[str, str]:
+    def generate(self, text: str, emotions: Dict[str, List[Dict]], speakers: List[str]) -> str:
         """
         Generate a single summary based on all speakers' emotional content.
 
@@ -39,4 +39,4 @@ class Summarizer:
 
         summary_text = self.engine.summarize(annotated)
 
-        return {"summary": summary_text}
+        return summary_text
