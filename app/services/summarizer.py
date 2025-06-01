@@ -1,33 +1,37 @@
-"""
-summarizer.py
-
-Summarizer service – wraps SummarizerEngine to generate emotional summaries.
-
-Responsibilities:
-- Accept transcription text, emotion data, and speaker list
-- Flatten the data into a sentence-level annotated list
-- Delegate summarization to SummarizerEngine (Azure OpenAI)
-- Return the summary text
-"""
-
 from typing import List, Dict
 from app.services.summarizer_engine import SummarizerEngine
 from app.core.config import SUMMARY_DIR
+import requests
+import tempfile
+import json
 
 class Summarizer:
     def __init__(self):
         self.engine = SummarizerEngine(output_dir=SUMMARY_DIR)
 
-    def generate(self, text: str, emotions: Dict[str, List[Dict]], speakers: List[str]) -> Dict[str, str]:
-        """
-        Generate a single summary based on all speakers' emotional content.
+    def _load_emotions_from_sas_url(self, sas_url: str) -> Dict[str, List[Dict]]:
+        """Download emotion JSON file and parse as structured speaker-emotion data"""
+        response = requests.get(sas_url)
+        if response.status_code != 200:
+            raise Exception(f"Failed to download emotion JSON: {response.status_code}")
 
-        :param text: Transcribed text (not used directly here)
-        :param emotions: Per-speaker emotion data
-        :param speakers: List of speaker IDs
-        :return: Dictionary with final summary
-        """
-        # Flatten speaker -> list into single annotated sentence list
+        data = response.json()
+
+        # Build: {speaker: [{text, emotions}]}
+        result = {}
+        for entry in data:
+            speaker = entry["speaker"]
+            if speaker not in result:
+                result[speaker] = []
+            result[speaker].append({
+                "text": entry["text"],
+                "emotions": entry["emotions"]
+            })
+        return result
+
+    def generate(self, emotion_json_url: str, speakers: List[str]) -> Dict[str, str]:
+        emotions = self._load_emotions_from_sas_url(emotion_json_url)
+
         annotated = []
         for speaker in speakers:
             for item in emotions.get(speaker, []):
@@ -38,5 +42,4 @@ class Summarizer:
                 })
 
         summary_text = self.engine.summarize(annotated)
-
         return {"summary": summary_text}
