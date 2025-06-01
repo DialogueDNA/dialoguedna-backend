@@ -11,6 +11,7 @@ from azure.storage.blob import BlobClient
 from fastapi.responses import Response
 from azure.storage.blob import BlobClient
 import mimetypes
+from typing import Tuple
 #___________________________________________#
 
 
@@ -22,13 +23,14 @@ class AzureUploader:
         self.container = self.client.get_container_client(container_name)
 
     def upload_file_and_get_sas(
-        self,
-        file_obj: Union[str, Path, IO[bytes]],
-        blob_name: str,
-        expiry_minutes: int = 60
-    ) -> str:
+            self,
+            file_obj: Union[str, Path, IO[bytes]],
+            blob_name: str,
+            expiry_hours: int = 24
+    ) -> Tuple[str, str]:
         """
-        Uploads a file to Azure Blob Storage and returns a SAS URL.
+        Uploads a file to Azure Blob Storage and returns a tuple:
+        (SAS URL for accessing the file, blob path where it was saved).
         Supports both file paths and file-like objects.
         """
         blob_client = self.container.get_blob_client(blob_name)
@@ -36,7 +38,7 @@ class AzureUploader:
         if isinstance(file_obj, (str, Path)):
             with open(file_obj, "rb") as f:
                 blob_client.upload_blob(f, overwrite=True)
-        elif hasattr(file_obj, "read"):  # file-like object (e.g. UploadFile.file or BytesIO)
+        elif hasattr(file_obj, "read"):  # file-like object
             blob_client.upload_blob(file_obj, overwrite=True)
         else:
             raise ValueError("file_obj must be a file path or file-like object")
@@ -47,10 +49,12 @@ class AzureUploader:
             blob_name=blob_name,
             account_key=self._get_account_key(),
             permission=BlobSasPermissions(read=True),
-            expiry=datetime.utcnow() + timedelta(minutes=expiry_minutes)
+            expiry=datetime.utcnow() + timedelta(hours=expiry_hours)
         )
 
-        return f"https://{self.client.account_name}.blob.core.windows.net/{self.container_name}/{blob_name}?{sas_token}"
+        sas_url = f"https://{self.client.account_name}.blob.core.windows.net/{self.container_name}/{blob_name}?{sas_token}"
+
+        return sas_url, blob_name
 
     def _get_account_key(self) -> str:
         for part in self.connection_string.split(";"):

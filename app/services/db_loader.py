@@ -18,10 +18,16 @@ class DBLoader:
             container_name=AZURE_CONTAINER_NAME
         )
 
+    # def load_audio(self, audio_path: str) -> str:
+    #     audio_path = Path(audio_path)
+    #     print("☁️ Uploading audio to Azure...")
+    #     return self.uploader.upload_file_and_get_sas(audio_path, blob_name=audio_path.name)
+
     def load_audio(self, audio_path: str) -> str:
         audio_path = Path(audio_path)
         print("☁️ Uploading audio to Azure...")
-        return self.uploader.upload_file_and_get_sas(audio_path, blob_name=audio_path.name)
+        sas_url, blob_name = self.uploader.upload_file_and_get_sas(audio_path, blob_name=audio_path.name);
+        return sas_url
 
     def load_audio_from_file(self, file: UploadFile) -> tuple[str, str]:
         tmp_path = None
@@ -47,7 +53,7 @@ class DBLoader:
             print(f"☁️ Uploading audio '{file.filename}' to Azure...")
 
             # Upload the file to Azure using the provided blob name
-            sas_url = self.uploader.upload_file_and_get_sas(wav_path, blob_name=blob_name)
+            sas_url,blob_name = self.uploader.upload_file_and_get_sas(wav_path, blob_name=blob_name)
             #folder_sas_url = f"{AZURE_CONTAINER_URL}/{session_id}"
 
             print(sas_url)

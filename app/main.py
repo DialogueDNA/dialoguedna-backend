@@ -26,3 +26,6 @@ app.add_middleware(
 
 # Register all API routers
 app.include_router(api_router)
+
+
+print("✅ main.py loaded")

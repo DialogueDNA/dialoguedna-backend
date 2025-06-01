@@ -111,7 +111,7 @@ class TranscribeAndDiarizeManager:
     #     self.save_transcript(result_json, output_path)
     #     return output_path
 
-    def extract_speakers_from_transcript(transcript_text: str) -> List[str]:
+    def extract_speakers_from_transcript(self,transcript_text: str) -> List[str]:
         """
         Extracts a list of unique speaker labels from a transcript text.
 
@@ -131,7 +131,7 @@ class TranscribeAndDiarizeManager:
 
 
     def transcribe(self,sas_url: str, session_id: str, container_sas_url: str = AZURE_CONTAINER_URL ,filename: str = "audio.wav") -> \
-    tuple[str, list[str]]:
+    tuple[str, list[str],str]:
 
         # 🔍 Extract session_id from SAS URL
         print(container_sas_url)
@@ -164,7 +164,7 @@ class TranscribeAndDiarizeManager:
         # ☁️ Upload to Azure
         blob_name = f"{session_id}/transcribe_with_diarization.txt"
         print(f"☁️ Uploading transcript to Azure as {blob_name}...")
-        sas_url = self.uploader.upload_file_and_get_sas(output_path, blob_name=blob_name)
+        sas_url,blob_name = self.uploader.upload_file_and_get_sas(output_path, blob_name=blob_name)
 
         # 🧠 Extract speaker list from result
         with open(output_path, "r", encoding="utf-8") as f:
@@ -174,7 +174,7 @@ class TranscribeAndDiarizeManager:
 
         print("✅ Transcript uploaded successfully.")
 
-        return sas_url, speakers
+        return sas_url, speakers,blob_name
 
 
 

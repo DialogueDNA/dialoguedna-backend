@@ -17,7 +17,7 @@ class EmotionAnalysisTextManager:
         self.speaker_emotions = defaultdict(lambda: defaultdict(float))
         self.overall_emotions = defaultdict(float)
 
-    def analyze(self) -> str:
+    def analyze(self) -> Path:
         print("🔍 Running text-based emotion analysis...")
 
         # Load pre-trained emotion classification pipeline
