@@ -29,7 +29,7 @@ class EmotionsAnalysisManager:
         # )
         # # self.tone_analyzer = EmotionAnalysisToneManager()  # ← add later
 
-    def analyze(self, sas_url: str, session_id: str) -> str:
+    def analyze(self, sas_url: str, session_id: str) -> tuple[str,str]:
 
         print("🧠 Starting emotion analysis...")
 
@@ -56,10 +56,10 @@ class EmotionsAnalysisManager:
         # ☁️ Upload to Azure
         blob_name = f"{session_id}/emotion_analyzer.txt"
         print(f"☁️ Uploading emotion results to Azure as {blob_name}...")
-        sas_url = self.uploader.upload_file_and_get_sas(text_result_path, blob_name=blob_name)
+        sas_url,blob_name = self.uploader.upload_file_and_get_sas(text_result_path, blob_name=blob_name)
 
         print("✅ Emotion analysis uploaded successfully.")
-        return sas_url
+        return sas_url,blob_name
 
 
 

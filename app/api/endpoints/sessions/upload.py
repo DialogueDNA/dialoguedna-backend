@@ -20,7 +20,7 @@ async def create_session(
 
     # ✅ Upload file using the processor, returns Azure SAS URL
     try:
-        audio_duration = get_audio_duration(file)
+        #audio_duration = get_audio_duration(file)
         session_id, audio_path = processor.upload_audio_file_in_db(file=file)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audio upload failed: {str(e)}")
@@ -32,7 +32,7 @@ async def create_session(
         "title": title,
         "metadata_status": "not_started",
         "language": "not_started",
-        "duration": audio_duration,
+        "duration": None,
         "participants": [],
         "source": "web",
         "is_favorite": False,

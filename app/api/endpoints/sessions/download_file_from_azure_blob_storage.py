@@ -1,16 +1,20 @@
 # main.py
-from fastapi import FastAPI, Query, HTTPException
-from azure_uploader import AzureUploader
+from fastapi import FastAPI, Query, HTTPException, APIRouter
 
-app = FastAPI()
+from app.core import config
+from app.services.azure_uploader import AzureUploader
+
+print("✅ download_file_from_azure_blob_storage.py loaded")
+
+router = APIRouter()
 
 # Example: init uploader with your actual Azure config
 azure_uploader = AzureUploader(
-    connection_string="DefaultEndpointsProtocol=https;AccountName=...;AccountKey=...;EndpointSuffix=core.windows.net",
-    container_name="your-container-name"
+    connection_string=config.AZURE_STORAGE_CONNECTION_STRING,
+    container_name=config.AZURE_CONTAINER_NAME
 )
 
-@app.get("/api/download_file_from_azure_blob_storage")
+@router.get("/file")
 def get_file(path: str = Query(..., description="Blob path inside the container")):
     """
     Returns a file from Azure Blob Storage by its blob path.
