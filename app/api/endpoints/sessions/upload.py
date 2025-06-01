@@ -27,7 +27,7 @@ async def create_session(
         "id": session_id,
         "user_id": user_id,
         "title": title,
-        "metadata_status": "not_started",
+        "metadata_status": "completed",
         "language": "not_started",
         "duration": None,
         "participants": [],
