@@ -1,60 +1,65 @@
-from typing import List, Dict
-from app.services.summarizer_engine import SummarizerEngine
-from app.services.azure_uploader import AzureUploader
-from app.core.config import SUMMARY_DIR, AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
-import requests
-import json
-from pathlib import Path
+# summarizer_engine.py
 
-class Summarizer:
-    def __init__(self):
-        self.engine = SummarizerEngine(output_dir=SUMMARY_DIR)
-        self.uploader = AzureUploader(
-            connection_string=AZURE_STORAGE_CONNECTION_STRING,
-            container_name=AZURE_CONTAINER_NAME
+from typing import List, Dict
+from openai import AzureOpenAI, RateLimitError
+from app.core.config import (
+    AZURE_OPENAI_API_KEY,
+    AZURE_OPENAI_API_VERSION,
+    AZURE_OPENAI_ENDPOINT,
+    AZURE_OPENAI_DEPLOYMENT,
+)
+import time
+
+class SummarizerEngine:
+    def __init__(self, emotion_threshold: float = 0.7):
+        self.emotion_threshold = emotion_threshold
+        self.client = AzureOpenAI(
+            api_key=AZURE_OPENAI_API_KEY,
+            api_version=AZURE_OPENAI_API_VERSION,
+            azure_endpoint=AZURE_OPENAI_ENDPOINT,
         )
 
-    def _load_emotions_from_sas_url(self, sas_url: str) -> Dict[str, List[Dict]]:
-        response = requests.get(sas_url)
-        if response.status_code != 200:
-            raise Exception(f"Failed to download emotion JSON: {response.status_code}")
-        data = response.json()
+    def summarize(self, annotated_sentences: List[Dict]) -> str:
+        descriptive_lines = []
+        for entry in annotated_sentences:
+            emotions = entry.get("emotions", [])
+            if not emotions:
+                continue
+            top = max(emotions, key=lambda e: e["score"])
+            if top["score"] >= self.emotion_threshold:
+                descriptive_lines.append(
+                    f'{entry["speaker"]} said: "{entry["text"]}" — emotion detected: **{top["label"].lower()}** ({round(top["score"]*100, 2)}%)'
+                )
 
-        result = {}
-        for entry in data:
-            speaker = entry["speaker"]
-            if speaker not in result:
-                result[speaker] = []
-            result[speaker].append({
-                "text": entry["text"],
-                "emotions": entry["emotions"]
-            })
-        return result
+        prompt_text = "\n".join(descriptive_lines)
 
-    def generate(self, emotion_json_url: str, speakers: List[str], session_id: str) -> str:
-        emotions = self._load_emotions_from_sas_url(emotion_json_url)
+        prompt = (
+            "You are a sensitive and experienced journalist and conversation analyst.\n"
+            "You've received a transcript with speaker labels and emotional tags for each sentence.\n\n"
+            "Your task is to write a fluent, emotionally intelligent, and human-centered summary of the conversation.\n"
+            "Include subheadings (e.g., 🎬 Beginning / 👩‍👧 Talking about family / 😂 Jokes and Humor), reflect on emotions, personal dynamics, and turning points.\n"
+            "Write with depth, insight, and elegance. You may interpret how the speakers felt, what affected them, and why certain parts were humorous, exhausting, or touching.\n"
+            "Emphasize powerful or touching lines using **bold**, and don't list emotion percentages.\n"
+            "You are telling a human story — not generating analytics."
+        )
 
-        annotated = []
-        for speaker in speakers:
-            for item in emotions.get(speaker, []):
-                annotated.append({
-                    "speaker": speaker,
-                    "text": item["text"],
-                    "emotions": item.get("emotions", [])
-                })
+        retries = 3
+        for attempt in range(retries):
+            try:
+                response = self.client.chat.completions.create(
+                    model=AZURE_OPENAI_DEPLOYMENT,
+                    messages=[
+                        {"role": "system", "content": prompt},
+                        {"role": "user", "content": prompt_text}
+                    ],
+                    temperature=0.7,
+                    max_tokens=1500
+                )
+                break
+            except RateLimitError:
+                print(f"⚠️ Rate limit hit (attempt {attempt+1}/{retries}). Waiting 60 seconds...")
+                time.sleep(60)
+        else:
+            raise RuntimeError("❌ Failed after 3 retries due to rate limiting.")
 
-        summary_text = self.engine.summarize(annotated)
-
-        # ✨ שמירה לקובץ מקומי
-        output_dir = SUMMARY_DIR / session_id
-        output_dir.mkdir(parents=True, exist_ok=True)
-        summary_path = output_dir / "conversation_summary.md"
-        with open(summary_path, "w", encoding="utf-8") as f:
-            f.write(summary_text)
-
-        # ☁️ העלאה ל-Azure
-        blob_name = f"{session_id}/conversation_summary.md"
-        sas_url = self.uploader.upload_file_and_get_sas(summary_path, blob_name=blob_name)
-
-        print("✅ Summary uploaded successfully.")
-        return sas_url
+        return response.choices[0].message.content.strip()
