@@ -4,13 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="✅ Audio pipeline milestone:&#10;- Upload to Azure Blob Storage completed&#10;- Transcription with speaker diarization completed and uploaded&#10;- Emotion analysis completed and uploaded&#10;&#10;🔜 Next tasks:&#10;- [Me + Amal] Generate summary and upload to Azure&#10;- [Me + Amal] Extract metadata (e.g. duration, speaker count) and store in DB&#10;- [Yaniv] Display metadata and results in UI using SAS URL">
-      <change afterPath="$PROJECT_DIR$/app/services/audio_duration.py" afterDir="false" />
+    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="feat: extract audio duration and speaker list from transcription&#10;&#10;- Added get_audio_duration function using pydub to extract formatted duration string from UploadFile&#10;- Integrated audio duration extraction into create_session endpoint&#10;- Added extract_speakers_from_transcript function to parse speaker labels from transcription text&#10;- Modified transcribe() to return both SAS URL and list of speakers">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/upload.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/upload.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/facade.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/facade.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcribe_with_diarization_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/transcribe_with_diarization_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -350,7 +345,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748733371478</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="feat: extract audio duration and speaker list from transcription&#10;&#10;- Added get_audio_duration function using pydub to extract formatted duration string from UploadFile&#10;- Integrated audio duration extraction into create_session endpoint&#10;- Added extract_speakers_from_transcript function to parse speaker labels from transcription text&#10;- Modified transcribe() to return both SAS URL and list of speakers">
+      <option name="closed" value="true" />
+      <created>1748772261441</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1748772261442</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -397,7 +400,8 @@
     <MESSAGE value="not big changes.." />
     <MESSAGE value="feat(emotion): integrate SAS-based emotion analysis flow&#10;&#10;- Updated EmotionsAnalysisManager to support SAS URL input and session-based output&#10;- Downloads transcript via SAS and analyzes emotions using transformers&#10;- Saves emotion_analyzer.txt and uploads it back to Azure Blob Storage&#10;- Returns SAS URL of uploaded emotion result&#10;- Modified EmotionAnalysisTextManager to organize results per session_id&#10;- Added emotion_test.py script for standalone testing of the emotion pipeline" />
     <MESSAGE value="✅ Audio pipeline milestone:&#10;- Upload to Azure Blob Storage completed&#10;- Transcription with speaker diarization completed and uploaded&#10;- Emotion analysis completed and uploaded&#10;&#10; Next tasks:&#10;- [Me + Amal] Generate summary and upload to Azure&#10;- [Me + Amal] Extract metadata (e.g. duration, speaker count) and store in DB&#10;- [Yaniv] Display metadata and results in UI using SAS URL" />
-    <option name="LAST_COMMIT_MESSAGE" value="✅ Audio pipeline milestone:&#10;- Upload to Azure Blob Storage completed&#10;- Transcription with speaker diarization completed and uploaded&#10;- Emotion analysis completed and uploaded&#10;&#10; Next tasks:&#10;- [Me + Amal] Generate summary and upload to Azure&#10;- [Me + Amal] Extract metadata (e.g. duration, speaker count) and store in DB&#10;- [Yaniv] Display metadata and results in UI using SAS URL" />
+    <MESSAGE value="feat: extract audio duration and speaker list from transcription&#10;&#10;- Added get_audio_duration function using pydub to extract formatted duration string from UploadFile&#10;- Integrated audio duration extraction into create_session endpoint&#10;- Added extract_speakers_from_transcript function to parse speaker labels from transcription text&#10;- Modified transcribe() to return both SAS URL and list of speakers" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: extract audio duration and speaker list from transcription&#10;&#10;- Added get_audio_duration function using pydub to extract formatted duration string from UploadFile&#10;- Integrated audio duration extraction into create_session endpoint&#10;- Added extract_speakers_from_transcript function to parse speaker labels from transcription text&#10;- Modified transcribe() to return both SAS URL and list of speakers" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
