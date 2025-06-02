@@ -28,22 +28,58 @@ class EmotionsAnalysisManager:
         # )
         # # self.tone_analyzer = EmotionAnalysisToneManager()  # ← add later
 
-    def analyze(self, transcript_path: str, session_id: str) -> tuple[Dict[str, List[Dict]], str, str]:
+    import tempfile
+    import requests
+    from pathlib import Path
+    from app.services.emotion_analysis.emotion_analysis_text_manager import EmotionAnalysisTextManager
+
+    def analyze(self, sas_url: str, session_id: str) -> dict:
         """
-        Analyze transcript and return:
-        - emotion annotations (dict)
-        - path to emotion JSON file
-        - path to emotion TXT file
+        Full emotion analysis pipeline:
+        1. Downloads transcript from SAS URL
+        2. Runs emotion analysis on it
+        3. Saves emotion results to files (JSON and TXT)
+        4. Uploads both files to Azure
+        5. Returns dictionary with all info
         """
-        manager = EmotionAnalysisTextManager(
-            input_path=Path(transcript_path),
+        import requests
+        import tempfile
+
+        print("🧠 Starting emotion analysis...")
+
+        # 🔽 Download the transcript file temporarily
+        response = requests.get(sas_url)
+        if response.status_code != 200:
+            raise Exception(f"Failed to download transcript: {response.status_code}")
+
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".txt")
+        temp_file.write(response.content)
+        temp_file.close()
+
+        # 🧠 Run emotion analysis
+        analyzer = EmotionAnalysisTextManager(
+            input_path=Path(temp_file.name),
             output_dir=Path("app/conversation_session"),
             session_id=session_id
         )
 
-        emotions_dict, json_path, txt_path = manager.analyze_and_return_all()
+        emotions_dict, json_path, txt_path = analyzer.analyze_and_return_all()
 
-        return emotions_dict, json_path, txt_path
+        # ☁️ Upload both results to Azure
+        json_blob = f"{session_id}/text_emotions.json"
+        txt_blob = f"{session_id}/text_emotions.txt"
+
+        json_url = self.uploader.upload_file_and_get_sas(json_path, blob_name=json_blob)
+        txt_url = self.uploader.upload_file_and_get_sas(txt_path, blob_name=txt_blob)
+
+        print("✅ Emotion analysis uploaded successfully.")
+
+        return {
+            "emotions_dict": emotions_dict,
+            "json_url": json_url,
+            "txt_url": txt_url
+        }
+
     # def analyze(self, sas_url: str, session_id: str) -> str:
     #
     #     print("🧠 Starting emotion analysis...")

@@ -76,6 +76,7 @@ class EmotionAnalysisTextManager:
     #
     #     return   # or return both paths if needed
 
+
     def analyze_and_return_all(self) -> tuple[Dict[str, List[Dict]], str, str]:
         from transformers import pipeline
         import json
