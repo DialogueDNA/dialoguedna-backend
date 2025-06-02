@@ -4,6 +4,8 @@ import json
 from collections import defaultdict
 from pathlib import Path
 from datetime import datetime
+from typing import Dict, List
+
 from transformers import pipeline
 
 from app.core.config import TEXT_EMOTION_MODEL, TOP_K_EMOTIONS

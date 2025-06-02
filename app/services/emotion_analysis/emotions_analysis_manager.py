@@ -4,6 +4,7 @@ import requests
 from pathlib import Path
 from app.core.config import EMOTIONS_TEXT_DIR,AZURE_STORAGE_CONNECTION_STRING,AZURE_CONTAINER_NAME
 from app.services.emotion_analysis.emotion_analysis_text_manager import EmotionAnalysisTextManager
+from typing import Dict, List
 
 class EmotionsAnalysisManager:
     def __init__(self, uploader: AzureUploader = None):
