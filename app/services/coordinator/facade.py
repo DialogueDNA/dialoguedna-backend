@@ -53,25 +53,31 @@ class DialogueProcessor:
             self.session_db.set_status(session_id, "transcript_status", "completed")
 
             self.session_db.set_status(session_id, "emotion_breakdown_status", "processing")
-            # speaker_segments = self.diarizer.identify(path_to_use)
-            emotions_url = self.emotion_analyzer.analyze(transcriber_sas_url,session_id)
+            emotion_result = self.emotion_analyzer.analyze(transcriber_sas_url, session_id)
+            emotions_dict = emotion_result["emotions_dict"]
+            emotion_json_url = emotion_result["json_url"]
+            emotion_txt_url = emotion_result["txt_url"]
+            #emotions_url = self.emotion_analyzer.analyze(transcriber_sas_url,session_id)
+
             print("✅ Diarization and emotion analysis complete.")
             self.session_db.set_status(session_id, "emotion_breakdown_status", "completed")
 
-            speaker_ids = list(emotions_url.keys())
+            speaker_ids = list(emotions_dict.keys())
 
             #change summery with amal
             self.session_db.set_status(session_id, "summary_status", "processing")
-            summary_url = self.summarizer.generate(emotions_url, speaker_ids, session_id)
+            summary_url = self.summarizer.generate(emotions_dict, speaker_ids, session_id)
+
             print("✅ Summarization complete.")
             self.session_db.set_status(session_id, "summary_status", "completed")
 
             print("✅ Transcription, diarization, emotion analysis, and summarization complete.")
 
+            # יש לי הצעה לשינוי, לא אשנה כעת כדי לוודא שזה לא הורס משהו במחלקות שלכם
             self.session_db.update_session(session_id, {
                 "transcript": transcriber_sas_url,
                 "participants": list(set(speaker_ids)),
-                "emotion_breakdown": emotions_url,
+                "emotion_breakdown": emotion_txt_url,
                 "summary": summary_url,
                 "status": "Ready",
                 "processing_error": None
