@@ -27,37 +27,54 @@ class EmotionsAnalysisManager:
         # )
         # # self.tone_analyzer = EmotionAnalysisToneManager()  # ← add later
 
-    def analyze(self, sas_url: str, session_id: str) -> str:
-
-        print("🧠 Starting emotion analysis...")
-
-        # 🔽 Download the transcript file temporarily
-        response = requests.get(sas_url)
-        if response.status_code != 200:
-            raise Exception(f"Failed to download transcript: {response.status_code}")
-
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".txt")
-        temp_file.write(response.content)
-        temp_file.close()
-
-        # 🧠 Run emotion analysis
-        self.text_analyzer = EmotionAnalysisTextManager(
-            input_path=Path(temp_file.name),
-            output_dir=EMOTIONS_TEXT_DIR,
+    def analyze(self, transcript_path: str, session_id: str) -> tuple[Dict[str, List[Dict]], str, str]:
+        """
+        Analyze transcript and return:
+        - emotion annotations (dict)
+        - path to emotion JSON file
+        - path to emotion TXT file
+        """
+        manager = EmotionAnalysisTextManager(
+            input_path=Path(transcript_path),
+            output_dir=Path("app/conversation_session"),
             session_id=session_id
         )
 
-        # Analyze from text
-        text_result_path = self.text_analyzer.analyze()
-        print(f"📄 Emotion analysis result saved at: {text_result_path}")
+        emotions_dict, json_path, txt_path = manager.analyze_and_return_all()
 
-        # ☁️ Upload to Azure
-        blob_name = f"{session_id}/emotion_analyzer.txt"
-        print(f"☁️ Uploading emotion results to Azure as {blob_name}...")
-        sas_url = self.uploader.upload_file_and_get_sas(text_result_path, blob_name=blob_name)
+        return emotions_dict, json_path, txt_path
+    # def analyze(self, sas_url: str, session_id: str) -> str:
+    #
+    #     print("🧠 Starting emotion analysis...")
+    #
+    #     # 🔽 Download the transcript file temporarily
+    #     response = requests.get(sas_url)
+    #     if response.status_code != 200:
+    #         raise Exception(f"Failed to download transcript: {response.status_code}")
+    #
+    #     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".txt")
+    #     temp_file.write(response.content)
+    #     temp_file.close()
+    #
+    #     # 🧠 Run emotion analysis
+    #     self.text_analyzer = EmotionAnalysisTextManager(
+    #         input_path=Path(temp_file.name),
+    #         output_dir=EMOTIONS_TEXT_DIR,
+    #         session_id=session_id
+    #     )
+    #
+    #     # Analyze from text
+    #     text_result_path = self.text_analyzer.analyze()
+    #     print(f"📄 Emotion analysis result saved at: {text_result_path}")
+    #
+    #     # ☁️ Upload to Azure
+    #     blob_name = f"{session_id}/emotion_analyzer.txt"
+    #     print(f"☁️ Uploading emotion results to Azure as {blob_name}...")
+    #     sas_url = self.uploader.upload_file_and_get_sas(text_result_path, blob_name=blob_name)
+    #
+    #     print("✅ Emotion analysis uploaded successfully.")
+    #     return sas_url
 
-        print("✅ Emotion analysis uploaded successfully.")
-        return sas_url
 
 
 
