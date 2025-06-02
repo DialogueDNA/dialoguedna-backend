@@ -66,7 +66,8 @@ class DialogueProcessor:
 
             #change summery with amal
             self.session_db.set_status(session_id, "summary_status", "processing")
-            summary_url = self.summarizer.generate(emotions_dict, speaker_ids, session_id)
+            summary_url = self.summarizer.generate(emotions_dict, session_id)
+
 
             print("✅ Summarization complete.")
             self.session_db.set_status(session_id, "summary_status", "completed")
