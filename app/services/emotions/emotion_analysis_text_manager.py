@@ -10,8 +10,8 @@ from app.core.config import TEXT_EMOTION_MODEL, TOP_K_EMOTIONS
 
 
 class EmotionAnalysisTextManager:
-    def __init__(self, input_path: Path, output_dir: Path, session_id: str):
-        self.input_path = input_path
+    def __init__(self, transcript: str, output_dir: Path, session_id: str):
+        self.transcript = transcript
         self.output_dir = output_dir / session_id  # Session-specific folder
         self.session_id = session_id
         self.speaker_emotions = defaultdict(lambda: defaultdict(float))
@@ -23,9 +23,8 @@ class EmotionAnalysisTextManager:
         # Load pre-trained emotion classification pipeline
         classifier = pipeline("text-classification", model=TEXT_EMOTION_MODEL, top_k=TOP_K_EMOTIONS)
 
-        # Read transcript lines
-        with open(self.input_path, "r", encoding="utf-8") as f:
-            lines = f.readlines()
+        # Split the transcript into lines
+        lines = self.transcript.strip().splitlines()
 
         results = []
         output_txt = ""

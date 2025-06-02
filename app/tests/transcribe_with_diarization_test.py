@@ -1,5 +1,5 @@
 from pathlib import Path
-from app.services.transcribe_with_diarization_manager import TranscribeAndDiarizeManager
+from app.services.transcript.transcriber import Transcriber
 from app.storage.azure.blob.azure_blob_uploader import AzureUploader
 from app.core import config  # Make sure it loads from .env
 
@@ -11,7 +11,7 @@ def run_transcription():
     # Setup uploader and transcriber
     uploader = AzureUploader(connection_string=connection_string, container_name=container_name)
     output_dir = Path("temp_uploads")
-    transcriber = TranscribeAndDiarizeManager(output_dir=output_dir, uploader=uploader)
+    transcriber = Transcriber(output_dir=output_dir, uploader=uploader)
 
     # ✅ Full SAS URL of the audio file
     sas_url = (

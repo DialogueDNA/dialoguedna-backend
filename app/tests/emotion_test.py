@@ -1,4 +1,4 @@
-from app.services.emotions_analysis_manager import EmotionsAnalysisManager
+from app.services.emotions.emotions_analysis_manager import EmotionsAnalysisManager
 from app.storage.azure.blob.azure_blob_uploader import AzureUploader
 from app.core import config
 

@@ -1,6 +1,7 @@
-# app/storage/session_storage.py
-
+import json
 from pathlib import Path
+from typing import Any
+
 from fastapi import UploadFile
 from tempfile import NamedTemporaryFile
 
@@ -18,22 +19,25 @@ class SessionStorage:
         self.azure.upload_uploadfile(file, blob_path, convert_to_wav=True)
         return blob_path
 
-    def store_transcript(self, session_id: str, content: str) -> str:
-        return self._store_text(session_id, "transcript", content)
+    def store_transcript(self, session_id: str, content:  list[dict[str, Any]]) -> str:
+        return self._store_json(session_id, "transcript", content)
 
     def store_summary(self, session_id: str, content: str) -> str:
         return self._store_text(session_id, "summary", content)
 
-    def store_emotions(self, session_id: str, json_string: str) -> str:
-        blob_path = f"{session_id}/emotions.json"
-        tmp_path = self._write_temp_file(json_string, suffix=".json")
-        self.azure.upload_file(tmp_path, blob_path)
-        tmp_path.unlink(missing_ok=True)
-        return blob_path
+    def store_emotions(self, session_id: str, content: list[dict[str, Any]]) -> str:
+        return self._store_json(session_id, "emotions", content)
 
     def _store_text(self, session_id: str, name: str, content: str) -> str:
         blob_path = f"{session_id}/{name}"
         tmp_path = self._write_temp_file(content, suffix=".txt")
+        self.azure.upload_file(tmp_path, blob_path)
+        tmp_path.unlink(missing_ok=True)
+        return blob_path
+
+    def _store_json(self, session_id: str, name: str, content: dict | list) -> str:
+        blob_path = f"{session_id}/{name}"
+        tmp_path = self._write_temp_file(json.dumps(content, indent=2), suffix=".json")
         self.azure.upload_file(tmp_path, blob_path)
         tmp_path.unlink(missing_ok=True)
         return blob_path
@@ -54,16 +58,16 @@ class SessionStorage:
     # === Delete ===
 
     def delete_audio(self, session_id: str):
-        self.azure.delete_blob(f"sessions/{session_id}/audio.wav")
+        self.azure.delete_blob(f"{session_id}/audio.wav")
 
     def delete_transcript(self, session_id: str):
-        self.azure.delete_blob(f"sessions/{session_id}/transcript")
+        self.azure.delete_blob(f"{session_id}/transcript")
 
     def delete_summary(self, session_id: str):
-        self.azure.delete_blob(f"sessions/{session_id}/summary")
+        self.azure.delete_blob(f"{session_id}/summary")
 
     def delete_emotions(self, session_id: str):
-        self.azure.delete_blob(f"sessions/{session_id}/emotions.json")
+        self.azure.delete_blob(f"{session_id}/emotions")
 
     def delete_all(self, session_id: str):
         self.delete_audio(session_id)
