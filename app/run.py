@@ -4,6 +4,7 @@ run.py
 Temporary launch script for running FastAPI via uvicorn from inside PyCharm.
 """
 
+
 import uvicorn
 
 if __name__ == "__main__":

@@ -1,10 +1,13 @@
 import requests
 import time
 import os
+import json
 from urllib.parse import urlparse
 from pathlib import Path
 from app.core.config import SPEECH_KEY, REGION ,AZURE_CONTAINER_URL,AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
 from app.services.infrastructure.azure_uploader import AzureUploader
+import re
+from typing import List
 
 
 class TranscribeAndDiarizeManager:
@@ -108,13 +111,35 @@ class TranscribeAndDiarizeManager:
     #     self.save_transcript(result_json, output_path)
     #     return output_path
 
-    def transcribe(self,sas_url: str, session_id: str, container_sas_url: str = AZURE_CONTAINER_URL ,filename: str = "audio.wav") -> str:
+    def extract_speakers_from_transcript(self,transcript_text: str) -> List[str]:
+        """
+        Extracts a list of unique speaker labels from a transcript text.
+
+        Parameters:
+        - transcript_text (str): The full transcript text containing speaker lines.
+
+        Returns:
+        - List[str]: A list of unique speaker labels (e.g. ['Speaker 1', 'Speaker 2'])
+        """
+        # Find all lines starting with something like "Speaker 1:"
+        matches = re.findall(r"Speaker \d+", transcript_text)
+
+        # Remove duplicates by converting to a set, then sort
+        unique_speakers = sorted(set(matches), key=lambda x: int(x.split()[-1]))
+
+        return unique_speakers
+
+
+    def transcribe(self,sas_url: str, session_id: str, container_sas_url: str = AZURE_CONTAINER_URL ,filename: str = "audio.wav") -> \
+    dict:
+    #tuple[str, str, list[str],str]:
 
         # 🔍 Extract session_id from SAS URL
         print(container_sas_url)
         print(sas_url)
         print (session_id)
 
+        audio_blob_name = f"{session_id}/audio.txt"
         #recordings_url = f"{container_sas_url.rstrip('/')}/{session_id}"
 
         #audio_path_in_container = f"{session_id}/{filename}"
@@ -141,12 +166,22 @@ class TranscribeAndDiarizeManager:
         # ☁️ Upload to Azure
         blob_name = f"{session_id}/transcribe_with_diarization.txt"
         print(f"☁️ Uploading transcript to Azure as {blob_name}...")
-        sas_url = self.uploader.upload_file_and_get_sas(output_path, blob_name=blob_name)
+        sas_url,blob_name = self.uploader.upload_file_and_get_sas(output_path, blob_name=blob_name)
+
+        # 🧠 Extract speaker list from result
+        with open(output_path, "r", encoding="utf-8") as f:
+            transcript_text = f.read()
+
+        speakers = self.extract_speakers_from_transcript(transcript_text)
 
         print("✅ Transcript uploaded successfully.")
-        return sas_url
 
-
+        return{
+            "audio_blob_name": audio_blob_name,
+            "sas_url": sas_url,
+            "speakers": speakers,
+            "transcript_blob_name": blob_name
+        }
 
 
     #
