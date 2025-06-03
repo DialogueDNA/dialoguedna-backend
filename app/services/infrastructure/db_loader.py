@@ -4,11 +4,10 @@ from pathlib import Path
 from fastapi import UploadFile
 from tempfile import NamedTemporaryFile
 
-from app.services.azure_uploader import AzureUploader
+from app.services.infrastructure.azure_uploader import AzureUploader
 from app.core.config import (
     AZURE_STORAGE_CONNECTION_STRING,
     AZURE_CONTAINER_NAME,
-    TRANSCRIPTS_DIR, AZURE_CONTAINER_URL,
 )
 
 class DBLoader:

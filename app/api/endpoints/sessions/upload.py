@@ -1,9 +1,8 @@
 from fastapi import UploadFile, File, Form, HTTPException, Depends, BackgroundTasks, APIRouter
 from app.api.dependencies.auth import get_current_user
-from app.services.facade import DialogueProcessor
-from app.services.sessionDB import SessionDB
+from app.services.coordinator.facade import DialogueProcessor
+from app.services.infrastructure.sessionDB import SessionDB
 from app.services.audio_duration import get_audio_duration
-
 
 router = APIRouter()
 processor = DialogueProcessor()
