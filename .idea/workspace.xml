@@ -455,7 +455,15 @@
       <option name="project" value="LOCAL‎" />
       <updated>1748982165089</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL‎-00027" summary="finished writing the emotional summary module">
+      <option name="closed" value="true" />
+      <created>1748982321512</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL‎-00027" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1748982321512</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -472,7 +480,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="client-class" />
+                        <option value="refactor/final-updates" />
                       </list>
                     </value>
                   </entry>
