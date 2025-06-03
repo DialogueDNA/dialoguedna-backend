@@ -83,7 +83,7 @@ class DialogueProcessor:
 
             #change summery with amal
             self.session_db.set_status(session_id, "summary_status", "processing")
-            summary_result = self.summarizer.generate(emotions_dict, session_id)
+            summary_result = self.summarizer.generate({"emotions_dict": emotions_dict}, session_id)
             summery_url = summary_result["summery_sas_url"]
             summary_blob_name = summary_result["summary_blob_name"]
 

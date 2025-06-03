@@ -129,6 +129,12 @@ class EmotionAnalysisTextManager:
 
         return results, str(json_path), str(txt_path)
 
+
+
+
+
+
+
     def _save_json_summary(self):
         summary = {
             "timestamp": datetime.now().isoformat(),

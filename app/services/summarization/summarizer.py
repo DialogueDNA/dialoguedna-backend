@@ -16,22 +16,57 @@ class Summarizer:
             container_name=AZURE_CONTAINER_NAME
         )
 
+    # def generate(self, emotions_bundle: Dict, session_id: str) -> dict:
+    #     emotions = emotions_bundle["emotions_dict"]
+    #     print("🎙 Emotions dictionary:")
+    #     pprint(emotions)
+    #
+    #     annotated = []
+    #     for speaker, utterances in emotions.items():
+    #         for item in utterances:
+    #             annotated.append({
+    #                 "speaker": speaker,
+    #                 "text": item["text"],
+    #                 "emotions": item["emotions"][0]  # נשלפת הרשימה הפנימית
+    #             })
+    #
+    #     print("📊 Annotated input:")
+    #     pprint(annotated)
+    #     summary_text = self.engine.summarize(annotated)
+    #
+    #     output_dir = SUMMARY_DIR / session_id
+    #     output_dir.mkdir(parents=True, exist_ok=True)
+    #     summary_path = output_dir / "conversation_summary.md"
+    #
+    #     with open(summary_path, "w", encoding="utf-8") as f:
+    #         f.write(summary_text)
+    #
+    #     blob_name = f"{session_id}/conversation_summary.md"
+    #     sas_url,summary_blob_name = self.uploader.upload_file_and_get_sas(summary_path, blob_name=blob_name)
+    #
+    #     print("✅ Summary uploaded successfully.")
+    #
+    #     return {
+    #         "summery_sas_url": sas_url,
+    #         "summary_blob_name": summary_blob_name
+    #     }
+
     def generate(self, emotions_bundle: Dict, session_id: str) -> dict:
-        emotions = emotions_bundle["emotions_dict"]
+        emotions_list = emotions_bundle["emotions_dict"]
         print("🎙 Emotions dictionary:")
-        pprint(emotions)
+        pprint(emotions_list)
 
         annotated = []
-        for speaker, utterances in emotions.items():
-            for item in utterances:
-                annotated.append({
-                    "speaker": speaker,
-                    "text": item["text"],
-                    "emotions": item["emotions"][0]  # נשלפת הרשימה הפנימית
-                })
+        for item in emotions_list:
+            annotated.append({
+                "speaker": item["speaker"],
+                "text": item["text"],
+                "emotions": item["emotions"][0]  # לוקחים את הרשימה הפנימית של הרגשות
+            })
 
         print("📊 Annotated input:")
         pprint(annotated)
+
         summary_text = self.engine.summarize(annotated)
 
         output_dir = SUMMARY_DIR / session_id
@@ -42,7 +77,7 @@ class Summarizer:
             f.write(summary_text)
 
         blob_name = f"{session_id}/conversation_summary.md"
-        sas_url,summary_blob_name = self.uploader.upload_file_and_get_sas(summary_path, blob_name=blob_name)
+        sas_url, summary_blob_name = self.uploader.upload_file_and_get_sas(summary_path, blob_name=blob_name)
 
         print("✅ Summary uploaded successfully.")
 
