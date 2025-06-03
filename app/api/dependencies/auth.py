@@ -13,7 +13,7 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_
             token,
             SUPABASE_JWT_SECRET,
             algorithms=["HS256"],
-            audience="authenticated",  # ✅ This is the fix
+            audience="authenticated",
         )
         user_id = payload.get("sub")
         if not user_id:
