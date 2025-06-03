@@ -49,7 +49,13 @@ class DialogueProcessor:
 
             self.session_db.set_status(session_id, "transcript_status", "processing")
             #transcriber_sas_url, speaker_ids, transcriber_blob_name = self.transcriber.transcribe(path_to_use,session_id)
-            audio_blob_name, transcriber_sas_url, speaker_ids,transcriber_blob_name= self.transcriber.transcribe(path_to_use,session_id)
+            transcript_result = self.transcriber.transcribe(path_to_use,session_id)
+            audio_blob_name = transcript_result["audio_blob_name"]
+            transcriber_sas_url = transcript_result["sas_url"]
+            speaker_ids = transcript_result["speakers"]
+            transcriber_blob_name = transcript_result["transcript_blob_name"]
+
+
             print("✅ Transcription complete.")
             self.session_db.set_status(session_id, "transcript_status", "completed")
 
@@ -58,6 +64,10 @@ class DialogueProcessor:
             emotions_dict = emotion_result["emotions_dict"]
             emotion_json_url = emotion_result["json_url"]
             emotion_txt_url = emotion_result["txt_url"]
+            emotion_json_blob_name = emotion_result["json_blob_name"]
+            emotion_txt_blob_name = emotion_result["txt_blob_name"]
+
+
             #emotions_url = self.emotion_analyzer.analyze(transcriber_sas_url,session_id)
 
             # speaker_segments = self.diarizer.identify(path_to_use)
@@ -69,12 +79,13 @@ class DialogueProcessor:
             print("✅ Diarization and emotion analysis complete.")
             self.session_db.set_status(session_id, "emotion_breakdown_status", "completed")
 
-            speaker_ids = list(emotions_dict.keys())
+            #speaker_ids = list(emotions_dict.keys())
 
             #change summery with amal
             self.session_db.set_status(session_id, "summary_status", "processing")
-            summary_url = self.summarizer.generate(emotions_dict, session_id)
-
+            summary_result = self.summarizer.generate(emotions_dict, session_id)
+            summery_url = summary_result["summery_sas_url"]
+            summary_blob_name = summary_result["summary_blob_name"]
 
             print("✅ Summarization complete.")
             self.session_db.set_status(session_id, "summary_status", "completed")
@@ -85,8 +96,8 @@ class DialogueProcessor:
                 "audio_file_url": audio_blob_name,
                 "transcript": transcriber_blob_name,
                 "participants": list(set(speaker_ids)),
-                "emotion_breakdown": emotions_blob_name,
-                "summary": summary_url,
+                "emotion_breakdown": emotion_txt_blob_name,
+                "summary": summary_blob_name,
                 "status": "Ready",
                 "processing_error": None
             })
