@@ -1,8 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from pathlib import Path
-import os
-import uuid
-from app.services.azure_uploader import AzureUploader, handle_upload_file
+from app.services.infrastructure.azure_uploader import AzureUploader, handle_upload_file
 from app.core import config
 
 

@@ -4,6 +4,8 @@ import json
 from collections import defaultdict
 from pathlib import Path
 from datetime import datetime
+from typing import Dict, List
+
 from transformers import pipeline
 
 from app.core.config import TEXT_EMOTION_MODEL, TOP_K_EMOTIONS
@@ -17,48 +19,105 @@ class EmotionAnalysisTextManager:
         self.speaker_emotions = defaultdict(lambda: defaultdict(float))
         self.overall_emotions = defaultdict(float)
 
-    def analyze(self) -> str:
-        print("🔍 Running text-based emotion analysis...")
+    # def analyze(self) -> str:
+    #     print("🔍 Running text-based emotion analysis...")
+    #
+    #     # Load pre-trained emotion classification pipeline
+    #     classifier = pipeline("text-classification", model=TEXT_EMOTION_MODEL, top_k=TOP_K_EMOTIONS)
+    #
+    #     # Read transcript lines
+    #     with open(self.input_path, "r", encoding="utf-8") as f:
+    #         lines = f.readlines()
+    #
+    #     results = []
+    #     output_txt = ""
+    #
+    #     for line in lines:
+    #         if not line.strip():
+    #             continue
+    #
+    #         try:
+    #             speaker, text = line.split(":", 1)
+    #         except ValueError:
+    #             continue  # Skip malformed lines
+    #
+    #         emotions = classifier(text.strip())
+    #
+    #         result_entry = {
+    #             "speaker": speaker.strip(),
+    #             "text": text.strip(),
+    #             "emotions": emotions
+    #         }
+    #         results.append(result_entry)
+    #
+    #         output_txt += f"{speaker.strip()}: {text.strip()}\n"
+    #         for e in emotions[0]:
+    #             output_txt += f"  {e['label'].lower()}: {round(e['score'] * 100, 2)}%\n"
+    #             self.speaker_emotions[speaker.strip()][e['label'].lower()] += round(e['score'] * 100, 2)
+    #             self.overall_emotions[e['label'].lower()] += round(e['score'] * 100, 2)
+    #         output_txt += "\n"
+    #
+    #     # Create output folder for this session
+    #     self.output_dir.mkdir(parents=True, exist_ok=True)
+    #
+    #     # Write detailed output
+    #     txt_path = self.output_dir / "text_emotions.txt"
+    #     json_path = self.output_dir / "text_emotions.json"
+    #
+    #     with open(txt_path, "w", encoding="utf-8") as f:
+    #         f.write(output_txt)
+    #
+    #     with open(json_path, "w", encoding="utf-8") as f:
+    #         json.dump(results, f, indent=2)
+    #
+    #     # Save summary statistics
+    #     self._save_json_summary()
+    #     self._save_txt_summary()
+    #
+    #     return   # or return both paths if needed
 
-        # Load pre-trained emotion classification pipeline
+
+    def analyze_and_return_all(self) -> tuple[Dict[str, List[Dict]], str, str]:
+        from transformers import pipeline
+        import json
+        from collections import defaultdict
+
+        print("🔍 Running emotion analysis and returning all outputs...")
+
         classifier = pipeline("text-classification", model=TEXT_EMOTION_MODEL, top_k=TOP_K_EMOTIONS)
 
-        # Read transcript lines
         with open(self.input_path, "r", encoding="utf-8") as f:
             lines = f.readlines()
 
         results = []
         output_txt = ""
+        speaker_emotions = defaultdict(lambda: defaultdict(float))
+        overall_emotions = defaultdict(float)
 
         for line in lines:
             if not line.strip():
                 continue
-
             try:
                 speaker, text = line.split(":", 1)
             except ValueError:
-                continue  # Skip malformed lines
-
+                continue
             emotions = classifier(text.strip())
-
-            result_entry = {
+            entry = {
                 "speaker": speaker.strip(),
                 "text": text.strip(),
                 "emotions": emotions
             }
-            results.append(result_entry)
+            results.append(entry)
 
             output_txt += f"{speaker.strip()}: {text.strip()}\n"
             for e in emotions[0]:
                 output_txt += f"  {e['label'].lower()}: {round(e['score'] * 100, 2)}%\n"
-                self.speaker_emotions[speaker.strip()][e['label'].lower()] += round(e['score'] * 100, 2)
-                self.overall_emotions[e['label'].lower()] += round(e['score'] * 100, 2)
+                speaker_emotions[speaker.strip()][e['label'].lower()] += round(e['score'] * 100, 2)
+                overall_emotions[e['label'].lower()] += round(e['score'] * 100, 2)
             output_txt += "\n"
 
-        # Create output folder for this session
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Write detailed output
         txt_path = self.output_dir / "text_emotions.txt"
         json_path = self.output_dir / "text_emotions.json"
 
@@ -68,11 +127,7 @@ class EmotionAnalysisTextManager:
         with open(json_path, "w", encoding="utf-8") as f:
             json.dump(results, f, indent=2)
 
-        # Save summary statistics
-        self._save_json_summary()
-        self._save_txt_summary()
-
-        return json_path  # or return both paths if needed
+        return results, str(json_path), str(txt_path)
 
     def _save_json_summary(self):
         summary = {
