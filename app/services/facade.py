@@ -8,7 +8,7 @@ from app.storage.session_storage import SessionStorage
 from app.services.transcript.transcriber import Transcriber
 from app.services.emotions.emotioner import Emotioner
 from app.services.summary.summarizer import Summarizer
-
+from app.services.summary.prompts import PromptStyle
 class DialogueProcessor:
     def __init__(self):
         self.session_db = SessionDB()
@@ -95,7 +95,7 @@ class DialogueProcessor:
         self.session_db.set_status(session_id, "summary_status", "processing")
 
         try:
-            summary_text = self.summarizer.summarize(transcript_json, emotion_json)
+            summary_text = self.summarizer.summarize(transcript_json, emotion_json, PromptStyle.CUSTOMER_SERVICE)
             summary_blob = self.session_storage.store_summary(session_id, summary_text)
             self.session_db.set_status(session_id, "summary_url", summary_blob)
             self.session_db.set_status(session_id, "summary_status", "completed")
