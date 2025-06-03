@@ -1,5 +1,5 @@
-from app.services.emotion_analysis.emotions_analysis_manager import EmotionsAnalysisManager
-from app.services.infrastructure.azure_uploader import AzureUploader
+from app.services.archives.emotion_analysis.emotions_analysis_manager import EmotionsAnalysisManager
+from app.services.archives.infrastructure import AzureUploader
 from app.core import config
 
 def run_emotion_analysis():

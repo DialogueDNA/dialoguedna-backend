@@ -1,11 +1,10 @@
 import requests
 import time
 import os
-import json
 from urllib.parse import urlparse
 from pathlib import Path
 from app.core.config import SPEECH_KEY, REGION ,AZURE_CONTAINER_URL,AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
-from app.services.infrastructure.azure_uploader import AzureUploader
+from app.services.archives.infrastructure import AzureUploader
 import re
 from typing import List
 

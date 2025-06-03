@@ -1,6 +1,6 @@
-from fastapi import FastAPI, Query, HTTPException, APIRouter
+from fastapi import Query, HTTPException, APIRouter
 from app.core import config
-from app.services.infrastructure.azure_uploader import AzureUploader
+from app.services.archives.infrastructure import AzureUploader
 
 router = APIRouter()
 
