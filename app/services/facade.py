@@ -48,9 +48,6 @@ class DialogueProcessor:
         print(f"📥 Processing audio: {audio_blob_path}")
 
         # ----------------------------- Session Initialization -----------------------------
-        # self.session_db.set_status(session_id, "transcript_status", "processing")
-        # self.session_db.set_status(session_id, "emotion_breakdown_status", "processing")
-        # self.session_db.set_status(session_id, "session_status", "processing")
         self.session_db.set_status(session_id, "summary_status", "processing")
 
         # ----------------------------- Transcription -----------------------------
