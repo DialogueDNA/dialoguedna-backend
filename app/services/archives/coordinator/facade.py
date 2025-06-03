@@ -2,12 +2,12 @@ from typing import Optional
 
 from fastapi import UploadFile
 
-from app.services.infrastructure.db_loader import DBLoader
-from app.services.transcription.diarizer import Diarizer
-from app.services.emotion_analysis.emotions_analysis_manager import EmotionsAnalysisManager
-from app.services.infrastructure.sessionDB import SessionDB
-from app.services.summarization.summarizer import Summarizer
-from app.services.transcription.transcribe_with_diarization_manager import TranscribeAndDiarizeManager
+from app.services.archives.infrastructure.db_loader import DBLoader
+from app.services.archives.transcription.diarizer import Diarizer
+from app.services.archives.emotion_analysis.emotions_analysis_manager import EmotionsAnalysisManager
+from app.services.archives.infrastructure.sessionDB import SessionDB
+from app.services.archives.summarization.summarizer import Summarizer
+from app.services.archives.transcription.transcribe_with_diarization_manager import TranscribeAndDiarizeManager
 
 
 class DialogueProcessor:
@@ -83,7 +83,7 @@ class DialogueProcessor:
 
             #change summery with amal
             self.session_db.set_status(session_id, "summary_status", "processing")
-            summary_result = self.summarizer.generate(emotions_dict, session_id)
+            summary_result = self.summarizer.generate({"emotions_dict": emotions_dict}, session_id)
             summery_url = summary_result["summery_sas_url"]
             summary_blob_name = summary_result["summary_blob_name"]
 

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.services.infrastructure.sessionDB import SessionDB
+from app.db.session_db import SessionDB
 from app.api.dependencies.auth import get_current_user
 
 router = APIRouter()
@@ -38,16 +38,21 @@ def get_session_metadata(session_id: str, current_user: dict = Depends(get_curre
     try:
         session = session_db.get_session(session_id)
 
+        # ❌ Session doesn't exist or not authorized
         if not session or session["user_id"] != current_user["id"]:
+            raise HTTPException(status_code=404, detail="Session not found or access denied")
+
+        metadata_status = session.get("metadata_status")
+
+        if metadata_status != "completed":
             return {
-                "status": "Error",
+                "status": metadata_status,
                 "data": None
             }
 
-        processing_status = session.get("metadata_status")
-
+        # ✅ Metadata is ready — return structured session info
         return {
-            "status": processing_status,
+            "status": "completed",
             "data": {
                 "id": session["id"],
                 "title": session["title"],
@@ -59,7 +64,7 @@ def get_session_metadata(session_id: str, current_user: dict = Depends(get_curre
                 "transcript_status": session.get("transcript_status"),
                 "summary_status": session.get("summary_status"),
                 "emotion_breakdown_status": session.get("emotion_breakdown_status"),
-                "metadata_status": session.get("metadata_status")
+                "metadata_status": metadata_status
             }
         }
 
