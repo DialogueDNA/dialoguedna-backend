@@ -16,7 +16,7 @@ class Summarizer:
             container_name=AZURE_CONTAINER_NAME
         )
 
-    def generate(self, emotions_bundle: Dict, session_id: str) -> str:
+    def generate(self, emotions_bundle: Dict, session_id: str) -> dict:
         emotions = emotions_bundle["emotions_dict"]
         print("🎙 Emotions dictionary:")
         pprint(emotions)
@@ -42,10 +42,15 @@ class Summarizer:
             f.write(summary_text)
 
         blob_name = f"{session_id}/conversation_summary.md"
-        sas_url = self.uploader.upload_file_and_get_sas(summary_path, blob_name=blob_name)
+        sas_url,summary_blob_name = self.uploader.upload_file_and_get_sas(summary_path, blob_name=blob_name)
 
         print("✅ Summary uploaded successfully.")
-        return sas_url
+
+        return {
+            "summery_sas_url": sas_url,
+            "summary_blob_name": summary_blob_name
+        }
+
 
     # def _load_emotions_from_sas_url(self, sas_url: str) -> Dict[str, List[Dict]]:
     #     # response = requests.get(sas_url)

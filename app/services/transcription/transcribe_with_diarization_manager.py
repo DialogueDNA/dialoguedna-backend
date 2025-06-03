@@ -5,7 +5,7 @@ import json
 from urllib.parse import urlparse
 from pathlib import Path
 from app.core.config import SPEECH_KEY, REGION ,AZURE_CONTAINER_URL,AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
-from app.services.azure_uploader import AzureUploader
+from app.services.infrastructure.azure_uploader import AzureUploader
 import re
 from typing import List
 
@@ -131,7 +131,8 @@ class TranscribeAndDiarizeManager:
 
 
     def transcribe(self,sas_url: str, session_id: str, container_sas_url: str = AZURE_CONTAINER_URL ,filename: str = "audio.wav") -> \
-    tuple[str, str, list[str],str]:
+    dict:
+    #tuple[str, str, list[str],str]:
 
         # 🔍 Extract session_id from SAS URL
         print(container_sas_url)
@@ -175,9 +176,12 @@ class TranscribeAndDiarizeManager:
 
         print("✅ Transcript uploaded successfully.")
 
-        return audio_blob_name,sas_url, speakers,blob_name
-
-
+        return{
+            "audio_blob_name": audio_blob_name,
+            "sas_url": sas_url,
+            "speakers": speakers,
+            "transcript_blob_name": blob_name
+        }
 
 
     #
