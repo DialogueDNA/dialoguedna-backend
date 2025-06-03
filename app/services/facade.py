@@ -95,7 +95,7 @@ class DialogueProcessor:
         self.session_db.set_status(session_id, "summary_status", "processing")
 
         try:
-            summary_text = self.summarizer.summarize(transcript_json, emotion_json, PromptStyle.CUSTOMER_SERVICE)
+            summary_text = self.summarizer.summarize(transcript_json, emotion_json, PromptStyle.EMOTIONAL_STORY)
             summary_blob = self.session_storage.store_summary(session_id, summary_text)
             self.session_db.set_status(session_id, "summary_url", summary_blob)
             self.session_db.set_status(session_id, "summary_status", "completed")
