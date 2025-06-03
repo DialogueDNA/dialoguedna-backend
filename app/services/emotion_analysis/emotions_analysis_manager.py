@@ -69,17 +69,15 @@ class EmotionsAnalysisManager:
         json_blob = f"{session_id}/text_emotions.json"
         txt_blob = f"{session_id}/text_emotions.txt"
 
-        json_url,json_blob_name = self.uploader.upload_file_and_get_sas(json_path, blob_name=json_blob)
-        txt_url,txt_blob_name = self.uploader.upload_file_and_get_sas(txt_path, blob_name=txt_blob)
+        json_url = self.uploader.upload_file_and_get_sas(json_path, blob_name=json_blob)
+        txt_url = self.uploader.upload_file_and_get_sas(txt_path, blob_name=txt_blob)
 
         print("✅ Emotion analysis uploaded successfully.")
 
         return {
             "emotions_dict": emotions_dict,
             "json_url": json_url,
-            "txt_url": txt_url,
-            "json_blob_name":json_blob_name,
-            "txt_blob_name":txt_blob_name
+            "txt_url": txt_url
         }
 
     # def analyze(self, sas_url: str, session_id: str) -> str:
@@ -124,3 +122,4 @@ class EmotionsAnalysisManager:
         # Future: Combine both results
         # merged_result = self.merge_results(text_result_path, tone_result_path)
         # return merged_result
+

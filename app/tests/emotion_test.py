@@ -1,6 +1,5 @@
-from pathlib import Path
-from app.services.emotions_analysis_manager import EmotionsAnalysisManager
-from app.services.azure_uploader import AzureUploader
+from app.services.emotion_analysis.emotions_analysis_manager import EmotionsAnalysisManager
+from app.services.infrastructure.azure_uploader import AzureUploader
 from app.core import config
 
 def run_emotion_analysis():
