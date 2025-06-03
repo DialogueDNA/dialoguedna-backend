@@ -4,8 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="commit for merge">
-      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/download_file_from_azure_blob_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/download_file_from_azure_blob_storage.py" afterDir="false" />
+    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="commit workspace">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/delete.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/dependencies/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/dependencies/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/endpoints/endpoints.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/audio.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/audio.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/emotions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/emotions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/endpoints/upload_audio.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/coordinator/facade.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/coordinator/facade.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +61,9 @@
     &quot;repository&quot;: &quot;dialoguedna-backend&quot;
   }
 }</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
@@ -67,10 +82,13 @@
     "Python.print result.executor": "Run",
     "Python.run.executor": "Run",
     "Python.transcribe_with_diarization_test.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "refactor/final-updates",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/Yarden Daniel/PycharmProjects/dialoguedna-backend",
+    "last_opened_file_path": "C:/Users/Amal Amsis/Desktop/AmalA/Computer Science/DNA_DIALOGE/dialoguedna-backend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -205,19 +223,18 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python tests.Python tests in emotion_test.py" />
+        <item itemvalue="Python.transcribe_with_diarization_test" />
         <item itemvalue="Python.run" />
         <item itemvalue="Python.print result" />
         <item itemvalue="Python.emotion_test" />
-        <item itemvalue="Python tests.Python tests in emotion_test.py" />
-        <item itemvalue="Python.transcribe_with_diarization_test" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-PY-243.25659.43" />
-        <option value="bundled-python-sdk-181015f7ab06-4df51de95216-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-243.25659.43" />
+        <option value="bundled-python-sdk-5a2391486177-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.13763.11" />
       </set>
     </attachedChunks>
   </component>
