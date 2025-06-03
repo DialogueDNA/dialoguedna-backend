@@ -70,7 +70,7 @@ class DialogueProcessor:
             print("✅ Transcription, diarization, emotion analysis, and summarization complete.")
 
             self.session_db.update_session(session_id, {
-                "audio_file_url": audio_path,
+                "audio_file_url": audio_blob_name,
                 "transcript": transcriber_blob_name,
                 "participants": list(set(speaker_ids)),
                 "emotion_breakdown": emotions_blob_name,

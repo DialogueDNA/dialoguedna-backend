@@ -1,10 +1,6 @@
-# main.py
 from fastapi import FastAPI, Query, HTTPException, APIRouter
-
 from app.core import config
 from app.services.azure_uploader import AzureUploader
-
-print("✅ download_file_from_azure_blob_storage.py loaded")
 
 router = APIRouter()
 
