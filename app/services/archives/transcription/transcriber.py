@@ -10,8 +10,8 @@ Responsibilities:
 - Download and return the final transcript
 """
 
-from app.services.infrastructure.azure_uploader import AzureUploader
-from app.services.transcription.transcribe_with_diarization_manager import TranscribeAndDiarizeManager
+from app.services.archives.infrastructure import AzureUploader
+from app.services.archives.transcription.transcribe_with_diarization_manager import TranscribeAndDiarizeManager
 from app.core.config import (
     AZURE_STORAGE_CONNECTION_STRING,
     AZURE_CONTAINER_NAME,

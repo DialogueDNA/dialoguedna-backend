@@ -1,10 +1,8 @@
-from app.services.infrastructure.azure_uploader import AzureUploader
-import tempfile
-import requests
+from app.services.archives.infrastructure import AzureUploader
 from pathlib import Path
-from app.core.config import EMOTIONS_TEXT_DIR,AZURE_STORAGE_CONNECTION_STRING,AZURE_CONTAINER_NAME
-from app.services.emotion_analysis.emotion_analysis_text_manager import EmotionAnalysisTextManager
-from typing import Dict, List
+from app.core.config import AZURE_STORAGE_CONNECTION_STRING,AZURE_CONTAINER_NAME
+from app.services.archives.emotion_analysis.emotion_analysis_text_manager import EmotionAnalysisTextManager
+
 
 class EmotionsAnalysisManager:
     def __init__(self, uploader: AzureUploader = None):
@@ -27,11 +25,6 @@ class EmotionsAnalysisManager:
         #     output_dir=EMOTIONS_TEXT_DIR
         # )
         # # self.tone_analyzer = EmotionAnalysisToneManager()  # ← add later
-
-    import tempfile
-    import requests
-    from pathlib import Path
-    from app.services.emotion_analysis.emotion_analysis_text_manager import EmotionAnalysisTextManager
 
     def analyze(self, sas_url: str, session_id: str) -> dict:
         """
@@ -78,8 +71,8 @@ class EmotionsAnalysisManager:
             "emotions_dict": emotions_dict,
             "json_url": json_url,
             "txt_url": txt_url,
-            "json_blob_name": json_blob_name,
-            "txt_blob_name": txt_blob_name
+            "json_blob_name":json_blob_name,
+            "txt_blob_name":txt_blob_name
         }
 
     # def analyze(self, sas_url: str, session_id: str) -> str:
@@ -124,4 +117,3 @@ class EmotionsAnalysisManager:
         # Future: Combine both results
         # merged_result = self.merge_results(text_result_path, tone_result_path)
         # return merged_result
-
