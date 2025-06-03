@@ -78,8 +78,8 @@ class EmotionsAnalysisManager:
             "emotions_dict": emotions_dict,
             "json_url": json_url,
             "txt_url": txt_url,
-            "json_blob_name":json_blob_name,
-            "txt_blob_name":txt_blob_name
+            "json_blob_name": json_blob_name,
+            "txt_blob_name": txt_blob_name
         }
 
     # def analyze(self, sas_url: str, session_id: str) -> str:
@@ -124,3 +124,4 @@ class EmotionsAnalysisManager:
         # Future: Combine both results
         # merged_result = self.merge_results(text_result_path, tone_result_path)
         # return merged_result
+
