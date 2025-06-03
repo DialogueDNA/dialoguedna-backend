@@ -72,7 +72,7 @@ class EmotionAnalysisTextManager:
         self._save_json_summary()
         self._save_txt_summary()
 
-        return txt_path  # or return both paths if needed
+        return json_path  # or return both paths if needed
 
     def _save_json_summary(self):
         summary = {
