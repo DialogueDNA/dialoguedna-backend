@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from app.api.dependencies.auth import get_current_user
-from app.services.sessionDB import SessionDB
+from app.services.infrastructure.sessionDB import SessionDB
 from app.utils.pdf import generate_session_pdf  # assumed to return a file path
 
 router = APIRouter()

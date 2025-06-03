@@ -15,6 +15,7 @@ load_dotenv()
 
 app = FastAPI(title="DialogueDNA Backend")
 
+
 # CORS middleware (customize origins in production)
 app.add_middleware(
     CORSMiddleware,
@@ -26,3 +27,6 @@ app.add_middleware(
 
 # Register all API routers
 app.include_router(api_router)
+
+
+print("✅ main.py loaded")
