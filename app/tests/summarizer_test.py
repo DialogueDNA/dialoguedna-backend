@@ -1,5 +1,5 @@
-from app.services.summarization.summarizer import Summarizer
-from app.services.infrastructure.azure_uploader import AzureUploader
+from app.services.archives.summarization.summarizer import Summarizer
+from app.services.archives.infrastructure import AzureUploader
 from app.core import config  # Load Azure keys and paths
 
 def run_summary_generation():
