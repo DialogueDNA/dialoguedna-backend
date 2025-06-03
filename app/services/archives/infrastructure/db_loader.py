@@ -4,7 +4,7 @@ from pathlib import Path
 from fastapi import UploadFile
 from tempfile import NamedTemporaryFile
 
-from app.services.infrastructure.azure_uploader import AzureUploader
+from app.services.archives.infrastructure.azure_uploader import AzureUploader
 from app.core.config import (
     AZURE_STORAGE_CONNECTION_STRING,
     AZURE_CONTAINER_NAME,

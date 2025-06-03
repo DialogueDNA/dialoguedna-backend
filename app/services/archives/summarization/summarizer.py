@@ -1,11 +1,9 @@
 # summarizer.py
 
-from typing import List, Dict
-from app.services.summarization.summarizer_engine import SummarizerEngine
-from app.services.infrastructure.azure_uploader import AzureUploader
+from typing import Dict
+from app.services.archives.summarization.summarizer_engine import SummarizerEngine
+from app.services.archives.infrastructure import AzureUploader
 from app.core.config import SUMMARY_DIR, AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
-import json
-from pathlib import Path
 from pprint import pprint
 
 class Summarizer:
