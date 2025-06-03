@@ -12,6 +12,8 @@ Responsibilities:
 
 from typing import Any
 from openai import AzureOpenAI, RateLimitError
+from difflib import SequenceMatcher
+from app.services.summary.prompts import PROMPT_PRESETS, PromptStyle
 from app.core.config import (
     AZURE_OPENAI_API_KEY,
     AZURE_OPENAI_API_VERSION,
@@ -19,7 +21,6 @@ from app.core.config import (
     AZURE_OPENAI_DEPLOYMENT,
 )
 import time
-
 
 class Summarizer:
     def __init__(self, emotion_threshold: float = 0.7):
@@ -30,15 +31,22 @@ class Summarizer:
             azure_endpoint=AZURE_OPENAI_ENDPOINT,
         )
 
-    def summarize(self, transcript: list[dict[str, Any]], emotions: list[dict[str, Any]]) -> str:
+    def summarize(self, transcript: list[dict[str, Any]], emotions: list[dict[str, Any]], preset_key: PromptStyle) -> str:
         """
-        Generate emotional summary from annotated sentences.
+        Generate an emotional summary from a transcript and emotion annotations.
 
-        :param annotated_sentences: List of {"speaker", "text", "emotions": [...] }
-        :return: Summary string (and optionally save to markdown)
+        Args:
+            transcript: List of dicts with keys {speaker, text, start_time, end_time}
+            emotions: List of dicts with keys {emotions: [{label, score}, ...]}
+            preset_key: A string key from PROMPT_PRESETS indicating the desired summary style
+
+        Returns:
+            A string containing the generated summary.
         """
 
-        annotated_sentences = self.annotate_emotional_transcript(transcript, emotions)
+
+        #annotated_sentences = self.annotate_emotional_transcript(transcript, emotions)
+        annotated_sentences = self.annotate_by_matching(transcript, emotions)
 
         # Build descriptive prompt from annotated lines
         descriptive_lines = []
@@ -57,15 +65,13 @@ class Summarizer:
 
         prompt_text = "\n".join(descriptive_lines)
 
-        prompt = (
-            "You are a sensitive and experienced journalist and conversation analyst.\n"
-            "You've received a transcript with speaker labels and emotional tags for each sentence.\n\n"
-            "Your task is to write a fluent, emotionally intelligent, and human-centered summary of the conversation.\n"
-            "Include subheadings (e.g., 🎬 Beginning / 👩‍👧 Talking about family / 😂 Jokes and Humor), reflect on emotions, personal dynamics, and turning points.\n"
-            "Write with depth, insight, and elegance. You may interpret how the speakers felt, what affected them, and why certain parts were humorous, exhausting, or touching.\n"
-            "Emphasize powerful or touching lines using **bold**, and don't list emotion percentages.\n"
-            "You are telling a human story — not generating analytics."
-        )
+
+
+        prompt = PROMPT_PRESETS.get(preset_key.value)
+
+        if prompt is None:
+            raise ValueError(f"Invalid prompt preset key: {preset_key}")
+
 
         retries = 3
         for attempt in range(retries):
@@ -90,34 +96,72 @@ class Summarizer:
 
         return summary
 
-    def annotate_emotional_transcript(
+    def annotate_by_matching(
             self,
             transcript: list[dict[str, Any]],
-            emotions: list[dict[str, Any]]
-    ) -> list[dict]:
+            emotions: list[dict[str, Any]],
+            time_threshold: float = 0.05,
+            similarity_threshold: float = 0.95
+    ) -> list[dict[str, Any]]:
         """
-        Annotate a transcript with corresponding emotional analysis.
+        Annotate a transcript by matching each sentence to emotion data based on text and timestamp similarity.
 
-        Assumes both `transcript` and `emotions` are lists of the same length and order.
-
-        :param transcript: List of { speaker, text, start_time, end_time }
-        :param emotions: List of { speaker, text, emotions }
-        :return: Annotated transcript: List of { speaker, text, start_time, end_time, emotions }
+        :param transcript: List of {speaker, text, start_time, end_time}
+        :param emotions: List of {speaker, text, start_time, emotions}
+        :param time_threshold: Max allowed time difference in seconds
+        :param similarity_threshold: Minimum required text similarity ratio (0–1)
+        :return: List of annotated sentences with emotions
         """
-        if len(transcript) != len(emotions):
-            raise ValueError("Transcript and emotions lists must be the same length.")
-
         annotated = []
 
-        for i in range(len(transcript)):
+        for t in transcript:
+            match = None
+            for e in emotions:
+                time_match = abs(float(t["start_time"]) - float(e["start_time"])) <= time_threshold
+                text_match = SequenceMatcher(None, t["text"].strip(), e["text"].strip()).ratio() >= similarity_threshold
+
+                if time_match and text_match:
+                    match = e
+                    break
+
             annotated.append({
-                "speaker": transcript[i].get("speaker", "?"),
-                "text": transcript[i].get("text", ""),
-                "start_time": transcript[i].get("start_time", None),
-                "end_time": transcript[i].get("end_time", None),
-                "emotions": emotions[i].get("emotions", [])
+                "speaker": t.get("speaker", "?"),
+                "text": t.get("text", ""),
+                "start_time": t.get("start_time"),
+                "end_time": t.get("end_time"),
+                "emotions": match.get("emotions", []) if match else []
             })
 
-        print(annotated)
-
         return annotated
+
+    # def annotate_emotional_transcript(
+    #         self,
+    #         transcript: list[dict[str, Any]],
+    #         emotions: list[dict[str, Any]]
+    # ) -> list[dict]:
+    #     """
+    #     Annotate a transcript with corresponding emotional analysis.
+    #
+    #     Assumes both `transcript` and `emotions` are lists of the same length and order.
+    #
+    #     :param transcript: List of { speaker, text, start_time, end_time }
+    #     :param emotions: List of { speaker, text, emotions }
+    #     :return: Annotated transcript: List of { speaker, text, start_time, end_time, emotions }
+    #     """
+    #     if len(transcript) != len(emotions):
+    #         raise ValueError("Transcript and emotions lists must be the same length.")
+    #
+    #     annotated = []
+    #
+    #     for i in range(len(transcript)):
+    #         annotated.append({
+    #             "speaker": transcript[i].get("speaker", "?"),
+    #             "text": transcript[i].get("text", ""),
+    #             "start_time": transcript[i].get("start_time", None),
+    #             "end_time": transcript[i].get("end_time", None),
+    #             "emotions": emotions[i].get("emotions", [])
+    #         })
+    #
+    #     print(annotated)
+    #
+    #     return annotated

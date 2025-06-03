@@ -4,55 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="add storge folder(Yaniv)">
-      <change afterPath="$PROJECT_DIR$/app/services/summary/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/summary/summarizer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/transcript/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/transcript/transcriber.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/storage/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/storage/azure/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/storage/azure/blob/__init__.py" afterDir="false" />
+    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="update services">
+      <change afterPath="$PROJECT_DIR$/app/services/summary/prompts.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/summary/summarizer_engine.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/download_file_from_azure_blob_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/download_file_from_azure_blob_storage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/security.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/security.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/audio_duration.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/audio_duration.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/coordinator/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/coordinator/facade.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/coordinator/facade.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotion_analysis/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/coordinator/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotion_analysis/emotion_analysis_text_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/emotion_analysis/emotion_analysis_text_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotion_analysis/emotion_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/emotion_analysis/emotion_analyzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotion_analysis/emotion_text_engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/emotion_analysis/emotion_text_engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotion_analysis/emotions_analysis_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/emotion_analysis/emotions_analysis_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions_analysis_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/emotions_analysis_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/infrastructure/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/emotion_analysis/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/infrastructure/audio_converter.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/infrastructure/audio_converter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/infrastructure/azure_uploader.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/infrastructure/azure_uploader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/infrastructure/db_loader.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/infrastructure/db_loader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/infrastructure/sessionDB.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/infrastructure/sessionDB.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summarization/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/infrastructure/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summarization/summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/summarization/summarizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summarization/summarizer_engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/summarization/summarizer_engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcription/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/summarization/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcription/diarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/transcription/diarizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcription/transcribe_with_diarization_manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/transcription/transcribe_with_diarization_manager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcription/transcriber.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/transcription/transcriber.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/archives/transcription/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/utils/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/utils/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storge/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storge/azure/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/emotioner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storge/azure/azure_deleter.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/azure_deleter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storge/azure/azure_fetcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/azure_fetcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storge/azure/azure_uploader.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/azure_uploader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storge/azure/blob/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/facade.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storge/azure/blob/azure_blob_deleter.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_deleter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storge/azure/blob/azure_blob_fetcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_fetcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storge/azure/blob/azure_blob_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storge/azure/blob/azure_blob_uploader.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_uploader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storge/session_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/session_storage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/emotion_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/emotion_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/summarizer_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/summarizer_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/transcribe_with_diarization_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/transcribe_with_diarization_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/facade.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/facade.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/summary/summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summary/summarizer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -478,7 +435,15 @@
       <option name="project" value="LOCAL‎" />
       <updated>1748970907171</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL‎-00024" summary="update services">
+      <option name="closed" value="true" />
+      <created>1748976331666</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL‎-00024" />
+      <option name="project" value="LOCAL‎" />
+      <updated>1748976331666</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -532,7 +497,8 @@
     <MESSAGE value="update APIs" />
     <MESSAGE value="add session_db.py and supabase_db.py (Yaniv)" />
     <MESSAGE value="add storge folder(Yaniv)" />
-    <option name="LAST_COMMIT_MESSAGE" value="add storge folder(Yaniv)" />
+    <MESSAGE value="update services" />
+    <option name="LAST_COMMIT_MESSAGE" value="update services" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
