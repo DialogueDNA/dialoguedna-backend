@@ -15,7 +15,6 @@ class Emotioner:
         classifier = pipeline("text-classification", model=TEXT_EMOTION_MODEL, top_k=TOP_K_EMOTIONS)
 
         results = []
-        output_txt = ""
 
         self.speaker_emotions = defaultdict(lambda: defaultdict(float))
         self.overall_emotions = defaultdict(float)
@@ -27,22 +26,18 @@ class Emotioner:
             if not text:
                 continue
 
+            start_sec = entry.get("start_time", 0)
+            end_sec = entry.get("end_time", 0)
+
             emotions = classifier(text)
 
             result_entry = {
                 "speaker": speaker,
                 "text": text,
-                "emotions": emotions
+                "start_time": start_sec,
+                "end_time": end_sec,
+                "emotions": emotions[0],
             }
             results.append(result_entry)
 
-            # output_txt += f"{speaker}: {text}\n"
-            # for e in emotions[0]:
-            #     label = e['label'].lower()
-            #     score = round(e['score'] * 100, 2)
-            #     output_txt += f"  {label}: {score}%\n"
-            #     self.speaker_emotions[speaker][label] += score
-            #     self.overall_emotions[label] += score
-            # output_txt += "\n"
-        print("Emotion analysis completed.", results)
         return results

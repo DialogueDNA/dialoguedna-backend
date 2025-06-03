@@ -10,8 +10,7 @@ Responsibilities:
 - Return the summary text
 """
 
-from app.core.config import SUMMARY_DIR
-from typing import List, Dict, Any
+from typing import Any
 from openai import AzureOpenAI, RateLimitError
 from app.core.config import (
     AZURE_OPENAI_API_KEY,
@@ -20,11 +19,10 @@ from app.core.config import (
     AZURE_OPENAI_DEPLOYMENT,
 )
 import time
-from pathlib import Path
+
 
 class Summarizer:
-    def __init__(self, output_dir: Path = SUMMARY_DIR, emotion_threshold: float = 0.7):
-        self.output_dir = output_dir
+    def __init__(self, emotion_threshold: float = 0.7):
         self.emotion_threshold = emotion_threshold
         self.client = AzureOpenAI(
             api_key=AZURE_OPENAI_API_KEY,
@@ -46,9 +44,12 @@ class Summarizer:
         descriptive_lines = []
         for entry in annotated_sentences:
             emotions = entry.get("emotions", [])
-            if not emotions:
+
+            if not isinstance(emotions, list) or not all(isinstance(e, dict) and "score" in e for e in emotions):
                 continue
+
             top = max(emotions, key=lambda e: e["score"])
+
             if top["score"] >= self.emotion_threshold:
                 descriptive_lines.append(
                     f'{entry["speaker"]} said: "{entry["text"]}" — emotion detected: **{top["label"].lower()}** ({round(top["score"]*100, 2)}%)'
@@ -87,13 +88,6 @@ class Summarizer:
 
         summary = response.choices[0].message.content.strip()
 
-        if self.output_dir:
-            self.output_dir.mkdir(parents=True, exist_ok=True)
-            summary_path = self.output_dir / "conversation_summary.md"
-            with open(summary_path, "w", encoding="utf-8") as f:
-                f.write(summary)
-            print(f"📝 Summary saved to: {summary_path}")
-
         return summary
 
     def annotate_emotional_transcript(
@@ -106,9 +100,9 @@ class Summarizer:
 
         Assumes both `transcript` and `emotions` are lists of the same length and order.
 
-        :param transcript: List of { speaker, text }
+        :param transcript: List of { speaker, text, start_time, end_time }
         :param emotions: List of { speaker, text, emotions }
-        :return: Annotated transcript: List of { speaker, text, emotions }
+        :return: Annotated transcript: List of { speaker, text, start_time, end_time, emotions }
         """
         if len(transcript) != len(emotions):
             raise ValueError("Transcript and emotions lists must be the same length.")
@@ -119,8 +113,11 @@ class Summarizer:
             annotated.append({
                 "speaker": transcript[i].get("speaker", "?"),
                 "text": transcript[i].get("text", ""),
+                "start_time": transcript[i].get("start_time", None),
+                "end_time": transcript[i].get("end_time", None),
                 "emotions": emotions[i].get("emotions", [])
             })
 
-        return annotated
+        print(annotated)
 
+        return annotated

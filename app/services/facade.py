@@ -47,6 +47,12 @@ class DialogueProcessor:
 
         print(f"📥 Processing audio: {audio_blob_path}")
 
+        # ----------------------------- Session Initialization -----------------------------
+        self.session_db.set_status(session_id, "transcript_status", "processing")
+        self.session_db.set_status(session_id, "emotion_breakdown_status", "processing")
+        self.session_db.set_status(session_id, "session_status", "processing")
+        self.session_db.set_status(session_id, "summary_status", "processing")
+
         # ----------------------------- Transcription -----------------------------
         self.session_db.set_status(session_id, "transcript_status", "processing")
 
@@ -61,6 +67,17 @@ class DialogueProcessor:
             self.session_db.set_status(session_id, "session_status", "failed")
             self.session_db.set_status(session_id, "processing_error", str(e))
             print(f"❌ Transcription failed: {e}")
+            return
+
+        # ----------------------------- More Metadata Identification -----------------------------
+
+        try:
+            self.session_db.set_status(session_id, "participants", self.transcriber.participants)
+            self.session_db.set_status(session_id, "duration", self.transcriber.duration_seconds)
+        except Exception as e:
+            self.session_db.set_status(session_id, "session_status", "failed")
+            self.session_db.set_status(session_id, "processing_error", str(e))
+            print(f"Set participants in sessions DB failed: {e}")
             return
 
         # ----------------------------- Emotion Analysis -----------------------------
@@ -78,17 +95,6 @@ class DialogueProcessor:
             self.session_db.set_status(session_id, "processing_error", str(e))
             print(f"❌ Emotion failed: {e}")
             return
-
-        # ----------------------------- Participant Identification -----------------------------
-        # speaker_ids = list(emotion_json.keys())
-        #
-        # try:
-        #     self.session_db.set_status(session_id, "participants", list(set(speaker_ids)))
-        # except Exception as e:
-        #     self.session_db.set_status(session_id, "session_status", "failed")
-        #     self.session_db.set_status(session_id, "processing_error", str(e))
-        #     print(f"Set participants in sessions DB failed: {e}")
-        #     return
 
         # ----------------------------- Summarization -----------------------------
         self.session_db.set_status(session_id, "summary_status", "processing")

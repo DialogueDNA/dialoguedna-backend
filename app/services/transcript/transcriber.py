@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 import requests
 import time
@@ -7,14 +7,44 @@ from app.storage.azure.blob.azure_blob_service import AzureBlobService
 
 class Transcriber:
     def __init__(self):
-        self.azure = AzureBlobService()
+        self._number_of_participants = None
+        self._participants = None
+        self._language = None
+        self._duration_sec = None
+        self._duration_ms = None
+        self._phrases = None
+        self._azure = AzureBlobService()
+
+    @property
+    def transcript_language(self) -> str | None:
+        return self._language
+
+    @property
+    def duration_seconds(self) -> float | None:
+        return self._duration_sec
+
+    @property
+    def duration_milliseconds(self) -> float | None:
+        return self._duration_ms
+
+    @property
+    def recognized_phrases(self) -> list[dict] | None:
+        return self._phrases
+
+    @property
+    def participants(self) -> list:
+        return sorted({f"Speaker {p.get('speaker', '?')}" for p in self._phrases})
+
+    @property
+    def number_of_participants(self) -> int:
+        return len(self.participants)
 
     def transcribe(self, audio_path: str) -> list[dict[str, Any]]:
         """
         Transcribes the given blob audio file and returns the new transcript blob path.
         """
         # 🔑 Generate a secure SAS URL for the Azure Speech API
-        sas_url = self.azure.generate_sas_url(audio_path)
+        sas_url = self._azure.generate_sas_url(audio_path)
 
         print("📤 Creating transcription job...")
         job_data = self.create_transcription_job(sas_url)
@@ -26,11 +56,16 @@ class Transcriber:
 
         # 📥 Fetch result
         files_url = result_data["links"]["files"]
-        result_json = self.fetch_transcription_file(files_url)
-        if not result_json:
+        transcription_json = self.fetch_transcription_file(files_url)
+        print("📥 Result JSON:", transcription_json)
+        if not transcription_json:
             raise Exception("No transcription result returned.")
 
-        return self.format_transcript_as_json(result_json)
+        self._phrases = transcription_json.get("recognizedPhrases", [])
+        self._duration_ms = transcription_json.get("durationMilliseconds")
+        self._duration_sec = round(self._duration_ms / 1000, 2) if self._duration_ms else None
+        self._language = transcription_json.get("locale")
+        return self.format_transcript_as_json()
 
     def create_transcription_job(self, sas_url: str, name="MyTranscription"):
         url = f"https://{REGION}.api.cognitive.microsoft.com/speechtotext/v3.1/transcriptions"
@@ -91,32 +126,41 @@ class Transcriber:
                 return requests.get(content_url).json()
         return None
 
-    def format_transcript_as_text(self, transcription_json: dict) -> str:
-        phrases = transcription_json.get("recognizedPhrases", [])
+    def format_transcript_as_text(self) -> str:
         lines = []
-        for phrase in phrases:
+        for phrase in self._phrases:
             speaker = phrase.get("speaker", "?")
             text = phrase.get("nBest", [{}])[0].get("display", "")
             lines.append(f"Speaker {speaker}: {text}")
         return "\n".join(lines)
 
-    def format_transcript_as_json(self, transcription_json: dict) -> list[dict]:
+    def format_transcript_as_json(self) -> list[dict]:
         """
         Convert Azure transcription result into a list of structured transcript lines.
 
-        Each line will contain:
+        Each line contains:
         - speaker: Speaker label or "?"
         - text: Spoken text from that line
+        - start_time: Time the utterance started (in seconds)
+        - end_time: Time the utterance ended (in seconds)
         """
-        phrases = transcription_json.get("recognizedPhrases", [])
         lines = []
 
-        for phrase in phrases:
+        for phrase in self._phrases:
             speaker = phrase.get("speaker", "?")
             text = phrase.get("nBest", [{}])[0].get("display", "")
+
+            start_ms = phrase.get("offsetMilliseconds", 0)
+            duration_ms = phrase.get("durationMilliseconds", 0)
+            start_sec = round(start_ms / 1000, 2)
+            end_sec = round((start_ms + duration_ms) / 1000, 2)
+
             lines.append({
                 "speaker": speaker,
-                "text": text
+                "text": text,
+                "start_time": start_sec,
+                "end_time": end_sec
             })
 
         return lines
+
