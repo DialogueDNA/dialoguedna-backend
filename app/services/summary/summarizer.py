@@ -133,35 +133,3 @@ class Summarizer:
             })
 
         return annotated
-
-    # def annotate_emotional_transcript(
-    #         self,
-    #         transcript: list[dict[str, Any]],
-    #         emotions: list[dict[str, Any]]
-    # ) -> list[dict]:
-    #     """
-    #     Annotate a transcript with corresponding emotional analysis.
-    #
-    #     Assumes both `transcript` and `emotions` are lists of the same length and order.
-    #
-    #     :param transcript: List of { speaker, text, start_time, end_time }
-    #     :param emotions: List of { speaker, text, emotions }
-    #     :return: Annotated transcript: List of { speaker, text, start_time, end_time, emotions }
-    #     """
-    #     if len(transcript) != len(emotions):
-    #         raise ValueError("Transcript and emotions lists must be the same length.")
-    #
-    #     annotated = []
-    #
-    #     for i in range(len(transcript)):
-    #         annotated.append({
-    #             "speaker": transcript[i].get("speaker", "?"),
-    #             "text": transcript[i].get("text", ""),
-    #             "start_time": transcript[i].get("start_time", None),
-    #             "end_time": transcript[i].get("end_time", None),
-    #             "emotions": emotions[i].get("emotions", [])
-    #         })
-    #
-    #     print(annotated)
-    #
-    #     return annotated
