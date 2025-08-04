@@ -1,15 +1,3 @@
-"""
-summarizer.py
-
-Summarizer service – wraps SummarizerEngine to generate emotional summaries.
-
-Responsibilities:
-- Accept transcription text, emotion data, and speaker list
-- Flatten the data into a sentence-level annotated list
-- Delegate summarization to SummarizerEngine (Azure OpenAI)
-- Return the summary text
-"""
-
 from typing import Any
 from openai import AzureOpenAI, RateLimitError
 from difflib import SequenceMatcher
@@ -32,46 +20,35 @@ class Summarizer:
         )
 
     def summarize(self, transcript: list[dict[str, Any]], emotions: list[dict[str, Any]], preset_key: PromptStyle) -> str:
-        """
-        Generate an emotional summary from a transcript and emotion annotations.
-
-        Args:
-            transcript: List of dicts with keys {speaker, text, start_time, end_time}
-            emotions: List of dicts with keys {emotions: [{label, score}, ...]}
-            preset_key: A string key from PROMPT_PRESETS indicating the desired summary style
-
-        Returns:
-            A string containing the generated summary.
-        """
-
-
-        #annotated_sentences = self.annotate_emotional_transcript(transcript, emotions)
         annotated_sentences = self.annotate_by_matching(transcript, emotions)
 
-        # Build descriptive prompt from annotated lines
         descriptive_lines = []
         for entry in annotated_sentences:
-            emotions = entry.get("emotions", [])
-
-            if not isinstance(emotions, list) or not all(isinstance(e, dict) and "score" in e for e in emotions):
+            emotion_list = entry.get("emotions", [])
+            if not isinstance(emotion_list, list):
                 continue
 
-            top = max(emotions, key=lambda e: e["score"])
+            strong_emotions = [e for e in emotion_list if isinstance(e, dict) and e.get("score", 0) >= self.emotion_threshold]
+            if not strong_emotions:
+                continue
 
-            if top["score"] >= self.emotion_threshold:
-                descriptive_lines.append(
-                    f'{entry["speaker"]} said: "{entry["text"]}" — emotion detected: **{top["label"].lower()}** ({round(top["score"]*100, 2)}%)'
-                )
+            # Choose top emotion from filtered list
+            top = max(strong_emotions, key=lambda e: e["score"])
+
+            if preset_key in {PromptStyle.EMOTIONAL_STORY, PromptStyle.ALL_IN_ONE}:
+                descriptive_lines.append(f'**Speaker {entry["speaker"]} ({top["label"].lower()})**: "{entry["text"]}"')
+            elif preset_key == PromptStyle.PER_SPEAKER:
+                descriptive_lines.append(f'Speaker {entry["speaker"]}: "{entry["text"]}"  \\ Emotion: **{top["label"]}**')
+            elif preset_key == PromptStyle.ANALYTICAL:
+                descriptive_lines.append(f'- Speaker {entry["speaker"]} | Emotion: {top["label"]} ({round(top["score"]*100)}%) | "{entry["text"]}"')
+            else:
+                descriptive_lines.append(f'{entry["speaker"]} said: "{entry["text"]}" — emotion detected: **{top["label"].lower()}** ({round(top["score"]*100, 2)}%)')
 
         prompt_text = "\n".join(descriptive_lines)
-
-
-
         prompt = PROMPT_PRESETS.get(preset_key.value)
 
         if prompt is None:
             raise ValueError(f"Invalid prompt preset key: {preset_key}")
-
 
         retries = 3
         for attempt in range(retries):
@@ -94,6 +71,9 @@ class Summarizer:
 
         summary = response.choices[0].message.content.strip()
 
+        if not summary:
+            raise ValueError("❌ GPT returned an empty summary.")
+
         return summary
 
     def annotate_by_matching(
@@ -103,15 +83,6 @@ class Summarizer:
             time_threshold: float = 0.05,
             similarity_threshold: float = 0.95
     ) -> list[dict[str, Any]]:
-        """
-        Annotate a transcript by matching each sentence to emotion data based on text and timestamp similarity.
-
-        :param transcript: List of {speaker, text, start_time, end_time}
-        :param emotions: List of {speaker, text, start_time, emotions}
-        :param time_threshold: Max allowed time difference in seconds
-        :param similarity_threshold: Minimum required text similarity ratio (0–1)
-        :return: List of annotated sentences with emotions
-        """
         annotated = []
 
         for t in transcript:
