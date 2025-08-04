@@ -2,6 +2,7 @@ from typing import Any
 from openai import AzureOpenAI, RateLimitError
 from difflib import SequenceMatcher
 from app.services.summary.prompts import PROMPT_PRESETS, PromptStyle
+from app.services.summary.prompts import PROMPT_LABELS  # new
 from app.core.config import (
     AZURE_OPENAI_API_KEY,
     AZURE_OPENAI_API_VERSION,
@@ -45,10 +46,18 @@ class Summarizer:
                 descriptive_lines.append(f'{entry["speaker"]} said: "{entry["text"]}" — emotion detected: **{top["label"].lower()}** ({round(top["score"]*100, 2)}%)')
 
         prompt_text = "\n".join(descriptive_lines)
-        prompt = PROMPT_PRESETS.get(preset_key.value)
+        prompt_data = PROMPT_PRESETS.get(preset_key.value)
 
-        if prompt is None:
+        if prompt_data is None:
             raise ValueError(f"Invalid prompt preset key: {preset_key}")
+
+        # Support both string and dict-based prompts
+        if isinstance(prompt_data, dict):
+            system_prompt = prompt_data.get("system", "You are a helpful assistant.")
+            user_prompt = prompt_data.get("format", "{lines}").format(lines=prompt_text)
+        else:
+            system_prompt = prompt_data
+            user_prompt = prompt_text
 
         retries = 3
         for attempt in range(retries):
@@ -56,8 +65,8 @@ class Summarizer:
                 response = self.client.chat.completions.create(
                     model=AZURE_OPENAI_DEPLOYMENT,
                     messages=[
-                        {"role": "system", "content": prompt},
-                        {"role": "user", "content": prompt_text}
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt}
                     ],
                     temperature=0.7,
                     max_tokens=1500
