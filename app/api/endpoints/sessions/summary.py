@@ -14,7 +14,6 @@ session_storage = SessionStorage()
 @router.get("/{session_id}")
 def get_summary(session_id: str, current_user: dict = Depends(get_current_user)):
     session = session_db.get_session(session_id)
-
     if not session or session["user_id"] != current_user["id"]:
         raise HTTPException(status_code=404, detail="Summary not found or access denied")
 
