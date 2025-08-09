@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.db.session_db import SessionDB
+import app.settings.constants.db.supabase_constants as db_constants
 from app.storage.session_storage import SessionStorage
 from app.api.dependencies.auth import get_current_user
 
@@ -11,13 +12,13 @@ session_storage = SessionStorage()
 def get_emotions(session_id: str, current_user: dict = Depends(get_current_user)):
     session = session_db.get_session(session_id)
 
-    if not session or session["user_id"] != current_user["id"]:
+    if not session or session[db_constants.SESSIONS_COLUMN_USER_ID] != current_user[db_constants.AUTH_COLUMN_UNIQUE_ID]:
         raise HTTPException(status_code=404, detail="Emotions not found or access denied")
 
-    emotions_status = session.get("emotion_breakdown_status")
-    emotions_blob = session.get("emotion_breakdown_url")
+    emotions_status = session.get(db_constants.SESSIONS_COLUMN_EMOTION_BREAKDOWN_STATUS)
+    emotions_blob = session.get(db_constants.SESSIONS_COLUMN_EMOTION_BREAKDOWN_URL)
 
-    if emotions_status != "completed" or not emotions_blob:
+    if emotions_status != db_constants.SESSION_STATUS_COMPLETED or not emotions_blob:
         return {
             "status": emotions_status,
             "data": None

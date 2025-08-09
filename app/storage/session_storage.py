@@ -5,28 +5,29 @@ from typing import Any
 from fastapi import UploadFile
 from tempfile import NamedTemporaryFile
 
-from app.storage.azure.blob.azure_blob_service import AzureBlobService
+import app.settings.constants.storage.azure_constants as storage_constants
+import app.storage.azure.blob.azure_blob_service as storage_service
 
 
 class SessionStorage:
     def __init__(self):
-        self.azure = AzureBlobService()
+        self.azure = storage_service.AzureBlobService()
 
     # === Upload ===
 
     def store_audio(self, session_id: str, file: UploadFile) -> str:
-        blob_path = f"{session_id}/audio.wav"
+        blob_path = f"{session_id}/{storage_constants.SESSION_AUDIO_PATH}"
         self.azure.upload_uploadfile(file, blob_path, convert_to_wav=True)
         return blob_path
 
     def store_transcript(self, session_id: str, content:  list[dict[str, Any]]) -> str:
-        return self._store_json(session_id, "transcript", content)
+        return self._store_json(session_id, storage_constants.SESSION_TRANSCRIPT_PATH, content)
 
     def store_summary(self, session_id: str, content: str) -> str:
-        return self._store_text(session_id, "summary", content)
+        return self._store_text(session_id, storage_constants.SESSION_SUMMARY_PATH, content)
 
     def store_emotions(self, session_id: str, content: list[dict[str, Any]]) -> str:
-        return self._store_json(session_id, "emotions", content)
+        return self._store_json(session_id, storage_constants.SESSION_EMOTIONS_PATH, content)
 
     def _store_text(self, session_id: str, name: str, content: str) -> str:
         blob_path = f"{session_id}/{name}"
@@ -58,16 +59,16 @@ class SessionStorage:
     # === Delete ===
 
     def delete_audio(self, session_id: str):
-        self.azure.delete_blob(f"{session_id}/audio.wav")
+        self.azure.delete_blob(f"{session_id}/{storage_constants.SESSION_AUDIO_PATH}")
 
     def delete_transcript(self, session_id: str):
-        self.azure.delete_blob(f"{session_id}/transcript")
+        self.azure.delete_blob(f"{session_id}/{storage_constants.SESSION_TRANSCRIPT_PATH}")
 
     def delete_summary(self, session_id: str):
-        self.azure.delete_blob(f"{session_id}/summary")
+        self.azure.delete_blob(f"{session_id}/{storage_constants.SESSION_SUMMARY_PATH}")
 
     def delete_emotions(self, session_id: str):
-        self.azure.delete_blob(f"{session_id}/emotions")
+        self.azure.delete_blob(f"{session_id}/{storage_constants.SESSION_EMOTIONS_PATH}")
 
     def delete_all(self, session_id: str):
         self.delete_audio(session_id)

@@ -2,6 +2,7 @@ from fastapi import UploadFile, File, Form, HTTPException, Depends, BackgroundTa
 from app.services.facade import DialogueProcessor
 from app.db.session_db import SessionDB
 from app.api.dependencies.auth import get_current_user
+import app.settings.constants.db.supabase_constants as db_constants
 
 router = APIRouter()
 processor = DialogueProcessor()
@@ -14,7 +15,7 @@ async def create_session(
     title: str = Form(...),
     current_user: dict = Depends(get_current_user)
 ):
-    user_id = current_user["id"]
+    user_id = current_user[db_constants.AUTH_COLUMN_UNIQUE_ID]
 
     # ✅ Upload file and get session_id + blob path
     try:
@@ -24,26 +25,26 @@ async def create_session(
 
     # ✅ Create session record in DB
     new_session = {
-        "id": session_id,
-        "user_id": user_id,
-        "title": title,
-        "metadata_status": "completed",
-        "language": "not_started",
-        "duration": None,
-        "participants": [],
-        "source": "web",
-        "is_favorite": False,
-        "tags": [],
-        "audio_file_status": "completed",
-        "audio_file_url": audio_path,
-        "transcript_status": "not_started",
-        "transcript_url": None,
-        "emotion_breakdown_status": "not_started",
-        "emotion_breakdown_url": None,
-        "summary_status": "not_started",
-        "summary_url": None,
-        "session_status": "processing",
-        "processing_error": None,
+        db_constants.SESSIONS_COLUMN_UNIQUE_ID: session_id,
+        db_constants.SESSIONS_COLUMN_USER_ID: user_id,
+        db_constants.SESSIONS_COLUMN_TITLE: title,
+        db_constants.SESSIONS_COLUMN_METADATA_STATUS: db_constants.SESSION_STATUS_COMPLETED,
+        db_constants.SESSIONS_COLUMN_LANGUAGE: db_constants.SESSION_STATUS_NOT_STARTED,
+        db_constants.SESSIONS_COLUMN_DURATION: None,
+        db_constants.SESSIONS_COLUMN_PARTICIPANTS: [],
+        db_constants.SESSIONS_COLUMN_SOURCE: "web",
+        db_constants.SESSIONS_COLUMN_IS_FAVORITE: False,
+        db_constants.SESSIONS_COLUMN_TAGS: [],
+        db_constants.SESSIONS_COLUMN_AUDIO_FILE_STATUS: db_constants.SESSION_STATUS_COMPLETED,
+        db_constants.SESSIONS_COLUMN_AUDIO_FILE_URL: audio_path,
+        db_constants.SESSIONS_COLUMN_TRANSCRIPT_STATUS: db_constants.SESSION_STATUS_NOT_STARTED,
+        db_constants.SESSIONS_COLUMN_TRANSCRIPT_URL: None,
+        db_constants.SESSIONS_COLUMN_EMOTION_BREAKDOWN_STATUS: db_constants.SESSION_STATUS_NOT_STARTED,
+        db_constants.SESSIONS_COLUMN_EMOTION_BREAKDOWN_URL: None,
+        db_constants.SESSIONS_COLUMN_SUMMARY_STATUS: db_constants.SESSION_STATUS_NOT_STARTED,
+        db_constants.SESSIONS_COLUMN_SUMMARY_URL: None,
+        db_constants.SESSIONS_COLUMN_STATUS: db_constants.SESSION_STATUS_PROGRESSING,
+        db_constants.SESSIONS_COLUMN_PROCESSING_ERROR: None,
     }
 
     try:

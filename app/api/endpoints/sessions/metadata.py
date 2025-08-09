@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.db.session_db import SessionDB
 from app.api.dependencies.auth import get_current_user
+import app.settings.constants.db.supabase_constants as db_constants
 
 router = APIRouter()
 session_db = SessionDB()
@@ -9,20 +10,20 @@ session_db = SessionDB()
 @router.get("/")
 def get_sessions_metadata(current_user: dict = Depends(get_current_user)):
     try:
-        sessions = session_db.get_all_sessions_for_user(current_user["id"])
+        sessions = session_db.get_all_sessions_for_user(current_user[db_constants.AUTH_COLUMN_UNIQUE_ID])
 
         metadata_only = [
             {
-                "id": s["id"],
-                "title": s["title"],
-                "duration": s.get("duration"),
-                "participants": s.get("participants", []),
-                "created_at": s["created_at"],
-                "updated_at": s["updated_at"],
-                "transcript_status": s.get("transcript_status", "Pending"),
-                "summary_status": s.get("summary_status", "Pending"),
-                "emotion_breakdown_status": s.get("emotion_breakdown_status", "Pending"),
-                "metadata_status": s.get("metadata_status", "Ready")
+                "id": s[db_constants.SESSIONS_COLUMN_UNIQUE_ID],
+                "title": s[db_constants.SESSIONS_COLUMN_TITLE],
+                "duration": s.get(db_constants.SESSIONS_COLUMN_DURATION),
+                "participants": s.get(db_constants.SESSIONS_COLUMN_PARTICIPANTS, []),
+                "created_at": s[db_constants.SESSIONS_COLUMN_CREATED_AT],
+                "updated_at": s[db_constants.SESSIONS_COLUMN_UPDATED_AT],
+                "transcript_status": s.get(db_constants.SESSIONS_COLUMN_TRANSCRIPT_STATUS, db_constants.SESSION_STATUS_PROGRESSING),
+                "summary_status": s.get(db_constants.SESSIONS_COLUMN_SUMMARY_STATUS, db_constants.SESSION_STATUS_PROGRESSING),
+                "emotion_breakdown_status": s.get(db_constants.SESSIONS_COLUMN_EMOTION_BREAKDOWN_STATUS, db_constants.SESSION_STATUS_PROGRESSING),
+                "metadata_status": s.get(db_constants.SESSIONS_COLUMN_METADATA_STATUS, db_constants.SESSION_STATUS_COMPLETED),
             }
             for s in sessions
         ]
@@ -39,7 +40,7 @@ def get_session_metadata(session_id: str, current_user: dict = Depends(get_curre
         session = session_db.get_session(session_id)
 
         # ❌ Session doesn't exist or not authorized
-        if not session or session["user_id"] != current_user["id"]:
+        if not session or session[db_constants.SESSIONS_COLUMN_USER_ID] != current_user[db_constants.AUTH_COLUMN_UNIQUE_ID]:
             raise HTTPException(status_code=404, detail="Session not found or access denied")
 
         metadata_status = session.get("metadata_status")
@@ -54,16 +55,16 @@ def get_session_metadata(session_id: str, current_user: dict = Depends(get_curre
         return {
             "status": "completed",
             "data": {
-                "id": session["id"],
-                "title": session["title"],
-                "duration": session.get("duration"),
-                "participants": session.get("participants", []),
-                "created_at": session["created_at"],
-                "updated_at": session["updated_at"],
-                "audio_file_status": session.get("audio_file_status"),
-                "transcript_status": session.get("transcript_status"),
-                "summary_status": session.get("summary_status"),
-                "emotion_breakdown_status": session.get("emotion_breakdown_status"),
+                "id": session[db_constants.SESSIONS_COLUMN_UNIQUE_ID],
+                "title": session[db_constants.SESSIONS_COLUMN_TITLE],
+                "duration": session.get(db_constants.SESSIONS_COLUMN_DURATION),
+                "participants": session.get(db_constants.SESSIONS_COLUMN_PARTICIPANTS, []),
+                "created_at": session[db_constants.SESSIONS_COLUMN_CREATED_AT],
+                "updated_at": session[db_constants.SESSIONS_COLUMN_UPDATED_AT],
+                "audio_file_status": session.get(db_constants.SESSIONS_COLUMN_AUDIO_FILE_STATUS),
+                "transcript_status": session.get(db_constants.SESSIONS_COLUMN_TRANSCRIPT_STATUS),
+                "summary_status": session.get(db_constants.SESSIONS_COLUMN_SUMMARY_STATUS),
+                "emotion_breakdown_status": session.get(db_constants.SESSIONS_COLUMN_EMOTION_BREAKDOWN_STATUS),
                 "metadata_status": metadata_status
             }
         }

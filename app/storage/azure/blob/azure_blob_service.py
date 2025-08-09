@@ -1,4 +1,3 @@
-from pathlib import Path
 from fastapi import UploadFile
 
 from app.storage.azure.blob.azure_blob_deleter import AzureBlobDeleter

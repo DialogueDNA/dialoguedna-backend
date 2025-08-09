@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.db.session_db import SessionDB
+import app.settings.constants.db.supabase_constants as db_constants
 from app.storage.session_storage import SessionStorage
 from app.api.dependencies.auth import get_current_user
 
@@ -11,13 +12,13 @@ session_storage = SessionStorage()
 def get_audio(session_id: str, current_user: dict = Depends(get_current_user)):
     session = session_db.get_session(session_id)
 
-    if not session or session["user_id"] != current_user["id"]:
+    if not session or session[db_constants.SESSIONS_COLUMN_USER_ID] != current_user[db_constants.AUTH_COLUMN_UNIQUE_ID]:
         raise HTTPException(status_code=404, detail="Audio not found or access denied")
 
-    audio_status = session.get("audio_file_status")
-    audio_blob_path = session.get("audio_file_url")
+    audio_status = session.get(db_constants.SESSIONS_COLUMN_AUDIO_FILE_STATUS)
+    audio_blob_path = session.get(db_constants.SESSIONS_COLUMN_AUDIO_FILE_URL)
 
-    if audio_status != "completed" or not audio_blob_path:
+    if audio_status != db_constants.SESSION_STATUS_COMPLETED or not audio_blob_path:
         return {
             "status": audio_status,
             "data": None

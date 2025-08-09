@@ -1,6 +1,0 @@
-# audio_pipeline/config.py
-
-DEFAULT_MODEL_SIZE = "medium.en"
-DEFAULT_DEVICE = "cuda"
-DEFAULT_COMPUTE_TYPE = "float16"
-BATCH_SIZE = 16

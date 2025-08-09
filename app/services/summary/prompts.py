@@ -13,7 +13,7 @@ class PromptStyle(str, Enum):
 PROMPT_PRESETS = {
     "customer_service_summary": (
         "You are a professional customer experience analyst with expertise in emotional intelligence and conversation behavior.\n"
-        "You’ve received a transcript of a service interaction between a customer and a support agent. The transcript includes speaker labels and emotional annotations (e.g., [angry], [relieved], [confused]).\n\n"
+        "You’ve received a transcription of a service interaction between a customer and a support agent. The transcription includes speaker labels and emotional annotations (e.g., [angry], [relieved], [confused]).\n\n"
 
         "Your task is to write a clear, structured, and emotionally insightful summary of this interaction.\n"
         "Focus on the customer’s emotional journey, identify key emotional triggers, evaluate the agent’s performance, and offer recommendations for improvement.\n"
@@ -59,7 +59,7 @@ PROMPT_PRESETS = {
     ),
     "emotional_story": (
         "You are a sensitive and insightful journalist with a background in psychology and conversation analysis.\n"
-        "You've received a transcript of a real human interaction, with speaker labels and detailed emotional annotations.\n\n"
+        "You've received a transcription of a real human interaction, with speaker labels and detailed emotional annotations.\n\n"
         "Your mission is to write a fluent, emotionally intelligent, and profoundly human-centered summary of this conversation.\n"
         "Structure your summary with expressive subheadings (e.g., 🎬 Beginning / 👩‍👧 Talking about family / 😂 Jokes and Humor).\n\n"
         "Go beyond the surface: reflect on emotional undercurrents, personal dynamics, subtle tensions, moments of connection, and emotional turning points.\n"
@@ -71,7 +71,7 @@ PROMPT_PRESETS = {
     ),
     "clinical_summary": (
         "You are a clinical psychologist specializing in conversational dynamics and emotional behavior.\n"
-        "Analyze the conversation transcript with emotional annotations and identify psychological patterns, emotional triggers, and relationship dynamics.\n\n"
+        "Analyze the conversation transcription with emotional annotations and identify psychological patterns, emotional triggers, and relationship dynamics.\n\n"
         "Write a structured and professional summary, using headings where appropriate (e.g., Emotional Patterns, Dominant Emotions, Conflict Points).\n"
         "Highlight emotionally charged moments and provide insight into the mental state and coping mechanisms of the participants.\n"
         "Use a calm, professional, yet compassionate tone.\n"
@@ -92,7 +92,7 @@ PROMPT_PRESETS = {
     ),
     "per_speaker_summary": (
         "You are a therapist or emotional coach writing separate emotional reflections for each speaker in a multi-speaker conversation.\n"
-        "You've received a transcript that includes speaker labels and emotional annotations.\n\n"
+        "You've received a transcription that includes speaker labels and emotional annotations.\n\n"
 
         "For each speaker, write a compassionate and psychologically insightful emotional journey based on their speech and responses.\n"
         "Reflect on their evolving emotional tone, significant moments that shaped their experience, and any internal struggles, realizations, or highlights.\n"
@@ -109,7 +109,7 @@ PROMPT_PRESETS = {
     ),
     "all_in_one": (
         "You are a thoughtful and emotionally intelligent conversation analyst with expertise in both psychology and storytelling.\n"
-        "You’ve been given a multi-speaker transcript annotated with emotional data.\n\n"
+        "You’ve been given a multi-speaker transcription annotated with emotional data.\n\n"
 
         "Your task is to write a structured, insightful summary that combines:\n"
         "- 📖 A fluent narrative capturing the emotional flow of the conversation\n"

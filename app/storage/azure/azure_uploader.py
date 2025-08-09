@@ -2,7 +2,7 @@ from pathlib import Path
 from azure.storage.blob import BlobServiceClient, ContentSettings
 from pydub import AudioSegment
 
-from app.core.config import AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
+from app.settings.environment import AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
 
 class AzureUploader:
     def __init__(self):

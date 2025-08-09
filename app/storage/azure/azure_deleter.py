@@ -1,6 +1,6 @@
 from azure.storage.blob import BlobClient, BlobServiceClient
 
-from app.core.config import AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
+from app.settings.environment import AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
 
 class AzureDeleter:
 

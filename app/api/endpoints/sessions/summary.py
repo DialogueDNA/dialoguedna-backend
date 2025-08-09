@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from app.db.session_db import SessionDB
+import app.settings.constants.db.supabase_constants as db_constants
 from app.storage.session_storage import SessionStorage
-from app.utils.pdf import generate_session_pdf
+from app.services.utils import generate_session_pdf
 from app.api.dependencies.auth import get_current_user
 import requests
 
@@ -14,13 +15,13 @@ session_storage = SessionStorage()
 @router.get("/{session_id}")
 def get_summary(session_id: str, current_user: dict = Depends(get_current_user)):
     session = session_db.get_session(session_id)
-    if not session or session["user_id"] != current_user["id"]:
+    if not session or session[db_constants.SESSIONS_COLUMN_USER_ID] != current_user[db_constants.AUTH_COLUMN_UNIQUE_ID]:
         raise HTTPException(status_code=404, detail="Summary not found or access denied")
 
-    summary_status = session.get("summary_status")
-    summary_blob = session.get("summary_url")
+    summary_status = session.get(db_constants.SESSIONS_COLUMN_SUMMARY_STATUS)
+    summary_blob = session.get(db_constants.SESSIONS_COLUMN_SUMMARY_URL)
 
-    if summary_status != "completed" or not summary_blob:
+    if summary_status != db_constants.SESSION_STATUS_COMPLETED or not summary_blob:
         return {
             "status": summary_status,
             "data": None
@@ -41,10 +42,10 @@ def get_summary(session_id: str, current_user: dict = Depends(get_current_user))
 def download_summary_pdf(session_id: str, current_user: dict = Depends(get_current_user)):
     session = session_db.get_session(session_id)
 
-    if not session or session["user_id"] != current_user["id"]:
+    if not session or session[db_constants.SESSIONS_COLUMN_USER_ID] != current_user[db_constants.AUTH_COLUMN_UNIQUE_ID]:
         raise HTTPException(status_code=404, detail="Session not found or access denied")
 
-    summary_blob = session.get("summary_url")
+    summary_blob = session.get(db_constants.SESSIONS_COLUMN_SUMMARY_URL)
     if not summary_blob:
         raise HTTPException(status_code=404, detail="Summary not yet generated")
 
@@ -56,10 +57,10 @@ def download_summary_pdf(session_id: str, current_user: dict = Depends(get_curre
 
     # Use the session metadata and summary text to generate the PDF
     pdf_path = generate_session_pdf({
-        "title": session.get("title"),
-        "created_at": session.get("created_at"),
-        "duration": session.get("duration"),
-        "participants": session.get("participants"),
+        "title": session.get(db_constants.SESSIONS_COLUMN_TITLE),
+        "created_at": session.get(db_constants.SESSIONS_COLUMN_CREATED_AT),
+        "duration": session.get(db_constants.SESSIONS_COLUMN_DURATION),
+        "participants": session.get("SESSIONS_COLUMN_PARTICIPANTS", []),
         "summary": summary_text
     })
 

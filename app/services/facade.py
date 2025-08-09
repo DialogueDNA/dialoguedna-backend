@@ -3,18 +3,21 @@ from typing import Optional
 from fastapi import UploadFile
 
 from app.db.session_db import SessionDB
+from app.services.transcription.factory import make_transcriber
 from app.storage.session_storage import SessionStorage
 
-from app.services.transcript.transcriber import Transcriber
 from app.services.emotions.emotioner import Emotioner
 from app.services.summary.summarizer import Summarizer
 from app.services.summary.prompts import PromptStyle
+
+import app.settings.constants.db.supabase_constants as db_constants
+
 class DialogueProcessor:
     def __init__(self):
         self.session_db = SessionDB()
         self.session_storage = SessionStorage()
 
-        self.transcriber = Transcriber()
+        self.transcriber = make_transcriber("whisperx")
         self.emotion_analyzer = Emotioner()
         self.summarizer = Summarizer()
 
@@ -46,72 +49,72 @@ class DialogueProcessor:
         print(f"📥 Processing audio: {audio_blob_path}")
 
         # ----------------------------- Session Initialization -----------------------------
-        self.session_db.set_status(session_id, "summary_status", "processing")
+        self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_STATUS, "processing")
 
         # ----------------------------- Transcription -----------------------------
-        self.session_db.set_status(session_id, "transcript_status", "processing")
+        self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_TRANSCRIPT_STATUS, "processing")
 
         try:
             transcript_json = self.transcriber.transcribe(audio_blob_path)
             transcript_blob_path = self.session_storage.store_transcript(session_id, transcript_json)
-            self.session_db.set_status(session_id, "transcript_url", transcript_blob_path)
-            self.session_db.set_status(session_id, "transcript_status", "completed")
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_TRANSCRIPT_URL, transcript_blob_path)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_TRANSCRIPT_STATUS, db_constants.SESSION_STATUS_COMPLETED)
             print("✅ Transcription complete.")
         except Exception as e:
-            self.session_db.set_status(session_id, "transcript_status", "failed")
-            self.session_db.set_status(session_id, "session_status", "failed")
-            self.session_db.set_status(session_id, "processing_error", str(e))
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_TRANSCRIPT_STATUS, db_constants.SESSION_STATUS_FAILED)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_STATUS, db_constants.SESSION_STATUS_FAILED)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_PROCESSING_ERROR, str(e))
             print(f"❌ Transcription failed: {e}")
             return
 
         # ----------------------------- More Metadata Identification -----------------------------
 
         try:
-            self.session_db.set_status(session_id, "participants", self.transcriber.participants)
-            self.session_db.set_status(session_id, "duration", self.transcriber.duration_seconds)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_PARTICIPANTS, self.transcriber.participants)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_DURATION, self.transcriber.duration_seconds)
         except Exception as e:
-            self.session_db.set_status(session_id, "session_status", "failed")
-            self.session_db.set_status(session_id, "processing_error", str(e))
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_STATUS, db_constants.SESSION_STATUS_FAILED)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_PROCESSING_ERROR, str(e))
             print(f"Set participants in sessions DB failed: {e}")
             return
 
         # ----------------------------- Emotion Analysis -----------------------------
-        self.session_db.set_status(session_id, "emotion_breakdown_status", "processing")
+        self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_EMOTION_BREAKDOWN_STATUS, db_constants.SESSION_STATUS_PROGRESSING)
 
         try:
             emotion_json = self.emotion_analyzer.get_emotions(transcript_json)
             emotion_blob = self.session_storage.store_emotions(session_id, emotion_json)
-            self.session_db.set_status(session_id, "emotion_breakdown_url", emotion_blob)
-            self.session_db.set_status(session_id, "emotion_breakdown_status", "completed")
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_EMOTION_BREAKDOWN_URL, emotion_blob)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_EMOTION_BREAKDOWN_STATUS, db_constants.SESSION_STATUS_COMPLETED)
             print("✅ Emotion complete.")
         except Exception as e:
-            self.session_db.set_status(session_id, "emotion_breakdown_status", "failed")
-            self.session_db.set_status(session_id, "session_status", "failed")
-            self.session_db.set_status(session_id, "processing_error", str(e))
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_EMOTION_BREAKDOWN_STATUS, db_constants.SESSION_STATUS_FAILED)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_STATUS, db_constants.SESSION_STATUS_FAILED)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_PROCESSING_ERROR, str(e))
             print(f"❌ Emotion failed: {e}")
             return
 
         # ----------------------------- Summarization -----------------------------
-        self.session_db.set_status(session_id, "summary_status", "processing")
+        self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_SUMMARY_STATUS, db_constants.SESSION_STATUS_PROGRESSING)
 
         try:
             summary_text = self.summarizer.summarize(transcript_json, emotion_json, PromptStyle.EMOTIONAL_STORY)
             summary_blob = self.session_storage.store_summary(session_id, summary_text)
-            self.session_db.set_status(session_id, "summary_url", summary_blob)
-            self.session_db.set_status(session_id, "summary_status", "completed")
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_SUMMARY_URL, summary_blob)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_SUMMARY_STATUS, db_constants.SESSION_STATUS_COMPLETED)
             print("✅ Summarization complete.")
         except Exception as e:
-            self.session_db.set_status(session_id, "summary_status", "failed")
-            self.session_db.set_status(session_id, "session_status", "failed")
-            self.session_db.set_status(session_id, "processing_error", str(e))
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_SUMMARY_STATUS, db_constants.SESSION_STATUS_FAILED)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_STATUS, db_constants.SESSION_STATUS_FAILED)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_PROCESSING_ERROR, str(e))
             print(f"❌ Summarization failed: {e}")
             return
 
         # ----------------------------- Saving Session Status -----------------------------
         try:
-            self.session_db.set_status(session_id, "session_status", "completed")
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_STATUS, db_constants.SESSION_STATUS_COMPLETED)
             print("✅ Processing complete and saved to DB.")
         except Exception as e:
-            self.session_db.set_status(session_id, "session_status", "failed")
-            self.session_db.set_status(session_id, "processing_error", str(e))
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_STATUS, db_constants.SESSION_STATUS_FAILED)
+            self.session_db.set_status(session_id, db_constants.SESSIONS_COLUMN_PROCESSING_ERROR, str(e))
             print(f"❌ Failed to save session data: {e}")

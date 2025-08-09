@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 
 from app.db.session_db import SessionDB
+import app.settings.constants.db.supabase_constants as db_constants
 from app.storage.session_storage import SessionStorage
 from app.api.dependencies.auth import get_current_user
 
@@ -15,24 +16,24 @@ class BulkDeleteRequest(BaseModel):
 def delete_related_blobs(session: dict):
     session_id = session["id"]
 
-    if session.get("audio_file_status") == "completed":
+    if session.get("audio_file_status") == db_constants.SESSION_STATUS_COMPLETED:
         session_storage.delete_audio(session_id)
 
-    if session.get("transcript_status") == "completed":
+    if session.get("transcript_status") == db_constants.SESSION_STATUS_COMPLETED:
         session_storage.delete_transcript(session_id)
 
-    if session.get("summary_status") == "completed":
+    if session.get("summary_status") == db_constants.SESSION_STATUS_COMPLETED:
         session_storage.delete_summary(session_id)
 
-    if session.get("emotion_breakdown_status") == "completed":
+    if session.get("emotion_breakdown_status") == db_constants.SESSION_STATUS_COMPLETED:
         session_storage.delete_emotions(session_id)
 
 @router.delete("/{session_id}")
 async def delete_session(session_id: str, current_user: dict = Depends(get_current_user)):
-    user_id = current_user["id"]
+    user_id = current_user[db_constants.AUTH_COLUMN_UNIQUE_ID]
     session = session_db.get_session(session_id)
 
-    if not session or session.get("user_id") != user_id:
+    if not session or session.get(db_constants.SESSIONS_COLUMN_USER_ID) != user_id:
         raise HTTPException(status_code=404, detail="Session not found or unauthorized")
 
     try:
@@ -48,13 +49,13 @@ async def delete_multiple_sessions(
     current_user: dict = Depends(get_current_user)
 ):
     session_ids = payload.session_ids
-    user_id = current_user["id"]
+    user_id = current_user[db_constants.AUTH_COLUMN_UNIQUE_ID]
     failed_deletes = []
 
     for session_id in session_ids:
         try:
             session = session_db.get_session(session_id)
-            if not session or session.get("user_id") != user_id:
+            if not session or session.get(db_constants.SESSIONS_COLUMN_USER_ID) != user_id:
                 failed_deletes.append(session_id)
                 continue
             delete_related_blobs(session)

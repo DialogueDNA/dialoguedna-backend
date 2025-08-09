@@ -1,32 +1,42 @@
-"""
-main.py
+# app/main.py
+from __future__ import annotations
 
-Entry point of the DialogueDNA backend service.
-Initializes FastAPI, loads environment, adds middleware, and registers routers.
-"""
-
+import logging
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
 
 from app.api.endpoints import router as api_router
+from app.bootstrap.wire_db import wire_db
+from app.settings.logging import setup_logging
+from app.settings.config import AppConfig
 
-load_dotenv()
+setup_logging()
 
-app = FastAPI(title="DialogueDNA Backend")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    config = AppConfig()
+    app.state.config = config
+    wire_db(app, config)
+    # wire_storage(app, config)
+    # wire_services(app, config)
+    yield
 
+app = FastAPI(title="DialogueDNA Backend", lifespan=lifespan)
 
-# CORS middleware (customize origins in production)
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production: ["https://your-frontend-domain.com"]
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Register all API routers
+# Routers
 app.include_router(api_router)
 
-
-print("✅ main.py loaded")
+# Healthcheck
+@app.get("/health", tags=["meta"])
+def health():
+    return {"ok": True}

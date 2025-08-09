@@ -2,7 +2,7 @@ from typing import Any
 from collections import defaultdict
 from transformers import pipeline
 
-from app.core.config import TEXT_EMOTION_MODEL, TOP_K_EMOTIONS
+from app.settings.environment import TEXT_EMOTION_MODEL, TOP_K_EMOTIONS
 
 class Emotioner:
     def __init__(self):

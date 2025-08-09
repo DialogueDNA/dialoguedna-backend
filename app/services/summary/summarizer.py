@@ -14,7 +14,7 @@ from typing import Any
 from openai import AzureOpenAI, RateLimitError
 from difflib import SequenceMatcher
 from app.services.summary.prompts import PROMPT_PRESETS, PromptStyle
-from app.core.config import (
+from app.settings.environment import (
     AZURE_OPENAI_API_KEY,
     AZURE_OPENAI_API_VERSION,
     AZURE_OPENAI_ENDPOINT,
@@ -33,7 +33,7 @@ class Summarizer:
 
     def summarize(self, transcript: list[dict[str, Any]], emotions: list[dict[str, Any]], preset_key: PromptStyle) -> str:
         """
-        Generate an emotional summary from a transcript and emotion annotations.
+        Generate an emotional summary from a transcription and emotion annotations.
 
         Args:
             transcript: List of dicts with keys {speaker, text, start_time, end_time}
@@ -45,7 +45,7 @@ class Summarizer:
         """
 
 
-        #annotated_sentences = self.annotate_emotional_transcript(transcript, emotions)
+        #annotated_sentences = self.annotate_emotional_transcript(transcription, emotions)
         annotated_sentences = self.annotate_by_matching(transcript, emotions)
 
         # Build descriptive prompt from annotated lines
@@ -104,7 +104,7 @@ class Summarizer:
             similarity_threshold: float = 0.95
     ) -> list[dict[str, Any]]:
         """
-        Annotate a transcript by matching each sentence to emotion data based on text and timestamp similarity.
+        Annotate a transcription by matching each sentence to emotion data based on text and timestamp similarity.
 
         :param transcript: List of {speaker, text, start_time, end_time}
         :param emotions: List of {speaker, text, start_time, emotions}
