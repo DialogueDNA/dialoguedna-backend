@@ -4,19 +4,17 @@ import os
 from dataclasses import dataclass
 import logging
 import torch
-from supabase import create_client
 import app.settings.environment as env
 
 log = logging.getLogger("app.config")
 
+# === DB ===
 @dataclass(frozen=True)
-class AppConfig:
+class DBConfig:
     domain_backends: dict[str, str] = None
+
     supabase_url: str = env.SUPABASE_URL
     supabase_key: str = env.SUPABASE_SERVICE_ROLE_KEY
-
-    # Uncomment if using SQLAlchemy with PostgreSQL
-    # postgres_dsn: str = env.POSTGRES_DSN
 
     def __post_init__(self):
         if self.domain_backends is None:
@@ -28,6 +26,22 @@ class AppConfig:
     @property
     def backends_in_use(self) -> set[str]:
         return set(self.domain_backends.values())
+
+# === Storage ===
+@dataclass(frozen=True)
+class StorageConfig:
+    backend: str = env.STORAGE_BACKEND
+    azure_conn_str: str = env.AZURE_BLOB_CONN_STR
+    azure_account: str = env.AZURE_BLOB_ACCOUNT
+    azure_key: str = env.AZURE_BLOB_KEY
+    azure_public_base: str = env.AZURE_BLOB_PUBLIC_BASE
+    local_root: str = env.LOCAL_STORAGE_ROOT
+
+# === AppConfig ===
+@dataclass(frozen=True)
+class AppConfig:
+    db: DBConfig = DBConfig()
+    storage: StorageConfig = StorageConfig()
 
 def _detect_device() -> str:
     if d := os.getenv("DEVICE"):
@@ -72,11 +86,3 @@ class WhisperXConfig:
             log.info("[Config] No CUDA GPU detected (device=%s). Using CPU/MPS defaults.", device)
         log.info("[Config] DEVICE=%s, BATCH_SIZE=%d, COMPUTE_TYPE=%s", device, batch, compute)
         return WhisperXConfig(batch_size=batch, compute_type=compute, device=device)
-
-def get_supabase():
-    url = env.SUPABASE_URL
-    key = env.SUPABASE_SERVICE_ROLE_KEY
-    if not url or not key:
-        raise RuntimeError("Supabase URL/Service Role key are missing.")
-    # Service Role must be used on server-side only.
-    return create_client(url, key)

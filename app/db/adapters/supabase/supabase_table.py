@@ -1,5 +1,5 @@
 # app/db/adapters/supabase_table.py
-from app.db.ports.table_gateway import TableGateway
+from app.ports.db.table_gateway import TableGateway
 
 class SupabaseTable(TableGateway):
     def __init__(self, client, table: str):

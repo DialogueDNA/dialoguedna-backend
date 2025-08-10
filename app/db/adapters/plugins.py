@@ -1,12 +1,13 @@
 # app/db/adapters/plugins.py
-from typing import Callable
-from app.db.registry import TableGatewayFactory
-from app.settings.config import AppConfig
+from typing import Callable, Dict
+from app.settings.config import DBConfig
+from app.state.types import DBState
+from app.ports.db.table_gateway import TableGateway
 
-# Type alias for a plugin function that takes an AppConfig and returns a TableGatewayFactory
-Plugin = Callable[[AppConfig, object], TableGatewayFactory]
+TableGatewayFactory = Callable[[str], TableGateway]
+Plugin = Callable[[DBConfig, DBState], TableGatewayFactory]
 
-PLUGINS: dict[str, Plugin] = {}
+PLUGINS: Dict[str, Plugin] = {}
 
 def register_adapter(backend: str):
     def deco(fn: Plugin):

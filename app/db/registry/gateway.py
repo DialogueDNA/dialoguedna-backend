@@ -2,7 +2,7 @@
 from __future__ import annotations
 from typing import Callable, Dict
 
-from app.db.ports.table_gateway import TableGateway
+from app.ports.db.table_gateway import TableGateway
 
 TableGatewayFactory = Callable[[str], TableGateway]
 

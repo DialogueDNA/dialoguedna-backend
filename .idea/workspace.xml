@@ -4,95 +4,45 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="Fixed a little bit in the controller and deleted unwanted files and folders">
-      <change afterPath="$PROJECT_DIR$/app/db/adapters/supabase/plugin.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/adapters/supabase/supabase_table.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/domain/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/domain/sessions/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/domain/sessions/repo.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/domain/users/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/domain/users/repo.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/ports/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/ports/sessions_repo.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/ports/table_gateway.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/ports/users_repo.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/registry/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/registry/gateway.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/db/registry/repositories.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/audio_pipeline/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/input_audio.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/models/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/models/transcription/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/models/transcription/azure_speech_to_text.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/models/transcription/whisperx.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/transcription/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/transcription/factory.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/transcription/models/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/transcription/models/azure_stt_transcriber.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/transcription/models/whisperx_transcriber.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/utils/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/settings/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/settings/config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/settings/constants/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/settings/constants/api/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/settings/constants/db/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/settings/constants/db/supabase_constants.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/settings/constants/services/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/settings/constants/storage/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/settings/constants/storage/azure_constants.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/settings/environment.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/settings/logging.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dialoguedna-backend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dialoguedna-backend.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="Different logic via ChatGPT 5">
+      <change afterPath="$PROJECT_DIR$/app/ports/db/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/ports/db/domains/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/ports/storage/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/ports/storage/blob_storage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/state/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/state/types.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/storage/adapters/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/storage/adapters/azure/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/storage/adapters/azure/azure_blob.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/storage/adapters/azure/plugin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/storage/adapters/local/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/storage/adapters/local/local_fs.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/storage/adapters/local/plugin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/storage/adapters/plugins.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/dependencies/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/dependencies/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/audio.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/audio.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/delete.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/delete.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/emotions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/emotions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/metadata.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/metadata.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/summary.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/summary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/transcript.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/transcript.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/upload.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/upload.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/sessions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/config.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/security.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/session_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/session_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/superbase/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/superbase/supabase_db.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/wire_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/wire_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db/adapters/plugins.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/adapters/plugins.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db/adapters/supabase/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/adapters/supabase/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db/adapters/supabase/supabase_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/adapters/supabase/supabase_table.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db/domain/sessions/repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/domain/sessions/repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db/domain/users/repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/domain/users/repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db/ports/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/wire_services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db/ports/sessions_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ports/db/domains/sessions_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db/ports/table_gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ports/db/table_gateway.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db/ports/users_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ports/db/domains/users_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db/registry/gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/registry/gateway.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/emotioner.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/emotioner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/facade.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/facade.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summary/prompts.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summary/prompts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summary/summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summary/summarizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcript/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/wiring.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcript/transcriber.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/transcription/transcriber.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storage/azure/azure_deleter.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/azure_deleter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storage/azure/azure_fetcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/azure_fetcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storage/azure/azure_uploader.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/azure_uploader.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_deleter.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_deleter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_fetcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_fetcher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storage/session_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/session_storage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/adapters/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/audio_pipeline/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/adapters/plugins.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/audio_pipeline/audio_emotion_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio_pipeline/audio_emotion_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/audio_pipeline/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio_pipeline/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/audio_pipeline/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio_pipeline/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/audio_pipeline/diarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio_pipeline/diarizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/audio_pipeline/emotion_fusion.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio_pipeline/emotion_fusion.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/audio_pipeline/overlap_detector.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio_pipeline/overlap_detector.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/audio_pipeline/pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio_pipeline/pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/audio_pipeline/segment_extractor.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio_pipeline/segment_extractor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/audio_pipeline/speaker_assigner.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio_pipeline/speaker_assigner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/audio_pipeline/speech_separation.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio_pipeline/speech_separation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/audio_pipeline/text_emotion_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio_pipeline/text_emotion_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/tests/run_pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/run_pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/db/adapters/supabase/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/utils/pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/utils/pdf.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/utils/utils.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/settings/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/settings/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/settings/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/settings/environment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/azure/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/wire_storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/azure/azure_deleter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/azure/azure_fetcher.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/azure/azure_uploader.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/azure/blob/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ports/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_deleter.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_fetcher.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_service.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/azure/blob/azure_blob_uploader.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,11 +141,11 @@
       <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\tests" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\ports\db" />
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\ports\db\domains" />
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app" />
       <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\db\adapters\supabase" />
       <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\db\ports" />
-      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\db" />
-      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\services\models\transcribers" />
-      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\services" />
     </key>
   </component>
   <component name="RunManager" selected="Python.run">
@@ -378,7 +328,7 @@
       <workItem from="1754559869292" duration="7014000" />
       <workItem from="1754567372531" duration="26000" />
       <workItem from="1754567571335" duration="31585000" />
-      <workItem from="1754669505569" duration="29771000" />
+      <workItem from="1754669505569" duration="42094000" />
     </task>
     <task id="LOCAL-00001" summary="Initial setup for audio file upload endpoint and directory structure">
       <option name="closed" value="true" />
@@ -612,7 +562,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754602568195</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="Different logic via ChatGPT 5">
+      <option name="closed" value="true" />
+      <created>1754782295150</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1754782295150</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -642,7 +600,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add Client class to manage user directory creation and access" />
     <MESSAGE value="Add ClientsManager to handle client creation and access" />
     <MESSAGE value="Add AudioConverter service to convert audio files to WAV format" />
     <MESSAGE value="Update audio upload endpoint to save original.wav under client/session/audio directory" />
@@ -667,7 +624,8 @@
     <MESSAGE value="update services" />
     <MESSAGE value="finished writing the emotional summary module" />
     <MESSAGE value="Fixed a little bit in the controller and deleted unwanted files and folders" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed a little bit in the controller and deleted unwanted files and folders" />
+    <MESSAGE value="Different logic via ChatGPT 5" />
+    <option name="LAST_COMMIT_MESSAGE" value="Different logic via ChatGPT 5" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
