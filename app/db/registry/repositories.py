@@ -1,4 +1,4 @@
-# app/db/registry/repositories.py
+# app/database/registry/repositories.py
 from dataclasses import dataclass
 from typing import Callable, Dict
 

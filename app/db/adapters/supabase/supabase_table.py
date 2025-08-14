@@ -1,4 +1,3 @@
-# app/db/adapters/supabase_table.py
 from app.ports.db.table_gateway import TableGateway
 
 class SupabaseTable(TableGateway):

@@ -4,7 +4,7 @@ import torch
 import whisperx
 from .config import DEFAULT_MODEL_SIZE, DEFAULT_DEVICE, DEFAULT_COMPUTE_TYPE, BATCH_SIZE
 from .base import DiarizationResult
-from app.settings.environment import HUGGINGFACE_WHISPERX_TOKEN
+from app.core.environment import HUGGINGFACE_WHISPERX_TOKEN
 
 
 class Diarizer:

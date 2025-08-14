@@ -10,7 +10,7 @@ from app.services.emotions.emotioner import Emotioner
 from app.services.summary.summarizer import Summarizer
 from app.services.summary.prompts import PromptStyle
 
-import app.settings.constants.db.supabase_constants as db_constants
+import app.core.constants.db.supabase_constants as db_constants
 
 class DialogueProcessor:
     def __init__(self):

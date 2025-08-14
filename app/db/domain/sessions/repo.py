@@ -1,8 +1,7 @@
-# app/db/domain/sessions/repo.py
-from app.ports import SessionsRepo
+from app.ports.db.domains.sessions_repo import SessionsRepo
 from app.db.registry.repositories import register_repo
 
-@register_repo("sessions", table="sessions")
+@register_repo(domain="sessions", table="sessions")
 class SessionsRepoImpl(SessionsRepo):
     def __init__(self, table_gateway):
         self.t = table_gateway

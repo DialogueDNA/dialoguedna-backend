@@ -5,7 +5,7 @@ from typing import Any
 from fastapi import UploadFile
 from tempfile import NamedTemporaryFile
 
-import app.settings.constants.storage.azure_constants as storage_constants
+import app.core.constants.storage.azure_constants as storage_constants
 import app.storage.azure.blob.azure_blob_service as storage_service
 
 

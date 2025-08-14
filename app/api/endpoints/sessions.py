@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
-from app.settings.config import supabase
+from app.core.config import supabase
 from app.api.dependencies.auth import get_current_user
-from app.settings.constants.db.supabase_constants import SESSIONS_TABLE_NAME, SESSIONS_COLUMN_USER_ID, \
+from app.core.constants.db.supabase_constants import SESSIONS_TABLE_NAME, SESSIONS_COLUMN_USER_ID, \
     AUTH_COLUMN_UNIQUE_ID
 
 router = APIRouter()

@@ -13,8 +13,9 @@ Responsibilities:
 from typing import Any
 from openai import AzureOpenAI, RateLimitError
 from difflib import SequenceMatcher
-from app.services.summary.prompts import PROMPT_PRESETS, PromptStyle
-from app.settings.environment import (
+
+from app.services.summary.prompts.prompts import PROMPT_PRESETS
+from app.core.environment import (
     AZURE_OPENAI_API_KEY,
     AZURE_OPENAI_API_VERSION,
     AZURE_OPENAI_ENDPOINT,

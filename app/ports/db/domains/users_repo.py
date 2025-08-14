@@ -1,10 +1,6 @@
-# app/db/ports/users_repo.py
 from typing import Protocol, Any
 
 class UsersRepo(Protocol):
-    """ Interface for user repository operations.
-    This defines the methods that any user repository implementation must provide.
-    """
     def create(self, user: dict) -> Any: ...
     def get(self, user_id: str) -> Any: ...
     def list_all(self) -> Any: ...

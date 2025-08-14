@@ -2,7 +2,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt
 
-from app.settings.environment import SUPABASE_JWT_SECRET
+from app.core.environment import SUPABASE_JWT_SECRET
 
 bearer_scheme = HTTPBearer()
 

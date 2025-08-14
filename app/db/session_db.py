@@ -1,7 +1,7 @@
 from typing import Optional, Any
 
 import app.db.superbase.supabase_db as db_service
-import app.settings.constants.db.supabase_constants as db_constants
+import app.core.constants.db.supabase_constants as db_constants
 
 
 class SessionDB:

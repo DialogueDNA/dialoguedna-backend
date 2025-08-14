@@ -1,6 +1,5 @@
-# app/db/domain/users/repo.py
-from app.ports import UsersRepo
 from app.db.registry.repositories import register_repo
+from app.ports.db.domains.users_repo import UsersRepo
 
 @register_repo("users", table="users")
 class UsersRepoImpl(UsersRepo):

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from app.db.session_db import SessionDB
 from app.api.dependencies.auth import get_current_user
-import app.settings.constants.db.supabase_constants as db_constants
+import app.core.constants.db.supabase_constants as db_constants
 
 router = APIRouter()
 session_db = SessionDB()

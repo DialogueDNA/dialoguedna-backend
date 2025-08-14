@@ -1,6 +1,6 @@
 fastapi~=0.112.2
 fpdf~=1.7.2
-jose
+jose~=1.0.0
 openai~=1.99.1
 passlib
 pydantic~=2.11.7
@@ -19,3 +19,6 @@ python-jose~=3.5.0
 starlette~=0.38.2
 azure-core~=1.29.5
 dotenv~=0.9.9
+numpy~=2.2.6
+pyrnnoise~=0.3.8
+noisereduce~=3.0.3

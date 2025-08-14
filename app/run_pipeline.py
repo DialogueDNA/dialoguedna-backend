@@ -3,7 +3,7 @@
 from dotenv import load_dotenv
 import logging
 from app.services.audio_pipeline.pipeline import FullEmotionPipeline
-from app.settings.logging import setup_logging
+from app.core.logging import setup_logging
 
 # Load environment variables from .env file
 load_dotenv()
