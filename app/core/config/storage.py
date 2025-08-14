@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import app.core.environment as env
-from app.core.config.providers.azure_blob import AzureBlobConfig
+from app.core.config.providers.azure.blob_storage import AzureBlobConfig
 
 
 @dataclass(frozen=True)

@@ -2,7 +2,7 @@ import uuid
 from typing import Optional
 from fastapi import UploadFile
 
-from app.db.session_db import SessionDB
+from app.database.session_db import SessionDB
 from app.services.transcription.factory import make_transcriber
 from app.storage.session_storage import SessionStorage
 

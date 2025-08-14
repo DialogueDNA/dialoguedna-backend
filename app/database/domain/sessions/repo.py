@@ -1,5 +1,5 @@
 from app.ports.db.domains.sessions_repo import SessionsRepo
-from app.db.registry.repositories import register_repo
+from app.database.registry.repositories import register_repo
 
 @register_repo(domain="sessions", table="sessions")
 class SessionsRepoImpl(SessionsRepo):

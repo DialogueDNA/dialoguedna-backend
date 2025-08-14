@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 
-from app.db.session_db import SessionDB
+from app.database.session_db import SessionDB
 import app.core.constants.db.supabase_constants as db_constants
 from app.storage.session_storage import SessionStorage
 from app.api.dependencies.auth import get_current_user

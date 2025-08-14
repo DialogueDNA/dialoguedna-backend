@@ -2,12 +2,13 @@
 from dataclasses import dataclass
 from typing import Optional, Any
 
-from app.db.registry import GatewayRegistry
+from app.database.registry import GatewayRegistry
+from app.ports.db.domains.user_defaults_repo import UserDefaultsRepo
 from app.ports.services.audio.enhancer import AudioEnhancer
 from app.ports.services.audio.separator import AudioSeparator
 from app.ports.services.emotions.audio_analyzer import AudioEmotionAnalyzer
 from app.ports.services.emotions.mixed_analyzer import MixedEmotionAnalyzer
-from app.ports.services.emotions.text_emotion_analyzer import TextEmotionAnalyzer
+from app.ports.services.emotions.text_analyzer import TextEmotionAnalyzer
 from app.ports.services.transcription import Transcriber
 from app.ports.storage.blob_storage import BlobStorage
 from app.ports.db.domains.users_repo import UsersRepo
@@ -20,6 +21,7 @@ class DatabaseState:
     gateway_registry: Optional[GatewayRegistry] = None
     users_repo: Optional[UsersRepo] = None
     sessions_repo: Optional[SessionsRepo] = None
+    users_default_repo: Optional[UserDefaultsRepo] = None
 
 
 # ========================================= Storage State =========================================
@@ -33,14 +35,6 @@ class StorageState:
 # ========================================= Services State =========================================
 
 # === Audio Utils ===
-@dataclass
-class AudioEnhanceConfig:
-    enhancer: Optional[AudioEnhancer] = None
-
-@dataclass
-class AudioSeparationConfig:
-    separator: Optional[AudioSeparator] = None
-
 @dataclass
 class AudioUtilsState:
     audio_enhancer: Optional[AudioEnhancer] = None

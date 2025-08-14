@@ -1,4 +1,4 @@
-# app/storage/adapters/azure_blob.py
+# app/storage/adapters/blob_storage.py
 from __future__ import annotations
 import io
 from datetime import timedelta

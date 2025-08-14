@@ -4,9 +4,7 @@ from typing import Callable, Dict
 from app.core.config.services import SummarizationConfig
 from app.ports.services.summary import Summarizer
 
-
 SummarizerPlugin = Callable[[SummarizationConfig], Summarizer]
-
 SUMMARIZER_PLUGINS: Dict[str, SummarizerPlugin] = {}
 
 def register_summarizer(name: str):

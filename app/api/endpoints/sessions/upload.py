@@ -1,6 +1,6 @@
 from fastapi import UploadFile, File, Form, HTTPException, Depends, BackgroundTasks, APIRouter
 from app.services.facade import DialogueProcessor
-from app.db.session_db import SessionDB
+from app.database.session_db import SessionDB
 from app.api.dependencies.auth import get_current_user
 import app.core.constants.db.supabase_constants as db_constants
 

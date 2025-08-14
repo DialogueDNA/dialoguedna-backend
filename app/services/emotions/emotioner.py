@@ -2,7 +2,7 @@ from typing import Any
 from collections import defaultdict
 from transformers import pipeline
 
-from app.core.environment import TEXT_EMOTION_MODEL_NAME, TEXT_EMOTION_TOP_K
+from app.core.environment import TEXT_EMOTION_MODEL_NAME, J_HARTMANN_TOP_K
 
 class Emotioner:
     def __init__(self):
@@ -12,7 +12,7 @@ class Emotioner:
     def get_emotions(self, transcript: list[dict[str, Any]]) -> list[dict[str, Any]]:
         print("🔍 Running text-based emotion analysis...")
 
-        classifier = pipeline("text-classification", model=TEXT_EMOTION_MODEL_NAME, top_k=TEXT_EMOTION_TOP_K)
+        classifier = pipeline("text-classification", model=TEXT_EMOTION_MODEL_NAME, top_k=J_HARTMANN_TOP_K)
 
         results = []
 

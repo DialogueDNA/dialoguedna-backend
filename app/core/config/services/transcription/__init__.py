@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from app.core.config.providers.azure_speech_to_text import AzureSpeechToTextConfig
+from app.core.config.providers.azure.speech_to_text import AzureSpeechToTextConfig
 from app.core.config.providers.whisperx import WhisperXConfig
 import app.core.environment as env
 

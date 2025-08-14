@@ -61,20 +61,21 @@ AZURE_SPEECH_LOCALE = os.getenv("SPEECH_LOCALE")  # Optional locale for transcri
 # Default: "j-hartmann/emotion-english-distilroberta-base"
 TEXT_EMOTION_MODEL_NAME = os.getenv("TEXT_EMOTION_ADAPTER", "j_hartmann") # j_hartmann
 J_HARTMANN_MODEL_NAME = os.getenv("J_HARTMANN_MODEL_NAME", "j-hartmann/emotion-english-distilroberta-base") # j-hartmann/emotion-english-distilroberta-base | j-hartmann/emotion-english-distilbert-base | ...
-TEXT_EMOTION_TOP_K = int(os.getenv("TEXT_EMOTION_TOP_K", "0") or 0) or None # 0 | None | K (int) - Top-K emotions to return, 0 means all, None means top emotion
+J_HARTMANN_TOP_K = int(os.getenv("J_HARTMANN_TOP_K", "0") or 0) or None # 0 | None | K (int) - Top-K emotions to return, 0 means all, None means top emotion
 
 # === Audio Emotion Model ===
 # This is the model used for audio-based emotion analysis.
 # Default: "superb/hubert-large-superb-er"
-AUDIO_EMOTION_MODEL_NAME = os.getenv("AUDIO_EMOTION_ADAPTER", "superb/hubert-large-superb-er") # superb/hubert-large-superb-er | superb/wav2vec2-large-superb-er | ...
+AUDIO_EMOTION_MODEL_NAME = os.getenv("AUDIO_EMOTION_ADAPTER", "superb") # superb
+SUPERB_MODEL_NAME = os.getenv("AUDIO_EMOTION_ADAPTER", "superb/hubert-large-superb-er") # superb/hubert-large-superb-er | superb/wav2vec2-large-superb-er | ...
 AUDIO_TARGET_SR = int(os.getenv("AUDIO_TARGET_SR", "16000")) # Target sample rate for audio emotion analysis, e.g., 16000 Hz
 
 # === Fusion Emotion Model ===
 # This is the model used for fusing text and audio emotion scores.
 # Default: "weights"
 FUSION_EMOTION_MODEL_NAME = os.getenv("FUSION_EMOTION_ADAPTER", "adaptive")  # adaptive|weights|...
-FUSION_AUDIO_WEIGHT = float(os.getenv("FUSION_AUDIO_WEIGHT", "0.6")) # Weight for audio emotion scores, e.g., 0.6
-FUSION_TEXT_WEIGHT  = float(os.getenv("FUSION_TEXT_WEIGHT", "0.4")) # Weight for text emotion scores, e.g., 0.4
+AUDIO_WEIGHT = float(os.getenv("FUSION_AUDIO_WEIGHT", "0.6")) # Weight for audio emotion scores, e.g., 0.6
+TEXT_WEIGHT  = float(os.getenv("FUSION_TEXT_WEIGHT", "0.4")) # Weight for text emotion scores, e.g., 0.4
 
 # === Enhancer Model ===
 ENABLE_AUDIO_ENHANCER = os.getenv("ENABLE_ENHANCER", "false").lower() == "true"
@@ -89,6 +90,7 @@ AUDIO_SEPARATOR_MODEL_NAME = os.getenv("AUDIO_SEPARATION_ADAPTER", "sepformer") 
 SEPFORMER_MODEL_NAME = os.getenv("SEPFORMER_MODEL_NAME", "speechbrain/sepformer-whamr") # Default: speechbrain/sepformer-whamr
 
 # ============================ Summarization Generation Settings ============================
+
 SUMMARIZER_ADAPTER = os.getenv("SUMMARIZATION_ADAPTER", "azure_openai")  # key in SUMMARIZATION_PLUGINS
 
 # === Azure OpenAI ===

@@ -1,7 +1,7 @@
-from app.db.plugins import register_adapter, TableGatewayFactory
+from app.database.plugins import register_adapter, TableGatewayFactory
 from app.core.config import DatabaseConfig
 from app.state.app_states import DatabaseState
-from app.db.adapters.supabase.supabase_table import SupabaseTable
+from app.database.adapters.supabase.supabase_table import SupabaseTable
 from supabase import create_client
 
 @register_adapter("supabase")

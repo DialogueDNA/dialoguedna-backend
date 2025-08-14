@@ -42,7 +42,7 @@ class RNNoiseEnhancer(AudioEnhancer):
     @torch.inference_mode()
     def enhance(self, audio: AudioEnhancerInput) -> AudioEnhancerOutput:
         # ---- Normalize input shape/dtype ----
-        wf = audio.waveform
+        wf = audio.audio
         if wf.dim() == 1:
             wf = wf.unsqueeze(0)  # [1, T]
         assert wf.dim() == 2, "waveform must be [C, T] or [T]"
@@ -96,17 +96,17 @@ class RNNoiseEnhancer(AudioEnhancer):
     def _resample_np(wf: np.ndarray, src_sr: int, dst_sr: int) -> np.ndarray:
         """
         Lightweight per-channel linear resampler to avoid extra deps.
-        Input:  [C, T_src]  Output: [C, T_dst]
+        Input:  [c, t_src]  Output: [c, t_dst]
         For highest fidelity you may swap with torchaudio/kornia later.
         """
         if src_sr == dst_sr:
             return wf
-        C, T_src = wf.shape
-        T_dst = max(int(round(T_src * (dst_sr / float(src_sr)))), 1)
+        c, t_src = wf.shape
+        t_dst = max(int(round(t_src * (dst_sr / float(src_sr)))), 1)
 
-        x_src = np.linspace(0.0, 1.0, num=T_src, endpoint=False, dtype=np.float64)
-        x_dst = np.linspace(0.0, 1.0, num=T_dst, endpoint=False, dtype=np.float64)
-        out = np.empty((C, T_dst), dtype=wf.dtype)
-        for ch in range(C):
+        x_src = np.linspace(0.0, 1.0, num=t_src, endpoint=False, dtype=np.float64)
+        x_dst = np.linspace(0.0, 1.0, num=t_dst, endpoint=False, dtype=np.float64)
+        out = np.empty((c, t_dst), dtype=wf.dtype)
+        for ch in range(c):
             out[ch] = np.interp(x_dst, x_src, wf[ch].astype(np.float64)).astype(wf.dtype)
         return out

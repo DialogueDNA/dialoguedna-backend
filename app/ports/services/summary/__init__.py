@@ -3,9 +3,17 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Protocol, List, Dict, Optional
 
+from app.ports.services import SpeakerType
 from app.ports.services.emotions import EmotionAnalyzerOutput
+from app.ports.services.text import TextType
 
-SummarySegment = EmotionAnalyzerOutput
+
+@dataclass
+class SummarySegment:
+    """Summarizer input segment contract."""
+    text: TextType                               # text to summarize
+    speaker: Optional[SpeakerType]               # optional speaker name, if available
+    emotions: Optional[EmotionAnalyzerOutput]    # optional emotions, if available
 
 @dataclass
 class SummaryInput:

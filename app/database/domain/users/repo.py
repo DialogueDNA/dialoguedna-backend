@@ -1,4 +1,4 @@
-from app.db.registry.repositories import register_repo
+from app.database.registry.repositories import register_repo
 from app.ports.db.domains.users_repo import UsersRepo
 
 @register_repo("users", table="users")

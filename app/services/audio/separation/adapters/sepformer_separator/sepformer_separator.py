@@ -217,7 +217,7 @@ class SepformerSeparator(AudioSeparator):
         Ensures waveform is float tensor shaped [C, T] on its current device.
         Returns (waveform, sample_rate).
         """
-        wf = audio.waveform
+        wf = audio.audio
         if wf.dim() == 1:
             wf = wf.unsqueeze(0)  # [1, T]
         assert wf.dim() == 2, "waveform must be [C, T] or [T]"
@@ -246,16 +246,16 @@ class SepformerSeparator(AudioSeparator):
     def _resample_torch(wf: torch.Tensor, src_sr: int, dst_sr: int) -> torch.Tensor:
         """
         Dependency-free linear interpolation resampler (good for speech).
-        Input:  [1, T_src]  Output: [1, T_dst]
+        Input:  [1, t_src]  Output: [1, t_dst]
         """
         if src_sr == dst_sr:
             return wf
         assert wf.dim() == 2 and wf.size(0) == 1, "resampler expects [1, T]"
-        T_src = wf.size(1)
-        T_dst = max(int(round(T_src * (dst_sr / float(src_sr)))), 1)
+        t_src = wf.size(1)
+        t_dst = max(int(round(t_src * (dst_sr / float(src_sr)))), 1)
         # Create normalized time axes
-        x_src = torch.linspace(0.0, 1.0, steps=T_src, device=wf.device, dtype=wf.dtype)
-        x_dst = torch.linspace(0.0, 1.0, steps=T_dst, device=wf.device, dtype=wf.dtype)
+        x_src = torch.linspace(0.0, 1.0, steps=t_src, device=wf.device, dtype=wf.dtype)
+        x_dst = torch.linspace(0.0, 1.0, steps=t_dst, device=wf.device, dtype=wf.dtype)
         # Interpolate per-channel (mono)
         out = torch.interp(x_dst, x_src, wf[0])
         return out.unsqueeze(0)
@@ -272,7 +272,7 @@ class SepformerSeparator(AudioSeparator):
         if len(sources) > n:
             return sources[:n]
         # pad
-        T = sources[0].size(0)
+        t = sources[0].size(0)
         pad_count = n - len(sources)
-        zeros = [torch.zeros(T, dtype=sources[0].dtype, device=sources[0].device) for _ in range(pad_count)]
+        zeros = [torch.zeros(t, dtype=sources[0].dtype, device=sources[0].device) for _ in range(pad_count)]
         return sources + zeros

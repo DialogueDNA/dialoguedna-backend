@@ -1,6 +1,6 @@
 from typing import Optional, Any
 
-import app.db.superbase.supabase_db as db_service
+import app.database.superbase.supabase_db as db_service
 import app.core.constants.db.supabase_constants as db_constants
 
 

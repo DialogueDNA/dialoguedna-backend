@@ -8,7 +8,7 @@ from app.ports.services.text import TextSegment
 
 
 @dataclass
-class TranscriptionSegmentInput(dict):
+class TranscriptionSegmentInput:
     """
     Input for the transcriber.
     """

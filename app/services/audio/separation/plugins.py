@@ -4,7 +4,6 @@ from app.core.config.services.audio import AudioSeparatorConfig
 from app.ports.services.audio.separator import AudioSeparator
 
 AudioSeparatorPlugin = Callable[[AudioSeparatorConfig], AudioSeparator]
-
 SEPARATOR_PLUGINS: Dict[str, AudioSeparatorPlugin] = {}
 
 def register_separator(name: str):

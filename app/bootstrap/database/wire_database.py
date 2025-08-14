@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from app.core.config import DatabaseConfig
 from app.state.app_states import DatabaseState
-from app.db.registry import GatewayRegistry, repo_registry
-from app.db.plugins import DATABASE_PLUGINS as DB_PLUGINS
+from app.database.registry import GatewayRegistry, repo_registry
+from app.database.plugins import DATABASE_PLUGINS as DB_PLUGINS
 
 def wire_database(db: DatabaseState, db_config: DatabaseConfig) -> None:
     gw = GatewayRegistry()

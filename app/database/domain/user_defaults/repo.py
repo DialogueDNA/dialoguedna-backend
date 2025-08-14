@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Optional, Dict, Any
-from app.db.registry import register_repo
+from app.database.registry import register_repo
 
 @register_repo(domain="user_defaults", table="user_defaults")
 class UserDefaultsRepo:

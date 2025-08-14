@@ -5,7 +5,7 @@ import torch
 
 from app.ports.services import SpeakerType
 
-AudioPath = str
+AudioPath = str # Type alias for audio file paths, e.g., "path/to/audio.wav" or "http://example.com/audio.mp3" or similar
 Waveform = torch.Tensor
 AudioType = Union[AudioPath, Waveform]
 

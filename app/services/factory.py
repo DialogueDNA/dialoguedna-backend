@@ -106,7 +106,7 @@ class ServicesFactory:
         # Optional user defaults loader (safe if repo is not present)
         def load_user_defaults(user_id: str) -> dict:
             try:
-                data = db.user_defaults_repo.get(user_id)  # type: ignore[attr-defined]
+                data = app.database.user_defaults_repo.get(user_id)
             except AttributeError:
                 data = None
             return data or {}

@@ -3,7 +3,7 @@ from typing import Protocol
 
 from app.ports.services.emotions.audio_analyzer import EmotionAnalyzerByAudioOutput
 from app.ports.services.emotions import EmotionAnalyzerOutput
-from app.ports.services.emotions.text_emotion_analyzer import EmotionAnalyzerByTextOutput
+from app.ports.services.emotions.text_analyzer import EmotionAnalyzerByTextOutput
 
 @dataclass
 class EmotionAnalyzerMixerInput:

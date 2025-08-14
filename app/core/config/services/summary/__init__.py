@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from app.core.config.providers.azure_openai import AzureOpenAIConfig
+from app.core.config.providers.azure.openai import AzureOpenAIConfig
 import app.core.environment as env
 
 @dataclass(frozen=True)
