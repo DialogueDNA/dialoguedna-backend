@@ -1,7 +1,9 @@
 from __future__ import annotations
-import torch
 
-class NoneEnhancer:
+from app.ports.services.audio.enhancer import AudioEnhancer, AudioEnhancerInput, AudioEnhancerOutput
+
+
+class NoneEnhancer(AudioEnhancer):
     """No-op enhancer; returns the input as-is."""
-    def enhance_waveform(self, waveform: torch.Tensor, sr: int) -> torch.Tensor:
-        return waveform
+    def enhance(self, audio: AudioEnhancerInput) -> AudioEnhancerOutput:
+        return AudioEnhancerOutput(enhanced_audio=audio.audio)

@@ -1,14 +1,13 @@
-# app/core/logging.py
-# -*- coding: utf-8 -*-
+from __future__ import annotations
+import logging
+import logging.config
+import os
+
 """
 Central logging config.
 - Uses dictConfig to set structured, leveled logging across the app.
 - Uvicorn/fastapi logs are aligned.
 """
-from __future__ import annotations
-import logging
-import logging.config
-import os
 
 def setup_logging() -> None:
     level = os.getenv("LOG_LEVEL", "INFO").upper()

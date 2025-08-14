@@ -3,7 +3,7 @@ from typing import List, Dict
 import torch, torchaudio
 from transformers import AutoModelForAudioClassification, Wav2Vec2FeatureExtractor
 
-from app.ports.services.emotions.audio_emotioner import AudioSegmentInput, AudioSegmentOutput, AudioEmotionAnalyzer
+from app.ports.services.emotions.audio_analyzer import AudioEmotionAnalyzer
 
 
 class HFAudioClassifier(AudioEmotionAnalyzer):
@@ -29,7 +29,7 @@ class HFAudioClassifier(AudioEmotionAnalyzer):
             probs = torch.nn.functional.softmax(logits, dim=-1)[0]
         return {self._id2label[i]: float(probs[i]) for i in range(len(probs))}
 
-    def analyze_audio(self, segments: List[AudioSegmentInput]) -> List[AudioSegmentOutput]:
+    def analyze(self, segments: List[AudioSegmentInput]) -> List[AudioSegmentOutput]:
         # Each segment["audio"] is a path; cut by (start_time, end_time) and classify
         out: List[AudioSegmentOutput] = []
         for seg in segments:

@@ -3,12 +3,12 @@ from dataclasses import dataclass
 from typing import Optional, Any
 
 from app.db.registry import GatewayRegistry
-from app.ports.services.audio.enhancer.audio_enhancer import AudioEnhancer
-from app.ports.services.audio.separator.audio_separator import AudioSeparator
-from app.ports.services.emotions.audio.audio_emotion_analyzer import AudioEmotionAnalyzer
-from app.ports.services.emotions.mixed.mixed_emotion_analyzer import MixedEmotionAnalyzer
-from app.ports.services.emotions.text.text_emotion_analyzer import TextEmotionAnalyzer
-from app.ports.services.transcription.transcriber import Transcriber
+from app.ports.services.audio.enhancer import AudioEnhancer
+from app.ports.services.audio.separator import AudioSeparator
+from app.ports.services.emotions.audio_analyzer import AudioEmotionAnalyzer
+from app.ports.services.emotions.mixed_analyzer import MixedEmotionAnalyzer
+from app.ports.services.emotions.text_emotion_analyzer import TextEmotionAnalyzer
+from app.ports.services.transcription import Transcriber
 from app.ports.storage.blob_storage import BlobStorage
 from app.ports.db.domains.users_repo import UsersRepo
 from app.ports.db.domains.sessions_repo import SessionsRepo

@@ -5,7 +5,7 @@ from app.db.adapters.supabase.supabase_table import SupabaseTable
 from supabase import create_client
 
 @register_adapter("supabase")
-def build_supabase_factory(cfg: DatabaseConfig, db: DatabaseState) -> TableGatewayFactory:
-    if not hasattr(db, "supabase_client"):
-        db.supabase_client = create_client(cfg.supabase_url, cfg.supabase_key)
-    return lambda table_name: SupabaseTable(db.supabase_client, table_name)
+def build_supabase_factory(database: DatabaseState, database_cfg: DatabaseConfig) -> TableGatewayFactory:
+    if not hasattr(database, "supabase_client"):
+        database.supabase_client = create_client(database_cfg.supabase.url, database_cfg.supabase.key)
+    return lambda table_name: SupabaseTable(database.supabase_client, table_name)

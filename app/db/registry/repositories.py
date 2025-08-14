@@ -1,4 +1,3 @@
-# app/database/registry/repositories.py
 from dataclasses import dataclass
 from typing import Callable, Dict
 
@@ -21,7 +20,7 @@ class RepoRegistry:
 
 repo_registry = RepoRegistry()
 
-# helper decorator for convenient registration
+
 def register_repo(domain: str, *, table: str):
     def deco(ctor: Callable):
         repo_registry.register(domain, ctor, table)

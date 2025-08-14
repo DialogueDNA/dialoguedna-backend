@@ -1,9 +1,9 @@
-from typing import Optional
-
+from app.core.config.services.audio import AudioSeparatorConfig
+from app.ports.services.audio.separator import AudioSeparator
 from app.services.audio.separation.adapters.sepformer_separator.sepformer_separator import SepformerSeparator
-from app.services.emotions.plugins import register_separator
+from app.services.audio.separation.plugins import register_separator
 
 
 @register_separator("sepformer")
-def build_sepformer_separator(model_hub: str = "speechbrain/sepformer-whamr", device: Optional[str] = None) -> SepformerSeparator:
-    return SepformerSeparator(model_hub=model_hub, device=device)
+def build_sepformer_separator(cfg: AudioSeparatorConfig) -> AudioSeparator:
+    return SepformerSeparator(cfg.sepformer)

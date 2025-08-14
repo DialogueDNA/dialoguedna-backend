@@ -1,4 +1,4 @@
-from app.ports.services.transcription.transcriber import Transcriber
+from app.ports.services.transcription import Transcriber
 from app.services.transcription.adapters.azure.azure_speech_transcriptor import AzureSpeechTranscriber
 from app.services.transcription.plugins import register_transcriber
 from app.core.config import TranscriptionConfig

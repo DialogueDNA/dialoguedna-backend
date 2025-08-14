@@ -2,16 +2,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Protocol, List
-import torch
 
-@dataclass
-class AudioSeparatorInput:
-    """
-    Input for the audio separator.
-    Contains the waveform and its sampling rate.
-    """
-    waveform: torch.Tensor
-    sample_rate: int
+from app.ports.services.audio import AudioSegment, AudioType
+
+AudioSeparatorInput = AudioSegment
 
 @dataclass
 class AudioSeparatorOutput:
@@ -19,7 +13,7 @@ class AudioSeparatorOutput:
     Output for the audio separator.
     Contains a list of separated waveforms, all aligned to the same sampling rate.
     """
-    separated_waveforms: List[torch.Tensor]
+    separated_waveforms: List[AudioType]
 
 class AudioSeparator(Protocol):
     """

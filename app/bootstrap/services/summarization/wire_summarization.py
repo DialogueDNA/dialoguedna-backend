@@ -1,5 +1,5 @@
+from app.core.config.services import SummarizationConfig
 from app.services.summary.plugins import SUMMARIZER_PLUGINS
-from app.core.config import SummarizationConfig
 from app.state.app_states import SummarizationState
 
 

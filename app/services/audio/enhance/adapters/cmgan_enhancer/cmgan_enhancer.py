@@ -1,12 +1,15 @@
 from __future__ import annotations
-import torch
 
-class CMGANEnhancer:
+from app.ports.services.audio.enhancer import AudioEnhancer, AudioEnhancerInput, AudioEnhancerOutput
+
+
+class CMGANEnhancer(AudioEnhancer):
     """
     Placeholder for CMGAN speech enhancement.
     """
-    def __init__(self, model_name: str = "cmgan"):
-        self.model_name = model_name
-
-    def enhance_waveform(self, waveform: torch.Tensor, sr: int) -> torch.Tensor:
+    def __init__(self, cfg: CMGANConfig):
+        self._cfg = cfg
+        # TODO: Load the CMGAN model here
+    def enhance(self, audio: AudioEnhancerInput) -> AudioEnhancerOutput:
+        # TODO: Implement the CMGAN enhancement logic
         raise NotImplementedError("CMGAN enhancer not wired. Install & implement before use.")

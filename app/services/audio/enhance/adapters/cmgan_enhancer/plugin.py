@@ -1,7 +1,9 @@
+from app.core.config.services.audio import AudioEnhancerConfig
+from app.ports.services.audio.enhancer import AudioEnhancer
 from app.services.audio.enhance.adapters.cmgan_enhancer.cmgan_enhancer import CMGANEnhancer
-from app.services.emotions.plugins import register_enhancer
+from app.services.audio.enhance.plugins import register_enhancer
 
 
 @register_enhancer("cmgan")
-def build_cmgan_enhancer(model_name: str = "cmgan") -> CMGANEnhancer:
-    return CMGANEnhancer(model_name=model_name)
+def build_cmgan_enhancer(cfg: AudioEnhancerConfig) -> AudioEnhancer:
+    return CMGANEnhancer(cfg.cmgan)

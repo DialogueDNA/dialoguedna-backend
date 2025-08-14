@@ -1,7 +1,9 @@
 from __future__ import annotations
 from typing import Callable, Dict
-from app.ports.services.summary.summarizer import Summarizer
-from app.core.config import SummarizationConfig
+
+from app.core.config.services import SummarizationConfig
+from app.ports.services.summary import Summarizer
+
 
 SummarizerPlugin = Callable[[SummarizationConfig], Summarizer]
 

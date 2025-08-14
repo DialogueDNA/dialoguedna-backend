@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from app.bootstrap.services.wire_services import wire_services
 from app.bootstrap.wire_app import wire_app
 
 """
@@ -19,18 +18,15 @@ operations while keeping the wiring decoupled and testable.
 
 from dataclasses import dataclass
 from threading import RLock
-from typing import Callable, Dict, Optional
+from typing import Dict
 
 from app.services.authz import AuthZ
 from app.core.config import AppConfig
-from app.state.app_states import DatabaseState, StorageState, TranscriptionState, ServicesState, AppState
-from app.bootstrap.database.wire_database import wire_database
-from app.bootstrap.storage.wire_storage import wire_storage
-from app.services.transcription.plugins import TRANSCRIBER_PLUGINS as T_PLUGINS, TranscriberPlugin  # backend -> builder
+from app.state.app_states import AppState
 from app.services.emotions.emotioner import Emotioner
 from app.services.summary.summarizer import Summarizer
 from app.services.api import ServicesAPI
-from app.ports.services.transcription.transcriber import Transcriber
+from app.ports.services.transcription import Transcriber
 
 
 # =============================== Internal types ===============================

@@ -1,5 +1,3 @@
-# app/services/transcription/transcriber.py
-# -*- coding: utf-8 -*-
 """
 Generic Transcriber facade using the Strategy pattern.
 - Plug in AzureSpeechTranscriber or WhisperXTranscriber interchangeably.

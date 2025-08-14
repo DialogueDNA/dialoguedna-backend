@@ -1,6 +1,6 @@
 from __future__ import annotations
 from openai import AzureOpenAI, RateLimitError, APIError, APITimeoutError
-from app.ports.services.summary.summarizer import Summarizer, SummaryInput, SummaryOutput
+from app.ports.services.summary import Summarizer, SummaryInput, SummaryOutput
 from app.services.summary.prompts.prompts import PROMPT_PRESETS
 from app.core.config import AzureOpenAIConfig
 

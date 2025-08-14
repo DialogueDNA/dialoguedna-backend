@@ -1,4 +1,3 @@
-# app/database/registry/gateway.py
 from __future__ import annotations
 from typing import Callable, Dict
 

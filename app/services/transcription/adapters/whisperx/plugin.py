@@ -1,4 +1,4 @@
-from app.ports.services.transcription.transcriber import Transcriber
+from app.ports.services.transcription import Transcriber
 from app.services.transcription.adapters.whisperx.whisperx_transcriptor import WhisperXTranscriber
 from app.services.transcription.plugins import register_transcriber
 from app.state.app_states import TranscriptionState, StorageState

@@ -1,9 +1,14 @@
-from typing import Callable, Any, Dict
+from typing import Callable, Dict
 
-ENHANCER_PLUGINS: Dict[str, Callable[..., Any]] = {}
+from app.core.config.services.audio import AudioEnhancerConfig
+from app.ports.services.audio.enhancer import AudioEnhancer
+
+AudioEnhancerPlugin = Callable[[AudioEnhancerConfig], AudioEnhancer]
+
+ENHANCER_PLUGINS: Dict[str, AudioEnhancerPlugin] = {}
 
 def register_enhancer(name: str):
-    def deco(fn: Callable[..., Any]):
+    def deco(fn: AudioEnhancerPlugin):
         ENHANCER_PLUGINS[name] = fn
         return fn
     return deco

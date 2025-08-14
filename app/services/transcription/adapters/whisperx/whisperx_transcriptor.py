@@ -2,7 +2,7 @@
 from __future__ import annotations
 import whisperx
 from typing import Optional
-from app.ports.services.transcription.transcriber import Transcriber, TranscriptSegmentInput
+from app.ports.services.transcription import Transcriber, TranscriptionSegmentInput
 
 class WhisperXTranscriber(Transcriber):
     def __init__(self, *, device: str, model_size: str, compute_type: str, hf_token: str):
@@ -10,10 +10,10 @@ class WhisperXTranscriber(Transcriber):
         self.model = whisperx.load_model(model_size, device, compute_type=compute_type)
         self.hf_token = hf_token
 
-    def transcribe_blob(self, container: str, blob: str, *, locale: Optional[str] = None, speaker_diarization: bool = True) -> list[TranscriptSegmentInput]:
+    def transcribe_blob(self, container: str, blob: str, *, locale: Optional[str] = None, speaker_diarization: bool = True) -> list[TranscriptionSegmentInput]:
         raise NotImplementedError
 
-    def transcribe_file(self, path: str, *, locale: Optional[str] = None, speaker_diarization: bool = True) -> list[TranscriptSegmentInput]:
+    def transcribe_file(self, path: str, *, locale: Optional[str] = None, speaker_diarization: bool = True) -> list[TranscriptionSegmentInput]:
         audio = whisperx.load_audio(path)
         result = self.model.transcribe(audio, batch_size=8)
         model_a, metadata = whisperx.load_align_model(language_code=result["language"], device=self.device)
@@ -23,7 +23,7 @@ class WhisperXTranscriber(Transcriber):
             diar_segments = diar(audio)
             result = whisperx.assign_word_speakers(diar_segments, result)
 
-        out: list[TranscriptSegmentInput] = []
+        out: list[TranscriptionSegmentInput] = []
         for s in result["segments"]:
             out.append({
                 "speaker": s.get("speaker", "?"),

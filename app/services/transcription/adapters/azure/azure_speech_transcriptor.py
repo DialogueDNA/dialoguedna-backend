@@ -2,15 +2,14 @@
 from __future__ import annotations
 import time, requests, os
 from typing import Optional, Any
-from app.ports.storage.blob_storage import BlobStorage
-from app.ports.services.transcription.transcriber import Transcriber, TranscriptSegmentInput
+from app.ports.services.transcription import Transcriber, TranscriptionSegmentInput
 
 class AzureSpeechTranscriber(Transcriber):
     def __init__(self, *, key: str, region: str):
         self.key = key
         self.region = region
 
-    def transcribe_file(self, path: str, *, locale: Optional[str] = None, speaker_diarization: bool = True) -> list[TranscriptSegmentInput]:
+    def transcribe_file(self, path: str, *, locale: Optional[str] = None, speaker_diarization: bool = True) -> list[TranscriptionSegmentInput]:
         container = "uploads"
         blob = os.path.basename(path)
         with open(path, "rb") as f:
@@ -50,8 +49,8 @@ class AzureSpeechTranscriber(Transcriber):
                 return requests.get(f["links"]["contentUrl"]).json()
         raise RuntimeError("No Transcription file in result set")
 
-    def _format_segments(self, payload: dict[str, Any]) -> list[TranscriptSegmentInput]:
-        out: list[TranscriptSegmentInput] = []
+    def _format_segments(self, payload: dict[str, Any]) -> list[TranscriptionSegmentInput]:
+        out: list[TranscriptionSegmentInput] = []
         for p in payload.get("recognizedPhrases", []):
             start_ms = p.get("offsetMilliseconds", 0)
             dur_ms = p.get("durationMilliseconds", 0)

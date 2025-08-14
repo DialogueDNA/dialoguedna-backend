@@ -1,4 +1,3 @@
-# app/bootstrap/wire_services.py
 from __future__ import annotations
 
 from app.bootstrap.services.audio.wire_audio_utils import wire_audio_utils

@@ -85,8 +85,8 @@ RNNOISE_ENHANCER_STRENGTH = os.getenv("RNNOISE_ENHANCER_STRENGTH", "medium")  # 
 
 # === Separation Model ===
 ENABLE_AUDIO_SEPARATION = os.getenv("ENABLE_SEPARATION", "false").lower() == "true" # Enable or disable audio separation
-AUDIO_SEPARATOR_MODEL_NAME = os.getenv("AUDIO_SEPARATION_ADAPTER", "speechbrain/sepformer-whamr") # speechbrain/sepformer-whamr | speechbrain/sepformer-wham | ...
-
+AUDIO_SEPARATOR_MODEL_NAME = os.getenv("AUDIO_SEPARATION_ADAPTER", "sepformer") # sepformer|demucs|spleeter
+SEPFORMER_MODEL_NAME = os.getenv("SEPFORMER_MODEL_NAME", "speechbrain/sepformer-whamr") # Default: speechbrain/sepformer-whamr
 
 # ============================ Summarization Generation Settings ============================
 SUMMARIZER_ADAPTER = os.getenv("SUMMARIZATION_ADAPTER", "azure_openai")  # key in SUMMARIZATION_PLUGINS
@@ -110,7 +110,3 @@ LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO") # "DEBUG" | "INFO" | "WARNING" | "ERR
 
 # === Huggingface ===
 HUGGINGFACE_WHISPERX_TOKEN = os.getenv("HUGGINGFACE_TOKEN") # Huggingface token for WhisperX, if needed
-
-
-def AZURE_SPEECH_LOCALE():
-    return None

@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from app.core.config.services.audio.enhancer import AudioEnhancementConfig
-from app.core.config.services.audio.seperator import AudioSeparationConfig
+from app.core.config.services.audio.enhancer import AudioEnhancerConfig
+from app.core.config.services.audio.seperator import AudioSeparatorConfig
 
 
 @dataclass(frozen=True)
 class AudioUtilsConfig:
-    enhancer: AudioEnhancementConfig = AudioEnhancementConfig()
-    separator: AudioSeparationConfig = AudioSeparationConfig()
+    enhancer: AudioEnhancerConfig = AudioEnhancerConfig()
+    separator: AudioSeparatorConfig = AudioSeparatorConfig()
