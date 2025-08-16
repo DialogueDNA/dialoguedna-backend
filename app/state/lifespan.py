@@ -14,7 +14,7 @@ log = logging.getLogger("app")
 async def lifespan(app: FastAPI):
     try:
         app_state = wire_app(AppConfig())
-        app.state.api = app_state
+        app.state.app = app_state
         app.state.logic = DialogueDNALogic(app_state)
         log.info("App wired successfully")
         yield
