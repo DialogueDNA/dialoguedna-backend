@@ -15,7 +15,7 @@ class SuperbConfig:
     - cache_dir: where model files are stored.
     - window_sec / hop_fraction: sliding-window params for long audio.
     """
-    model: str = env.SEPFORMER_MODEL_NAME
+    model: str = env.SUPERB_MODEL_NAME
     device: str = env.DEVICE
     cache_dir: str = field(
         default_factory=lambda: os.path.join(os.path.expanduser("~"), ".cache", "hf", "emotion-audio"))

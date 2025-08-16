@@ -5,7 +5,7 @@ from typing import Literal
 @dataclass(frozen=True)
 class MixedAdaptiveConfig:
     """
-    Heuristic *adaptive* fusion of text & audio emotions.
+    Heuristic *adaptive* fusion of text & audio emotion_analysis.
 
     We compute data-driven weights per segment:
       - conf_text  = 1 - H(p_text)/log(K)     # normalized entropy (higher = more confident)

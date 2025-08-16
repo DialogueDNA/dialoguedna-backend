@@ -63,7 +63,7 @@ PROMPT_PRESETS = {
         "Your mission is to write a fluent, emotionally intelligent, and profoundly human-centered summary of this conversation.\n"
         "Structure your summary with expressive subheadings (e.g., 🎬 Beginning / 👩‍👧 Talking about family / 😂 Jokes and Humor).\n\n"
         "Go beyond the surface: reflect on emotional undercurrents, personal dynamics, subtle tensions, moments of connection, and emotional turning points.\n"
-        "Interpret how the participants felt, what shaped their emotions, and what made specific moments humorous, exhausting, painful, or heartwarming.\n\n"
+        "Interpret how the participants felt, what shaped their emotion_analysis, and what made specific moments humorous, exhausting, painful, or heartwarming.\n\n"
         "Write with depth, empathy, and elegance — almost as if crafting a short reflective essay.\n"
         "Use **bold** for emotionally significant lines.\n"
         "Do NOT list emotion scores — focus on the *human story*, not the data.\n\n"

@@ -4,18 +4,18 @@ import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
-from app.services.factory import get_services_api
+from app.bootstrap.wire_app import wire_app
 from app.core.config import AppConfig
+from app.logic.dialogue_dna import DialogueDNALogic
 
-log = logging.getLogger("app.main")
+log = logging.getLogger("app")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    cfg = AppConfig()
-
     try:
-        app.state = type("S", (), {})()
-        app.state.services = get_services_api(cfg, reload=True)
+        app_state = wire_app(AppConfig())
+        app.state.api = app_state
+        app.state.logic = DialogueDNALogic(app_state)
         log.info("App wired successfully")
         yield
     except Exception as e:

@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import Dict
 
-from app.ports.services.emotions.mixed_analyzer import (
-    MixedEmotionAnalyzer,
+from app.interfaces.services.emotions.mixed import (
+    EmotionMixedAnalyzer,
     EmotionAnalyzerMixerInput,
     EmotionAnalyzerMixerOutput,
 )
@@ -40,14 +40,14 @@ def _weighted_merge(
     return out
 
 
-class MixEmotionByWeights(MixedEmotionAnalyzer):
+class MixEmotionMixedByWeights(EmotionMixedAnalyzer):
     """
     Weighted fusion of a single text result and a single audio result.
 
     Input:
       - EmotionAnalyzerMixerInput with:
-          text_results: EmotionAnalyzerOutput(emotions: Dict[str, float])
-          audio_results: EmotionAnalyzerOutput(emotions: Dict[str, float])
+          text_results: EmotionAnalyzerOutput(emotion_analysis: Dict[str, float])
+          audio_results: EmotionAnalyzerOutput(emotion_analysis: Dict[str, float])
 
     Output:
       - EmotionAnalyzerMixerOutput == EmotionAnalyzerOutput of fused scores.

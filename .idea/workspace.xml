@@ -5,9 +5,36 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="Different logic via ChatGPT 5 now in storage">
-      <change afterPath="$PROJECT_DIR$/app/services/emotions/audio/hf_audio_classifier/hf_emotion_audio_analyzer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights/plugin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/bootstrap/services/emotion_analysis/wire_emotion_analysis.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/database/gateways/providers/supabase/plugin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/database/gateways/providers/supabase/supabase_gateway.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/database/repos/registry.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/audio/separation/registry.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/emotions/audio/providers/hugging_face/plugin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/emotions/audio/providers/hugging_face/superb_audio_emotion_analyzer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/emotions/audio/registry.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/emotions/mixed/registry.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/emotions/text/providers/hugging_face/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/emotions/text/providers/hugging_face/plugin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/emotions/text/registry.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/summary/providers/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/summary/providers/azure/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/summary/registry.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/transcription/providers/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/transcription/providers/azure/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/transcription/providers/azure/speech_to_text.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/transcription/providers/whisperx/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/transcription/providers/whisperx/whisperx.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/transcription/registry.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/storage/providers/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/storage/providers/azure/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/storage/registry.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/auth.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/dependencies/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/dependencies/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/endpoints/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/audio.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/audio.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/delete.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/delete.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/emotions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/emotions.py" afterDir="false" />
@@ -16,79 +43,154 @@
       <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/transcript.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/transcript.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/endpoints/sessions/upload.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/endpoints/sessions/upload.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/bootstrap/database/wire_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/database/wire_database.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/config/providers/azure_blob.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/providers/azure/blob_storage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/config/providers/azure_openai.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/providers/azure/openai.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/config/providers/azure_speech_to_text.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/providers/azure/speech_to_text.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/config/providers/hugging_face/j_hartmann.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/providers/hugging_face/j_hartmann.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/audio/enhance/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/services/emotion_analysis/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/audio/enhance/wire_audio_enhance.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/audio/separation/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/audio/separation/wire_audio_separation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/audio/wire_audio_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/services/audio/wire_audio_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/emotions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/plugin_discovery.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/emotions/audio/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/plugin_registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/emotions/audio/wire_audio_analysis.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/emotions/mixed/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/utils/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/emotions/mixed/wire_mixed_analysis.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/emotions/text/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/database/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/emotions/text/wire_text_analysis.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/emotions/wire_emotion_analysis.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/summarization/wire_summarization.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/services/summarization/wire_summarization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/transcription/wire_transcription.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/services/transcription/wire_transcription.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/services/wire_services.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/services/wire_services.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/storage/wire_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/storage/wire_storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/bootstrap/wire_app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/bootstrap/wire_app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/database/database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config/policy.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/policy/policy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config/providers/azure/speech_to_text.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/providers/azure/speech_to_text.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config/providers/hugging_face/superb.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/providers/hugging_face/superb.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config/providers/supabase.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/providers/supabase/supabase.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config/services/emotions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/services/emotions/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/core/config/services/emotions/audio.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/services/emotions/audio.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/core/config/services/emotions/mixed.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/services/emotions/mixed.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/config/services/summary/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/services/summary/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config/services/emotions/text.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/services/emotions/text.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/core/config/services/transcription/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/services/transcription/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/core/config/storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/config/storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/storage/storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/constants/storage/azure_constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/constants/storage/azure_constants.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/core/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/environment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/providers/azure/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/adapters/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/providers/hugging_face/superb.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/adapters/supabase/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/adapters/supabase/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/adapters/supabase/plugin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/adapters/supabase/supabase_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/adapters/supabase/supabase_table.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/domain/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/adapters/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/domain/sessions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/adapters/supabase/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/domain/sessions/repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/domain/sessions/repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/domain/user_defaults/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/domain/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/domain/user_defaults/repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/domain/user_defaults/repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/domain/users/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/domain/sessions/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/domain/users/repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/domain/users/repo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/plugins.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/plugins.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/registry/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/registry/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/registry/gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/registry/gateway.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/registry/repositories.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/registry/repositories.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/db/session_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/session_db.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ports/services/audio/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ports/services/audio/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ports/services/emotions/audio_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ports/services/emotions/audio_analyzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ports/services/emotions/mixed_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ports/services/emotions/mixed_analyzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ports/services/emotions/text_emotion_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ports/services/emotions/text_analyzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ports/services/summary/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ports/services/summary/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/ports/services/transcription/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/ports/services/transcription/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/rnnoise_enhancer/rnnoise_enhancer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/adapters/rnnoise_enhancer/rnnoise_enhancer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/plugins.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/plugins.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/audio/separation/adapters/sepformer_separator/sepformer_separator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/separation/adapters/sepformer_separator/sepformer_separator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/audio/separation/factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/audio/separation/plugins.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/separation/plugins.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/audio/factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/audio/hf_audio_classifier/hf_audio_classifier.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/audio/hf_audio_classifier/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/audio/hf_audio_classifier/plugin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/audio/plugins.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/audio/plugins.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/adapters/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/policy/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/adapters/supabase/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/providers/supabase/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/adapters/supabase/plugin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/adapters/supabase/supabase_table.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/domain/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/config/storage/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/domain/sessions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/gateways/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/domain/sessions/repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repos/sessions/repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/domain/user_defaults/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/gateways/providers/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/domain/user_defaults/repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repos/user_defaults/repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/domain/users/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/gateways/providers/supabase/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/domain/users/repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repos/users/repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/plugins.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/registry/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/registry/gateway.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/registry/repositories.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/database/session_db.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/session_db.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/gateways/registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/db/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/db/domains/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repos/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/db/domains/sessions_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/db/domains/sessions_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/db/domains/user_defaults_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/db/domains/user_defaults_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/db/domains/users_repo.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/db/domains/users_repo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/db/table_gateway.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/db/table_gateway.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/services/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/services/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/services/audio/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/services/audio/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/services/audio/enhancer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/services/audio/enhancer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/services/audio/separator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/services/audio/separator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/services/emotions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/services/emotions/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/services/emotions/audio_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/services/emotions/audio.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/services/emotions/mixed_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/services/emotions/mixed.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/services/emotions/text_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/services/emotions/text.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/services/summary/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/services/summary/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/services/text/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/services/text/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/services/transcription/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/services/transcription/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/storage/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repos/sessions/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/ports/storage/blob_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/storage/blob_storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/run_pipeline.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repos/user_defaults/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/cmgan_enhancer/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/repos/users/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/cmgan_enhancer/cmgan_enhancer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/cmgan/cmgan_enhancer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/cmgan_enhancer/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/cmgan/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/demucs_enhancer/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/demucs_enhancer/demucs_enhancer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/demucs/demucs_enhancer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/demucs_enhancer/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/demucs/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/none_enhancer/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/db/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/none_enhancer/none_enhancer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/none/none_enhancer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/none_enhancer/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/none/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/rnnoise_enhancer/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/db/domains/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/rnnoise_enhancer/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/rnnoise/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/adapters/rnnoise_enhancer/rnnoise_enhancer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/rnnoise/rnnoise_enhancer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/enhance/plugins.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/registry.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/separation/adapters/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/storage/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/separation/adapters/sepformer_separator/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/separation/adapters/sepformer_separator/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/separation/providers/sepformer/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/separation/adapters/sepformer_separator/sepformer_separator.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/separation/providers/sepformer/sepformer_separator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio/separation/plugins.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio_pipeline/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/dialogue_dna.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio_pipeline/audio_emotion_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio_pipeline/base.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio_pipeline/config.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio_pipeline/diarizer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio_pipeline/emotion_fusion.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio_pipeline/overlap_detector.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio_pipeline/pipeline.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio_pipeline/segment_extractor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio_pipeline/speaker_assigner.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio_pipeline/speech_separation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/audio_pipeline/text_emotion_model.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/audio/hf_audio_classifier/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/audio/hf_audio_classifier/hf_emotion_audio_analyzer.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/audio/hf_audio_classifier/plugin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/audio/plugins.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/services/emotions/emotioner.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/emotioner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/factory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive_fusion/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/domain/user_defaults/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive_fusion/adaptive_fusion.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive_fusion/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive/plugin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights_fusion/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/database/domain/users/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights_fusion/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights_fusion/plugin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights_fusion/weights_fusion.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/factory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/plugins.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/plugins.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/text/adapters/factory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/text/adapters/hf_text_classifier/hf_text_classifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/text/adapters/hf_text_classifier/hf_emotion_text_analyzer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/text/adapters/hf_text_classifier/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/text/adapters/hf_text_classifier/plugin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/text/factory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/emotions/text/plugins.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/text/plugins.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive/mixer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/adaptive/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/mixed/adapters/weights/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/mixed/plugins.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/text/adapters/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/cmgan/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/text/adapters/hf_text_classifier/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/demucs/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/text/adapters/hf_text_classifier/hf_emotion_text_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/text/providers/hugging_face/jhartmann_text_emotion_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/text/adapters/hf_text_classifier/plugin.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/text/plugins.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/services/facade.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/facade.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/factory.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/factory.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summary/adapters/azure_openai/azure_openai_summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summary/adapters/azure_openai/azure_openai_summarizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summary/adapters/azure_openai/config.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summary/factory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summary/plugins.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summary/plugins.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcription/adapters/azure/azure_speech_transcriptor.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/transcription/adapters/azure/azure_speech_to_text_transcriptor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcription/adapters/azure/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/transcription/adapters/azure/plugin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcription/adapters/whisperx/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/transcription/adapters/whisperx/plugin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcription/adapters/whisperx/whisperx_transcriptor.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/transcription/adapters/whisperx/whisperx_transcriptor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcription/factory.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/transcription/plugins.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/transcription/plugins.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/factory.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/summary/adapters/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/none/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/summary/adapters/azure_openai/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/enhance/providers/rnnoise/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/summary/adapters/azure_openai/azure_openai_summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summary/providers/azure/openai.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/summary/adapters/azure_openai/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summary/providers/azure/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/summary/plugins.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/summary/prompts/prompts.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summary/prompts/prompts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/summary/summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summary/summarizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/transcription/adapters/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/separation/providers/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/transcription/adapters/azure/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/audio/separation/providers/sepformer/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/transcription/adapters/azure/azure_speech_to_text_transcriptor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/transcription/adapters/azure/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/transcription/providers/azure/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/transcription/adapters/whisperx/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/audio/providers/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/transcription/adapters/whisperx/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/transcription/providers/whisperx/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/transcription/adapters/whisperx/whisperx_transcriptor.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/transcription/plugins.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/audio/providers/hugging_face/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/utils/pdf.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/common/utils/pdf.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/state/app_states.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/state/app_states.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/storage/adapters/azure/azure_blob.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/adapters/azure/azure_blob.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/state/lifespan.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/state/lifespan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/adapters/azure/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/text/providers/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/adapters/azure/azure_blob.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/providers/azure/azure_blob.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/adapters/azure/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/providers/azure/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/adapters/local/local_fs.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/adapters/local/local_fs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/adapters/local/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/adapters/local/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/plugins.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/storage/session_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/storage/session_storage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,7 +249,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
@@ -157,43 +259,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python tests.Python tests in test_emotion.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.emotion_test.executor&quot;: &quot;Run&quot;,
-    &quot;Python.print result.executor&quot;: &quot;Run&quot;,
-    &quot;Python.run.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.run_pipeline.executor&quot;: &quot;Run&quot;,
-    &quot;Python.transcribe_with_diarization_test.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Tone-Based-Emotion-Detection&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/USER/PycharmProjects/dialoguedna-backend/app/services/emotions/audio_emotioner&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python tests.Python tests in test_emotion.py.executor": "Run",
+    "Python.emotion_test.executor": "Run",
+    "Python.print result.executor": "Run",
+    "Python.run.executor": "Debug",
+    "Python.run_pipeline.executor": "Run",
+    "Python.transcribe_with_diarization_test.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "Tone-Based-Emotion-Detection",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/USER/PycharmProjects/dialoguedna-backend/app/services/transcription",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\services\transcription" />
       <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\services\emotions\audio_emotioner" />
       <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\services\emotions\fusion_emotioner" />
       <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\tests" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\core\config\providers\azure" />
-      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\ports\services\emotions" />
-      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\ports\services\audio" />
-      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\core\config\providers\hugging_face" />
-      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\core\config\providers" />
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\core\config\providers\supabase" />
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\core\config" />
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\core\policy" />
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\core\storage" />
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\api\dependencies" />
     </key>
   </component>
   <component name="RunManager" selected="Python.run">
@@ -381,7 +484,7 @@
       <workItem from="1755182510423" duration="293000" />
       <workItem from="1755182815606" duration="126000" />
       <workItem from="1755182964782" duration="89000" />
-      <workItem from="1755183064387" duration="28536000" />
+      <workItem from="1755183064387" duration="72996000" />
     </task>
     <task id="LOCAL-00001" summary="Initial setup for audio file upload endpoint and directory structure">
       <option name="closed" value="true" />
@@ -647,7 +750,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755197430597</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Different logic via ChatGPT 5 now in storage">
+      <option name="closed" value="true" />
+      <created>1755211987734</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1755211987734</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

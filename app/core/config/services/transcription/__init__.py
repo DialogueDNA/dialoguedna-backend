@@ -6,6 +6,6 @@ import app.core.environment as env
 
 @dataclass(frozen=True)
 class TranscriptionConfig:
-    main_transcripter: str = env.TRANSCRIPTION_ADAPTER
+    main_transcriber: str = env.TRANSCRIPTION_ADAPTER
     azure_speech_to_text: AzureSpeechToTextConfig = AzureSpeechToTextConfig()
     whisperx_model: WhisperXConfig = WhisperXConfig()

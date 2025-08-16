@@ -1,8 +1,8 @@
-# app/storage/adapters/local/local_fs.py
+# app/storage/providers/local/local_fs.py
 from __future__ import annotations
 from pathlib import Path
 from typing import BinaryIO
-from app.ports.storage.blob_storage import BlobStorage
+from app.interfaces.storage.blob_storage import BlobStorage
 
 class LocalFSAdapter(BlobStorage):
     def __init__(self, root: str):

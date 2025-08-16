@@ -36,7 +36,7 @@ class Emotioner:
                 "text": text,
                 "start_time": start_sec,
                 "end_time": end_sec,
-                "emotions": emotions[0],
+                "emotion_analysis": emotions[0],
             }
             results.append(result_entry)
 

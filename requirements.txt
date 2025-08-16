@@ -22,3 +22,4 @@ dotenv~=0.9.9
 numpy~=2.2.6
 pyrnnoise~=0.3.8
 noisereduce~=3.0.3
+pyannote-core~=5.0.0

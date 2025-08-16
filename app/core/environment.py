@@ -61,7 +61,7 @@ AZURE_SPEECH_LOCALE = os.getenv("SPEECH_LOCALE")  # Optional locale for transcri
 # Default: "j-hartmann/emotion-english-distilroberta-base"
 TEXT_EMOTION_MODEL_NAME = os.getenv("TEXT_EMOTION_ADAPTER", "j_hartmann") # j_hartmann
 J_HARTMANN_MODEL_NAME = os.getenv("J_HARTMANN_MODEL_NAME", "j-hartmann/emotion-english-distilroberta-base") # j-hartmann/emotion-english-distilroberta-base | j-hartmann/emotion-english-distilbert-base | ...
-J_HARTMANN_TOP_K = int(os.getenv("J_HARTMANN_TOP_K", "0") or 0) or None # 0 | None | K (int) - Top-K emotions to return, 0 means all, None means top emotion
+J_HARTMANN_TOP_K = int(os.getenv("J_HARTMANN_TOP_K", "0") or 0) or None # 0 | None | K (int) - Top-K emotion_analysis to return, 0 means all, None means top emotion
 
 # === Audio Emotion Model ===
 # This is the model used for audio-based emotion analysis.
