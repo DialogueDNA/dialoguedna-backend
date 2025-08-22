@@ -96,7 +96,7 @@ class SuperbAudioEmotionAnalyzer(EmotionAudioAnalyzer):
         probs = torch.softmax(avg_logits, dim=-1)[0]
         id2label = self._id2label or {i: str(i) for i in range(probs.numel())}
         emotions = {id2label[i]: float(probs[i]) for i in range(probs.numel())}
-        return EmotionAnalyzerOutput(emotions=emotions)
+        return EmotionAnalyzerOutput(emotions_intensity_dict=emotions)
 
     # ---- internals ---------------------------------------------------------
     def _ensure_model(self) -> None:

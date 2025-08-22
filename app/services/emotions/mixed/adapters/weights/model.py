@@ -61,7 +61,7 @@ class MixEmotionMixedByWeights(EmotionMixedAnalyzer):
         self._renorm = cfg.renorm
 
     def fuse(self, mix_results: EmotionAnalyzerMixerInput) -> EmotionAnalyzerMixerOutput:
-        text_emotions = (mix_results.text_results or {}).emotions
-        audio_emotions = (mix_results.audio_results or {}).emotions
+        text_emotions = (mix_results.text_results or {}).emotions_intensity_dict
+        audio_emotions = (mix_results.audio_results or {}).emotions_intensity_dict
         fused = _weighted_merge(text_emotions, audio_emotions, self._wt, self._wa, self._renorm)
-        return EmotionAnalyzerMixerOutput(emotions=fused)
+        return EmotionAnalyzerMixerOutput(emotions_intensity_dict=fused)

@@ -6,9 +6,9 @@ from fastapi import FastAPI
 
 from app.bootstrap.wire_app import wire_app
 from app.core.config import AppConfig
-from app.logic.dialogue_dna import DialogueDNALogic
-from app.logic.subscribers.blob_artifacts import SessionsRepoSubscriber
-from app.logic.subscribers.db_progress import DBProgressSubscriber
+from app.logic.dialogueDNA.dialogue_dna import DialogueDNALogic
+from app.logic.dialogueDNA.subscribers.blob_artifacts import SessionsRepoSubscriber
+from app.logic.dialogueDNA.subscribers.db_progress import DBProgressSubscriber
 
 log = logging.getLogger("app")
 

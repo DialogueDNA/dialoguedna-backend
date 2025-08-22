@@ -4,9 +4,9 @@ import json
 from dataclasses import asdict
 from typing import List, Dict, Any, Optional
 
-from app.interfaces.db.domains.sessions_repo import SessionsRepo
-from app.logic.subscribers.base import BaseListener
-from app.logic.events import TranscriptionEvent, EmotionsEvent, SummaryEvent
+from app.interfaces.storage.blob_storage import BlobStorage
+from app.logic.dialogueDNA.subscribers.base import BaseListener
+from app.logic.dialogueDNA.events import TranscriptionEvent, EmotionsEvent, SummaryEvent
 
 class SessionsRepoSubscriber(BaseListener):
     """
@@ -14,8 +14,8 @@ class SessionsRepoSubscriber(BaseListener):
     Keys scheme: sessions/{sid}/transcript.json, emotions.json, summary.json
     """
 
-    def __init__(self, sessions_repo: SessionsRepo, base_prefix: str = "sessions"):
-        self._listener = sessions_repo
+    def __init__(self, blob_storage: BlobStorage, base_prefix: str = "sessions"):
+        self._listener = blob_storage
         self.base = base_prefix.rstrip("/")
 
     def on_transcription_ready(self, e: TranscriptionEvent) -> None:

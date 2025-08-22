@@ -9,10 +9,6 @@ AudioSeparatorInput = AudioSegment
 
 @dataclass
 class AudioSeparatorOutput:
-    """
-    Output for the audio separator.
-    Contains a list of separated waveforms, all aligned to the same sampling rate.
-    """
     separated_waveforms: List[AudioType]
 
 class AudioSeparator(Protocol):

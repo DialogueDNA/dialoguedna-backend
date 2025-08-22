@@ -80,7 +80,7 @@ class AzureOpenAISummarizer(Summarizer):
 
             emo_hint = ""
             if s.emotions and getattr(s.emotions, "emotion_analysis", None):
-                lab, _ = max(s.emotions.emotions.items(), key=lambda kv: kv[1])
+                lab, _ = max(s.emotions.emotions_intensity_dict.items(), key=lambda kv: kv[1])
                 emo_hint = f" [{lab}]"
 
             lines.append(f"{spk}: {txt}{emo_hint}")

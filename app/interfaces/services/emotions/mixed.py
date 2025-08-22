@@ -7,11 +7,7 @@ from app.interfaces.services.emotions.text import EmotionAnalyzerByTextOutput
 
 @dataclass
 class EmotionAnalyzerMixerInput:
-    """
-    Input for the mixed emotion analyzer.
-    Contains text results and audio results to be fused.
-    """
-    text_results: EmotionAnalyzerByTextOutput
+    text_results:  EmotionAnalyzerByTextOutput
     audio_results: EmotionAnalyzerByAudioOutput
 
 EmotionAnalyzerMixerOutput = EmotionAnalyzerOutput

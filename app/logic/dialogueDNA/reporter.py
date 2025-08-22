@@ -5,11 +5,11 @@ from typing import Any, List, Optional, Tuple
 from uuid import uuid4
 from concurrent.futures import ThreadPoolExecutor
 
-from app.interfaces.services.emotions import EmotionAnalyzerOutput
+from app.interfaces.services.emotions import EmotionAnalyzerBundle
 from app.interfaces.services.summary import SummaryOutput
 from app.interfaces.services.transcription import TranscriptionOutput
-from app.logic.subscribers.base import PipelineListener
-from app.logic.events import (
+from app.logic.dialogueDNA.subscribers.base import PipelineListener
+from app.logic.dialogueDNA.events import (
     StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, CompletedEvent, FailedEvent, UploadEvent
 )
 
@@ -57,7 +57,7 @@ class PipelineSessionReporter:
     def transcription_ready(self, transcription: TranscriptionOutput) -> None:
         self._emit("on_transcription_ready", TranscriptionEvent(self.session_id, transcription))
 
-    def emotions_ready(self, emotions: EmotionAnalyzerOutput) -> None:
+    def emotions_ready(self, emotions: List[EmotionAnalyzerBundle]) -> None:
         self._emit("on_emotions_ready", EmotionsEvent(self.session_id, emotions))
 
     def summary_ready(self, summary: SummaryOutput) -> None:

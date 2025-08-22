@@ -1,10 +1,10 @@
 from typing import Protocol
 
 from app.interfaces.services.emotions import EmotionAnalyzerOutput
-from app.interfaces.services.transcription import TranscriptionSegmentOutput
+from app.interfaces.services.text import TextSegment
 
-EmotionAnalyzerByTextInput = TranscriptionSegmentOutput
-EmotionAnalyzerByTextOutput = EmotionAnalyzerOutput
+EmotionAnalyzerByTextInput =    TextSegment
+EmotionAnalyzerByTextOutput =   EmotionAnalyzerOutput
 
 class EmotionTextAnalyzer(Protocol):
     def analyze(self, segment: EmotionAnalyzerByTextInput) -> EmotionAnalyzerByTextOutput: ...

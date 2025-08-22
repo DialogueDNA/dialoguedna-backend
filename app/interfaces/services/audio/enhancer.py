@@ -9,10 +9,6 @@ AudioEnhancerInput = AudioSegment
 
 @dataclass
 class AudioEnhancerOutput:
-    """
-    Output for the audio enhancer.
-    Contains the enhanced waveform.
-    """
     enhanced_audio: AudioType
 
 class AudioEnhancer(Protocol):

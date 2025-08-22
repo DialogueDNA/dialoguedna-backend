@@ -6,12 +6,8 @@ TextType = str
 
 @dataclass
 class TextSegment:
-    """
-    Input for the text segment.
-    Represents a segment of text with optional start and end times.
-    """
-    writer: Optional[Writer]
-    text: TextType
-    start_time: Optional[float]
-    end_time: Optional[float]
-    language: Optional[str]
+    text:       TextType
+    writer:     Optional[Writer]   = None
+    start_time: Optional[float]    = None
+    end_time:   Optional[float]    = None
+    language:   Optional[str]      = None

@@ -73,13 +73,13 @@ class AdaptiveEmotionMixedMixer(EmotionMixedAnalyzer):
 
     def fuse(self, mix_results: EmotionAnalyzerMixerInput) -> EmotionAnalyzerMixerOutput:
         # ---- Extract emotion_analysis dicts (maybe empty) ----
-        text_emotions: Dict[str, float] = (mix_results.text_results or {}).emotions
-        audio_emotions: Dict[str, float] = (mix_results.audio_results or {}).emotions
+        text_emotions: Dict[str, float] = (mix_results.text_results or {}).emotions_intensity_dict
+        audio_emotions: Dict[str, float] = (mix_results.audio_results or {}).emotions_intensity_dict
 
         # ---- Align labels and build probability vectors ----
         keys = _collect_keys(text_emotions, audio_emotions)
         if not keys:   # degenerate; return empty safely
-            return EmotionAnalyzerMixerOutput(emotions={})
+            return EmotionAnalyzerMixerOutput(emotions_intensity_dict={})
 
         p_text = _vectorize({ _norm_label(k): v for k, v in text_emotions.items() }, keys, self._cfg.eps)
         p_audio = _vectorize({ _norm_label(k): v for k, v in audio_emotions.items() }, keys, self._cfg.eps)
@@ -117,4 +117,4 @@ class AdaptiveEmotionMixedMixer(EmotionMixedAnalyzer):
 
         # ---- Map back to label dict (use normalized keys) ----
         emotions = { k: float(v) for k, v in zip(keys, fused) }
-        return EmotionAnalyzerMixerOutput(emotions=emotions)
+        return EmotionAnalyzerMixerOutput(emotions_intensity_dict=emotions)

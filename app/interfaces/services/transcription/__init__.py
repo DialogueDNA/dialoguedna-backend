@@ -9,13 +9,8 @@ from app.interfaces.services.text import TextSegment
 
 @dataclass
 class TranscriptionInput:
-    """
-    Input for the transcriber.
-    """
-    audio: AudioSegment
+    audio:       AudioSegment
     diarization: Optional[bool] = False
-
-TranscriptionSegmentOutput = TextSegment
 
 TranscriptionOutput = List[TextSegment]
 

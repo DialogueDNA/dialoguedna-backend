@@ -42,10 +42,10 @@ class JHartmannTextEmotionAnalyzer(EmotionTextAnalyzer):
             model_kwargs={"cache_dir": cfg.cache_dir},
         )
 
-    def analyze_text(self, segment: EmotionAnalyzerByTextInput) -> EmotionAnalyzerByTextOutput:
+    def analyze(self, segment: EmotionAnalyzerByTextInput) -> EmotionAnalyzerByTextOutput:
         text = (segment.text or "").strip()
         if not text:
-            return EmotionAnalyzerOutput(emotions={})
+            return EmotionAnalyzerOutput(emotions_intensity_dict={})
 
         # HF pipeline returns (for single string):
         # - top_k=None, return_all_scores=True: [ [ {label, score}, ... ] ]
@@ -65,4 +65,4 @@ class JHartmannTextEmotionAnalyzer(EmotionTextAnalyzer):
             items = []
 
         emotions = {it["label"]: float(it["score"]) for it in items}
-        return EmotionAnalyzerOutput(emotions=emotions)
+        return EmotionAnalyzerOutput(emotions_intensity_dict=emotions)

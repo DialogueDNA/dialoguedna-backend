@@ -4,8 +4,8 @@ from typing import Dict, Any
 
 import app.core.constants.db.supabase_constants as db_constants
 from app.interfaces.db.domains.sessions_repo import SessionsRepo
-from app.logic.subscribers.base import BaseListener
-from app.logic.events import StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, CompletedEvent, FailedEvent
+from app.logic.dialogueDNA.subscribers.base import BaseListener
+from app.logic.dialogueDNA.events import StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, CompletedEvent, FailedEvent
 
 class DBProgressSubscriber(BaseListener):
     """Updates the sessions_repo with status/progress and optional inline data."""

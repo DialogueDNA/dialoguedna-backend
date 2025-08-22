@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Protocol
-from app.logic.events import (
+from app.logic.dialogueDNA.events import (
     StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, CompletedEvent, FailedEvent
 )
 

@@ -11,9 +11,9 @@ AudioType = Union[AudioPath, Waveform]
 
 @dataclass
 class AudioSegment:
-    audio: AudioType
-    speaker: Optional[SpeakerType] = None
-    start_time: Optional[float] = None
-    end_time: Optional[float] = None
-    sample_rate: Optional[int] = None
-    language: Optional[str] = None
+    audio:       AudioType
+    speaker:     Optional[SpeakerType] = None
+    start_time:  Optional[float]       = None
+    end_time:    Optional[float]       = None
+    language:    Optional[str]         = None
+    sample_rate: Optional[int]         = None
