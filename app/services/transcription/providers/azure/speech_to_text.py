@@ -10,7 +10,7 @@ import torch
 
 from app.core.config.providers.azure.speech_to_text import AzureSpeechToTextConfig
 from app.interfaces.services.transcription import (
-    Transcriber, TranscriptionSegmentInput, TranscriptionSegmentOutput,
+    Transcriber, TranscriptionInput, TranscriptionOutput,
 )
 from app.interfaces.services.text import TextSegment
 from app.interfaces.services.audio import AudioSegment
@@ -33,7 +33,7 @@ class AzureSpeechToTextTranscriber(Transcriber):
         self._locale = cfg.locale or "en-US"
         self._default_diar = bool(cfg.speaker_diarization)
 
-    def transcribe(self, segment: TranscriptionSegmentInput) -> List[TranscriptionSegmentOutput]:
+    def transcribe(self, segment: TranscriptionInput) -> TranscriptionOutput:
         audio: AudioSegment = segment.audio
         want_diar = bool(segment.diarization if segment.diarization is not None else self._default_diar)
 

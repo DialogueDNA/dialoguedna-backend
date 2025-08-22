@@ -5,7 +5,7 @@ from app.database.repos.registry import register_repo
 
 
 @register_repo(domain="user_defaults", table="user_defaults")
-class UserDefaultsRepo:
+class UserDefaultsRepoImpl:
     def __init__(self, table_gateway):
         self.t = table_gateway
 

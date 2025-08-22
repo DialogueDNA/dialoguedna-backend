@@ -3,12 +3,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
+from app.interfaces.logic.pipeline import Pipeline, PipelineOutput, PipelineInput
+from app.interfaces.services.emotions.mixed import EmotionAnalyzerMixerInput, EmotionAnalyzerMixerOutput
+from app.logic.reporter import PipelineSessionReporter
 from app.services.summary.prompts.prompts import PromptStyle
 from app.state.app_states import AppState
 from app.interfaces.services.audio import AudioType, AudioSegment
 from app.interfaces.services.transcription import (
-    TranscriptionSegmentInput,
-    TranscriptionSegmentOutput,
+    TranscriptionInput,
+    TranscriptionSegmentOutput, TranscriptionOutput,
 )
 from app.interfaces.services.emotions.audio import (
     EmotionAudioAnalyzer,
@@ -16,33 +19,12 @@ from app.interfaces.services.emotions.audio import (
 )
 from app.interfaces.services.emotions.text import (
     EmotionTextAnalyzer,
-    EmotionAnalyzerByTextOutput,
+    EmotionAnalyzerByTextOutput, EmotionAnalyzerByTextInput,
 )
-from app.interfaces.services.emotions import EmotionAnalyzerOutput
+from app.interfaces.services.emotions import EmotionAnalyzerOutput, EmotionBundle
 from app.interfaces.services.summary import (
-    SummaryInput, SummarySegment, SummaryOutput, Summarizer
+    SummaryInput, SummarySegment, SummaryOutput, Summarizer, Segments
 )
-
-# --------------------------- Public dataclasses ---------------------------
-
-@dataclass
-class DialogueDNASegment:
-    speaker: Optional[str]
-    text: str
-    start_time: Optional[float]
-    end_time: Optional[float]
-    emotions_text: Optional[Dict[str, float]] = None
-    emotions_audio: Optional[Dict[str, float]] = None
-    emotions_fused: Optional[Dict[str, float]] = None
-
-
-@dataclass
-class DialogueDNAResult:
-    segments: List[DialogueDNASegment]
-    summary_text: Optional[str] = None
-    summary_bullets: Optional[List[str]] = None
-    raw_summary: Optional[SummaryOutput] = None
-
 
 # ----------------------------- Internal types ----------------------------
 
@@ -55,7 +37,7 @@ class OverlapWindow:
 
 # ============================== Main Orchestrator ==============================
 
-class DialogueDNALogic:
+class DialogueDNALogic(Pipeline):
     """
     DialogueDNA orchestrator:
       audio -> transcription+diarization -> overlap resolution (separate+enhance) ->
@@ -68,58 +50,50 @@ class DialogueDNALogic:
 
     def __init__(self, app: AppState) -> None:
         self.app = app
-        if getattr(self.app.services, "transcription", None) is None or \
-           getattr(self.app.services.transcription, "transcriber", None) is None:
-            raise RuntimeError("Transcriber is not configured. Check ServicesConfig.transcription and plugin registration.")
 
     # ------------------------------- Public API -------------------------------
 
-    def run(
-        self,
-        *,
-        audio: AudioType,
-        diarization: bool = True,
-        language_hint: Optional[str] = None,
-        fuse_weight_text: float = 0.5,
-        fuse_weight_audio: float = 0.5,
-        always_enhance_non_overlap: bool = False,
-    ) -> DialogueDNAResult:
+    def run(self, pipeline_input: PipelineInput) -> PipelineOutput:
         """
         Execute the DialogueDNA pipeline on `audio`.
 
         `always_enhance_non_overlap`: if True and enhancer exists, also enhance non-overlap parts.
         """
         # 1) Transcribe
-        segments = self._transcribe(audio=audio, diarization=diarization)
+        transcript_segments = self._transcribe(audio=pipeline_input.audio)
+
+
 
         # 2) Overlap detection + cache separation/enhancement per distinct window
-        overlaps = self._detect_overlaps(segments)
-        overlap_cache = self._prepare_overlap_sources(audio, overlaps)
+        overlaps = self._detect_overlaps(transcript_segments)
+        overlap_cache = self._prepare_overlap_sources(pipeline_input.audio, overlaps)
 
         # 3) Emotions per segment (text + audio with overlap-aware analysis)
-        result_segments: List[DialogueDNASegment] = []
-        for seg in segments:
-            emo_text = self._analyze_text_emotions(seg)
-            emo_audio = self._analyze_audio_emotions_for_segment(
-                audio=audio,
-                seg=seg,
+        result_segments: Segments = []
+        for segment in transcript_segments:
+            analyzed_text_segment: EmotionAnalyzerByTextOutput = self._analyze_text_emotions(segment)
+            analyzed_audio_segment: EmotionAnalyzerByAudioOutput = self._analyze_audio_emotions_for_segment(
+                audio=pipeline_input.audio,
+                seg=segment,
                 overlaps=overlaps,
                 overlap_cache=overlap_cache,
-                always_enhance_non_overlap=always_enhance_non_overlap
             )
-            fused = self._fuse_emotions(emo_text, emo_audio, fuse_weight_text, fuse_weight_audio)
 
-            result_segments.append(DialogueDNASegment(
-                speaker=str(seg.writer) if seg.writer is not None else None,
-                text=self._normalize_text(seg.text),
-                start_time=seg.start_time,
-                end_time=seg.end_time,
-                emotions_text=emo_text,
-                emotions_audio=emo_audio,
-                emotions_fused=fused,
+            fused = self._fuse_emotions(analyzed_text_segment, analyzed_audio_segment)
+
+            result_segments.append(Segments(
+                speaker=str(segment.writer) if segment.writer is not None else None,
+                text=self._normalize_text(segment.text),
+                start_time=segment.start_time,
+                end_time=segment.end_time,
+                emotion_analysis=EmotionBundle(
+                    text=analyzed_text_segment,
+                    audio=analyzed_audio_segment,
+                    mixed=fused,
+                )
             ))
 
-        # 4) Optional summarization
+        # 4) summarization
         summary_text = None
         summary_bullets = None
         raw_summary = None
@@ -136,7 +110,7 @@ class DialogueDNALogic:
                 summary_text = None
                 summary_bullets = None
 
-        return DialogueDNAResult(
+        return PipelineOutput(
             segments=result_segments,
             summary_text=summary_text,
             summary_bullets=summary_bullets,
@@ -145,24 +119,30 @@ class DialogueDNALogic:
 
     # ----------------------------- Pipeline steps -----------------------------
 
-    def _transcribe(self, *, audio: AudioType, diarization: bool) -> List[TranscriptionSegmentOutput]:
+    def _transcribe(self, *, audio: AudioType, diarization: bool = True) -> TranscriptionOutput:
         transcriber = self.app.services.transcription.transcriber
-        req = TranscriptionSegmentInput(
+
+        if transcriber is None:
+            # TODO: Report
+            return None
+
+        req = TranscriptionInput(
             audio=AudioSegment(
-                speaker=None,
-                audio=audio,
-                start_time=None,
-                end_time=None,
-                sample_rate=None,
-                language=None,
+                audio=audio
             ),
-            diarization=diarization,
+            diarization=diarization
         )
-        out = transcriber.transcribe(req)
+
+        transcript_segments = transcriber.transcribe(req)
+
+        if transcript_segments is None:
+            # TODO: Report
+            return None
+
         # normalize
-        for s in out:
-            s.text = self._normalize_text(s.text or "")
-        return out
+        for segment in transcript_segments:
+            segment.text = self._normalize_text(segment.text or "")
+        return transcript_segments
 
     @staticmethod
     def _detect_overlaps(segments: List[TranscriptionSegmentOutput]) -> List[OverlapWindow]:
@@ -252,14 +232,16 @@ class DialogueDNALogic:
 
         return cache
 
-    def _analyze_text_emotions(self, seg: TranscriptionSegmentOutput) -> Optional[Dict[str, float]]:
-        emo_text: Optional[EmotionTextAnalyzer] = getattr(self.app.services.emotion_analysis, "by_text", None)
-        if emo_text is None:
+    def _analyze_text_emotions(self, segment: EmotionAnalyzerByTextInput) -> EmotionAnalyzerByTextOutput:
+        text_analyzer: EmotionTextAnalyzer = self.app.services.emotion_analysis.by_text
+        if text_analyzer is None:
+            # TODO: Report
             return None
         try:
-            out: Optional[EmotionAnalyzerByTextOutput] = emo_text.analyze(seg)
-            return dict(getattr(out, "emotions", {}) or {}) if out is not None else None
+            res: EmotionAnalyzerByTextOutput = text_analyzer.analyze(segment)
+            return res
         except Exception:
+            # TODO: Report
             return None
 
     def _analyze_audio_emotions_for_segment(
@@ -269,8 +251,8 @@ class DialogueDNALogic:
         seg: TranscriptionSegmentOutput,
         overlaps: List[OverlapWindow],
         overlap_cache: Dict[Tuple[float, float, Tuple[str, ...]], Dict[str, AudioSegment]],
-        always_enhance_non_overlap: bool
-    ) -> Optional[Dict[str, float]]:
+        always_enhance_non_overlap: bool = False
+    ) -> EmotionAnalyzerByAudioOutput:
         """
         For one transcript segment:
           - Find intersecting overlap windows
@@ -339,6 +321,30 @@ class DialogueDNALogic:
                 distribs.append((dur, d))
         return _weighted_average_distributions(distribs)
 
+    def _fuse_emotions(self,
+            emotion_analyzed_by_text: EmotionAnalyzerByTextOutput,
+            emotion_analyzed_by_audio: EmotionAnalyzerByAudioOutput
+        ) -> EmotionAnalyzerMixerOutput:
+
+        mixer_analyzer = self.app.services.emotion_analysis.mixed
+
+        if mixer_analyzer is None:
+            # TODO: Report
+            return None
+
+        req: EmotionAnalyzerMixerInput = EmotionAnalyzerMixerInput(
+                text_results=emotion_analyzed_by_text,
+                audio_results=emotion_analyzed_by_audio
+            )
+
+        try:
+            res = mixer_analyzer.fuse(req)
+        except Exception:
+            # TODO: Report
+            return None
+
+        return res
+
     @staticmethod
     def _analyze_audio_distribution(
         analyzer: EmotionAudioAnalyzer, audio_seg: AudioSegment
@@ -375,31 +381,6 @@ class DialogueDNALogic:
     @staticmethod
     def _normalize_text(t: str) -> str:
         return " ".join((t or "").split())
-
-    @staticmethod
-    def _fuse_emotions(
-        t: Optional[Dict[str, float]],
-        a: Optional[Dict[str, float]],
-        wt_text: float,
-        wt_audio: float
-    ) -> Optional[Dict[str, float]]:
-        if t and not a:
-            return dict(t)
-        if a and not t:
-            return dict(a)
-        if not t and not a:
-            return None
-
-        def _norm(d: Dict[str, float]) -> Dict[str, float]:
-            s = float(sum(max(0.0, v) for v in d.values())) or 1.0
-            return {k: max(0.0, v) / s for k, v in d.items()}
-
-        tt = _norm(t or {})
-        aa = _norm(a or {})
-        labels = set(tt.keys()) | set(aa.keys())
-        fused = {lab: wt_text * tt.get(lab, 0.0) + wt_audio * aa.get(lab, 0.0) for lab in labels}
-        total = float(sum(fused.values())) or 1.0
-        return {k: v / total for k, v in fused.items()}
 
     @staticmethod
     def _map_sources_to_speakers(

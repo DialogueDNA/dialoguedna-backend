@@ -6,6 +6,6 @@ from app.services.emotions.mixed.adapters.weights.config import MixedWeightsConf
 
 @dataclass(frozen=True)
 class EmotionMixedAnalysisConfig:
-    main_analyzer: str = env.FUSION_EMOTION_MODEL_NAME
+    main_mixer_analyzer: str = env.FUSION_EMOTION_MODEL_NAME
     weights: MixedWeightsConfig = MixedWeightsConfig()
     adaptive: MixedAdaptiveConfig = MixedAdaptiveConfig()

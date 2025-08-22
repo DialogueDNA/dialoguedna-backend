@@ -8,7 +8,7 @@ import whisperx
 from app.core.config.providers.whisperx import WhisperXConfig
 from app.interfaces.services.transcription import (
     Transcriber,
-    TranscriptionSegmentInput,
+    TranscriptionInput,
     TranscriptionSegmentOutput,
 )
 from app.interfaces.services.text import TextSegment
@@ -35,7 +35,7 @@ class WhisperXTranscriber(Transcriber):
 
     # ---------------- Public API ----------------
     @torch.inference_mode()
-    def transcribe(self, segment: TranscriptionSegmentInput) -> List[TranscriptionSegmentOutput]:
+    def transcribe(self, segment: TranscriptionInput) -> List[TranscriptionSegmentOutput]:
         audio: AudioSegment = segment.audio
 
         # 1) Prepare audio as 16k, mono, float32 numpy array

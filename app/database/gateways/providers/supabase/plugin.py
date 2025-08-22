@@ -5,4 +5,4 @@ from app.database.registry import TableGatewayFactory, register_database
 
 @register_database("supabase")
 def build_supabase_factory(cfg: DatabaseConfig) -> TableGatewayFactory:
-    return lambda table_name: SupabaseTable(cfg.supabase, table_name)
+    return lambda table_name: SupabaseTable.from_config(cfg.supabase, table_name)

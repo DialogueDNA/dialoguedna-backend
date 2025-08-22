@@ -4,6 +4,6 @@ from app.services.emotions.audio.providers.hugging_face.superb_audio_emotion_ana
 from app.services.emotions.audio.registry import register_emotion_audio_analyzer
 
 
-@register_emotion_audio_analyzer("hf-audio")
+@register_emotion_audio_analyzer("superb-audio")
 def build_superb_audio_emotion_analyzer(cfg: EmotionAudioAnalysisConfig) -> EmotionAudioAnalyzer:
     return SuperbAudioEmotionAnalyzer(cfg.superb)

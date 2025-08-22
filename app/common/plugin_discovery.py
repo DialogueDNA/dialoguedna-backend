@@ -5,6 +5,11 @@ from typing import Iterable, List
 
 def discover_plugins() -> List[str]:
     return autodiscover_plugin_modules([
+        "app.database.gateways.providers",
+        "app.database.repos.registry",
+        "app.database.repos",
+        "app.storage.providers",
+        "app.storage.adapters",
         "app.services.audio.enhance.providers",
         "app.services.audio.separation.providers",
         "app.services.transcription.providers",

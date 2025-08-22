@@ -4,6 +4,6 @@ from app.services.transcription.providers.azure.speech_to_text import AzureSpeec
 from app.services.transcription.registry import register_transcriber
 
 
-@register_transcriber("azure_speech")
+@register_transcriber("azure_speech_to_text")
 def build_azure_transcriber(cfg: TranscriptionConfig) -> Transcriber:
     return AzureSpeechToTextTranscriber(cfg.azure_speech_to_text)

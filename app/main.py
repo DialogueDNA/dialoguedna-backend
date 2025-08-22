@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.endpoints import router as api_router
+from app.api.routers import router as api_router
 from app.core.logging import setup_logging
 from app.state.lifespan import lifespan
 

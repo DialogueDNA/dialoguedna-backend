@@ -4,27 +4,30 @@ from dataclasses import dataclass
 from typing import Protocol, List, Dict, Optional
 
 from app.interfaces.services import SpeakerType
-from app.interfaces.services.emotions import EmotionAnalyzerOutput
+from app.interfaces.services.emotions import EmotionAnalyzerOutput, EmotionBundle
 from app.interfaces.services.text import TextType
 
-
-@dataclass
+@dataclass(frozen=True)
 class SummarySegment:
     """Summarizer input segment contract."""
     text: TextType                               # text to summarize
-    speaker: Optional[SpeakerType]               # optional speaker name, if available
-    emotions: Optional[EmotionAnalyzerOutput]    # optional emotion_analysis, if available
+    speaker: Optional[SpeakerType] = None
+    start_time: Optional[float]  = None
+    end_time: Optional[float]  = None
+    emotion_analysis: Optional[EmotionBundle] = None
+
+Segments = List[SummarySegment]
 
 @dataclass
 class SummaryInput:
     """Summarizer input contract."""
-    segments: List[SummarySegment]
-    style: str                           # key from prompts.PROMPT_PRESETS, e.g. "ALL_IN_ONE"
-    max_tokens: Optional[int]            # optional max tokens for the summary
-    language: Optional[str]              # optional forced output language
-    per_speaker: bool
-    bullets: bool
-    metadata: Optional[Dict[str, str]]   # optional arbitrary metadata for prompt conditioning
+    segments: Segments
+    style: str                                  # key from prompts.PROMPT_PRESETS, e.g. "ALL_IN_ONE"
+    max_tokens: Optional[int] = None            # optional max tokens for the summary
+    language: Optional[str] = None              # optional forced output language
+    per_speaker: Optional[bool] = None
+    bullets: Optional[bool] = None
+    metadata: Optional[Dict[str, str]] = None   # optional arbitrary metadata for prompt conditioning
 
 @dataclass
 class SummaryOutput:

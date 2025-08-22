@@ -66,7 +66,7 @@ J_HARTMANN_TOP_K = int(os.getenv("J_HARTMANN_TOP_K", "0") or 0) or None # 0 | No
 # === Audio Emotion Model ===
 # This is the model used for audio-based emotion analysis.
 # Default: "superb/hubert-large-superb-er"
-AUDIO_EMOTION_MODEL_NAME = os.getenv("AUDIO_EMOTION_ADAPTER", "superb") # superb
+AUDIO_EMOTION_MODEL_NAME = os.getenv("AUDIO_EMOTION_ADAPTER", "superb-audio") # superb
 SUPERB_MODEL_NAME = os.getenv("AUDIO_EMOTION_ADAPTER", "superb/hubert-large-superb-er") # superb/hubert-large-superb-er | superb/wav2vec2-large-superb-er | ...
 AUDIO_TARGET_SR = int(os.getenv("AUDIO_TARGET_SR", "16000")) # Target sample rate for audio emotion analysis, e.g., 16000 Hz
 

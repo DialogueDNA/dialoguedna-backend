@@ -8,7 +8,7 @@ from app.interfaces.services.text import TextSegment
 
 
 @dataclass
-class TranscriptionSegmentInput:
+class TranscriptionInput:
     """
     Input for the transcriber.
     """
@@ -17,5 +17,7 @@ class TranscriptionSegmentInput:
 
 TranscriptionSegmentOutput = TextSegment
 
+TranscriptionOutput = List[TextSegment]
+
 class Transcriber(Protocol):
-    def transcribe(self, segment: TranscriptionSegmentInput) -> List[TranscriptionSegmentOutput]: ...
+    def transcribe(self, segment: TranscriptionInput) -> TranscriptionOutput: ...

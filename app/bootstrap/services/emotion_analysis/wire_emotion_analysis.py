@@ -30,7 +30,7 @@ def wire_emotion_analysis(
 
     name = (getattr(audio_cfg, "main_audio_analyzer", "") or "").strip().lower()
     if not name:
-        raise ValueError("AudioEmotionAnalysisConfig.main_audio_analyzer is empty")
+        raise ValueError("AudioEmotionAnalysisConfig.main_audio_analyzer is empty. ")
 
     try:
         emotions.audio_analyzer = build_emotion_audio_analyzer(name, audio_cfg)
@@ -41,7 +41,7 @@ def wire_emotion_analysis(
         )
 
     if mixed_cfg is not None:
-        name = (getattr(mixed_cfg, "main_mixer", "") or "").strip().lower()
+        name = (getattr(mixed_cfg, "main_mixer_analyzer", "") or "").strip().lower()
         if not name:
             raise ValueError("MixedEmotionConfig.main_mixer is empty")
         try:

@@ -12,7 +12,7 @@ def get_jwt_claims(credentials: HTTPAuthorizationCredentials = Depends(bearer_sc
         return claims
     except Exception:
         raise HTTPException(status_code=401, detail="Invalid token")
-
+                                                                                                                                                
 # ---- UserContext ----
 from dataclasses import dataclass
 from typing import Optional, Sequence

@@ -4,6 +4,6 @@ from app.services.emotions.text.providers.hugging_face.jhartmann_text_emotion_an
 from app.services.emotions.text.registry import register_emotion_text_analyzer
 
 
-@register_emotion_text_analyzer("hf-text")
+@register_emotion_text_analyzer("j_hartmann")
 def build_jhartmann_text_emotion_analyzer(cfg: EmotionTextAnalysisConfig) -> EmotionTextAnalyzer:
     return JHartmannTextEmotionAnalyzer(cfg.j_hartmann)
