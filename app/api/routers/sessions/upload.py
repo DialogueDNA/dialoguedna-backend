@@ -38,3 +38,21 @@ async def create_session_bg(req: Request,
     background.add_task(do_analyze, tmp_path, session_id)
     return {"session": created}
 
+
+@router.post("", response_model=SessionResponse)
+async def create_session(req: Request,
+                         file: UploadFile = File(...),
+                         title: str = Form(...),
+                         ctx: UserContext = Depends(require_user)):
+    # TODO: Save in temp file
+    # tmp_path = ...file...
+
+    session = req.app.state.api.create_and_analyze(
+        user_id=ctx.id,
+        title=title,
+        audio_path=tmp_path,
+        inline_save=False,
+        upload_blobs=True,
+        dispatch="thread",
+    )
+    return {"session": session}

@@ -4,24 +4,17 @@ import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
+from app.application.facade import ApplicationFacade
 from app.bootstrap.wire_app import wire_app
 from app.core.config import AppConfig
-from app.logic.dialogueDNA.dialogue_dna import DialogueDNALogic
-from app.logic.dialogueDNA.subscribers.blob_artifacts import SessionsRepoSubscriber
-from app.logic.dialogueDNA.subscribers.db_progress import DBProgressSubscriber
 
 log = logging.getLogger("app")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
-        reporter = PipelineReporter(req.app.state.api, session_id, dispatch="thread")  # "sync" אם תרצי חסימה
-        reporter.subscribe(DBProgressSubscriber(inline_save=False))
-        reporter.subscribe(SessionsRepoSubscriber(base_prefix="sessions"))
-
         app_state = wire_app(AppConfig())
-        app.state.app = app_state
-        app.state.logic = DialogueDNALogic(app_state)
+        app.state.api = ApplicationFacade(app_state)
         log.info("App wired successfully")
         yield
     except Exception as e:

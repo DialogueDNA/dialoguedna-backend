@@ -3,7 +3,7 @@ import logging
 from app.bootstrap.wire_app import wire_app
 from app.common.plugin_discovery import discover_plugins
 from app.core.config import AppConfig
-from app.logic.dialogueDNA.dialogue_dna import DialogueDNALogic
+from app.logic.dialogueDNA.pipeline import DialogueDNAPipeline
 from app.services.authz import AuthZ
 
 
@@ -21,7 +21,7 @@ class ServicesAPI:
         # RBAC
         authz = AuthZ(policy=app_cfg.policy.POLICY)
 
-        logic = DialogueDNALogic(app_state)
+        logic = DialogueDNAPipeline(app_state)
 
         self._logic = logic
         self._authz = authz
