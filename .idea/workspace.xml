@@ -4,31 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="Did some of the dialogue_dna.py, not complited">
-      <change afterPath="$PROJECT_DIR$/app/application/facade.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/application/queues.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/application/reporter_factory.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/adapters/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/adapters/capability_adapters.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/events/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/events/subscribers/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/events/subscribers/base.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/events/subscribers/blob_artifacts.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/events/subscribers/db_progress.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/interfaces/capabilities.py" afterDir="false" />
+    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="Made the facade, almost ready">
+      <change afterPath="$PROJECT_DIR$/app/api/dependencies/app_facade.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/interfaces/listeners.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/routers/sessions/audio.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/routers/sessions/audio.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/routers/sessions/transcript.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/routers/sessions/transcript.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/routers/sessions/upload.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/routers/sessions/upload.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/interfaces/logic/pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/interfaces/logic/pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/dialogue_dna.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/events.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/interfaces/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/interfaces/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/application/facade.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/facade.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/core/constants/db/supabase_constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/core/constants/db/supabase_constants.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/events/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/events/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/events/subscribers/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/events/subscribers/base.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/events/subscribers/blob_artifacts.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/events/subscribers/blob_artifacts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/events/subscribers/db_progress.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/events/subscribers/db_progress.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/pipeline.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/reporter.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/dialogueDNA/reporter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/subscribers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/subscribers/base.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/subscribers/blob_artifacts.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/dialogueDNA/subscribers/db_progress.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/state/lifespan.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/state/lifespan.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -324,7 +314,7 @@
       <workItem from="1755182964782" duration="89000" />
       <workItem from="1755183064387" duration="72996000" />
       <workItem from="1755537862332" duration="36364000" />
-      <workItem from="1755893689862" duration="35308000" />
+      <workItem from="1755893689862" duration="57735000" />
     </task>
     <task id="LOCAL-00001" summary="Initial setup for audio file upload endpoint and directory structure">
       <option name="closed" value="true" />
@@ -614,7 +604,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755903854003</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="Made the facade, almost ready">
+      <option name="closed" value="true" />
+      <created>1755958206319</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1755958206319</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -644,7 +642,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Update audio upload endpoint to save original.wav under client/session/audio directory" />
     <MESSAGE value="feat: add new endpoint for uploading audio files via HTTP request&#10;&#10;- Created /upload-audio endpoint to accept audio files from client requests&#10;- Save, convert to WAV, and upload to Azure Blob Storage&#10;- Preserve original filename for easier file identification in Azure" />
     <MESSAGE value="commit before checkout" />
     <MESSAGE value="feat: integrate session-based audio upload to Azure Blob Storage&#10;&#10;- Moved handle_upload_file into AzureUploader class&#10;- Added session_id parameter to organize files under &lt;session_id&gt;/audio.wav path&#10;- Ensured original upload is saved, converted to WAV, and uploaded with consistent naming&#10;- Returns SAS URL for direct access to the uploaded audio file" />
@@ -669,7 +666,8 @@
     <MESSAGE value="Different logic via ChatGPT 5" />
     <MESSAGE value="Different logic via ChatGPT 5 now in storage" />
     <MESSAGE value="Did some of the dialogue_dna.py, not complited" />
-    <option name="LAST_COMMIT_MESSAGE" value="Did some of the dialogue_dna.py, not complited" />
+    <MESSAGE value="Made the facade, almost ready" />
+    <option name="LAST_COMMIT_MESSAGE" value="Made the facade, almost ready" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

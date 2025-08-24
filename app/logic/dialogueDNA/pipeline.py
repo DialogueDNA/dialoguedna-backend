@@ -59,23 +59,40 @@ class DialogueDNAPipeline(Pipeline):
 
         `always_enhance_non_overlap`: if True and enhancer exists, also enhance non-overlap parts.
         """
+        reporter = pipeline_input.reporter
 
-        transcription: TranscriptionOutput = self.transcribe(
-            audio=pipeline_input.audio,
-            reporter=pipeline_input.reporter
-        )
+        reporter.transcription_queued() if reporter is not None else None
+        reporter.emotion_analyzation_queued() if reporter is not None else None
+        reporter.summarization_queued() if reporter is not None else None
 
-        emotions: List[EmotionAnalyzerBundle] = self.analyze_emotions_on_transcript(
-            audio=pipeline_input.audio,
-            transcription=transcription,
-            reporter=pipeline_input.reporter
-        )
+        try:
+            transcription: TranscriptionOutput = self.transcribe(
+                audio=pipeline_input.audio,
+                reporter=pipeline_input.reporter
+            )
+        except Exception:
+            reporter.emotion_analyzation_stopped() if reporter is not None else None
+            reporter.summarization_stopped() if reporter is not None else None
+            raise
 
-        summarization: SummaryOutput = self.summarize(
-            segments=emotions,
-            style=PromptStyle.EMOTIONAL_STORY,
-            reporter = pipeline_input.reporter
-        )
+        try:
+            emotions: List[EmotionAnalyzerBundle] = self.analyze_emotions_on_transcript(
+                audio=pipeline_input.audio,
+                transcription=transcription,
+                reporter=pipeline_input.reporter
+            )
+        except Exception:
+            reporter.summarization_stopped() if reporter is not None else None
+            raise
+
+        try:
+            summarization: SummaryOutput = self.summarize(
+                segments=emotions,
+                style=PromptStyle.EMOTIONAL_STORY,
+                reporter = pipeline_input.reporter
+            )
+        except Exception:
+            raise
 
         return PipelineOutput(
             transcription=transcription,
@@ -87,12 +104,14 @@ class DialogueDNAPipeline(Pipeline):
 
     def transcribe(self, *, audio: AudioType, diarization: bool = True, reporter: PipelineReporter = None) -> TranscriptionOutput:
 
+        reporter.transcription_processing() if reporter is not None else None
+
         # 1) Transcribe
         transcriber = self.services.transcription.transcriber
 
         if transcriber is None:
-            # TODO: Report
-            return None
+            reporter.transcription_failed("Transcriber not found") if reporter is not None else None
+            raise ValueError("Transcriber not found")
 
         req = TranscriptionInput(
             audio=AudioSegment(
@@ -104,8 +123,8 @@ class DialogueDNAPipeline(Pipeline):
         try:
             transcription = transcriber.transcribe(req)
         except Exception:
-            # TODO: Report
-            return None
+            reporter.transcription_failed("Transcription process failed") if reporter is not None else None
+            raise
 
         # normalize
         for segment in transcription:
@@ -118,41 +137,71 @@ class DialogueDNAPipeline(Pipeline):
 
     def analyze_emotions_on_transcript(self, *, audio: AudioType, transcription: TranscriptionOutput, reporter: PipelineReporter = None) -> List[EmotionAnalyzerBundle]:
 
+        reporter.emotion_analyzation_processing() if reporter is not None else None
+
         # 2) Overlap detection + cache separation/enhancement per distinct window
-        overlaps = self._detect_overlaps(transcription)
-        overlap_cache = self._prepare_overlap_sources(audio, overlaps)
+
+        try:
+            overlaps = self._detect_overlaps(transcription)
+        except Exception:
+            reporter.emotion_analyzation_failed("Overlap detection failed") if reporter is not None else None
+            raise
+
+        try:
+            overlap_cache = self._prepare_overlap_sources(audio, overlaps)
+        except Exception:
+            reporter.emotion_analyzation_failed("Prepare overlap sources failed") if reporter is not None else None
+            raise
 
         # 3) Emotions per segment (text + audio with overlap-aware analysis)
+
         emotion_analysis_output: List[EmotionAnalyzerBundle] = []
+
         for segment in transcription:
-            whom = segment.writer
-            start_time = segment.start_time
-            end_time = segment.end_time
+            whom: Optional[str] = segment.writer
+            start_time: Optional[float] = segment.start_time
+            end_time: Optional[float] = segment.end_time
 
-            # Text emotion analysis
-            analyzed_text_segment: EmotionAnalyzerByTextOutput = self._analyze_text_emotions(
-                text_segment=segment
-            )
+            analyzed_text_segment: Optional[EmotionAnalyzerByTextOutput] = None
+            analyzed_audio_segment: Optional[EmotionAnalyzerByAudioOutput] = None
+            analyzed_mixed_segment: Optional[EmotionAnalyzerMixerOutput] = None
 
-            # Audio emotion analysis
-            analyzed_audio_segment: EmotionAnalyzerByAudioOutput = self._analyze_audio_emotions_for_segment(
-                audio=audio,
-                text_segment=segment,
-                overlaps=overlaps,
-                overlap_cache=overlap_cache,
-            )
+            try:
+                # Text emotion analysis
+                analyzed_text_segment = self._analyze_text_emotions_for_segment(
+                    text_segment=segment
+                )
+            except Exception:
+                reporter.emotion_analyzation_failed("Text emotion analyzation failed") if reporter is not None else None
+                raise
 
-            # Mixed emotion analysis
-            fused: EmotionAnalyzerMixerOutput = self._fuse_emotions(
-                emotion_analyzed_by_text=analyzed_text_segment,
-                emotion_analyzed_by_audio=analyzed_audio_segment
-            )
+            try:
+                # Audio emotion analysis
+                analyzed_audio_segment = self._analyze_audio_emotions_for_segment(
+                    audio=audio,
+                    text_segment=segment,
+                    overlaps=overlaps,
+                    overlap_cache=overlap_cache,
+                )
+            except Exception:
+                reporter.emotion_analyzation_failed("Audio emotion analyzation failed") if reporter is not None else None
+                pass
+
+            try:
+                # Mixed emotion analysis
+                analyzed_mixed_segment = self._fuse_emotions(
+                    emotion_analyzed_by_text=analyzed_text_segment,
+                    emotion_analyzed_by_audio=analyzed_audio_segment
+                )
+            except Exception:
+                reporter.emotion_analyzation_failed("Mix emotion analyzation failed") if reporter is not None else None
+                pass
 
             # Bundle the emotion analysis results
             emotion_bundle: EmotionAnalyzerBundle = EmotionAnalyzerBundle(
                 text=analyzed_text_segment,
                 audio=analyzed_audio_segment,
-                mixed=fused,
+                mixed=analyzed_mixed_segment,
                 whom=whom,
                 start_time=start_time,
                 end_time=end_time
@@ -162,7 +211,7 @@ class DialogueDNAPipeline(Pipeline):
             emotion_analysis_output.append(emotion_bundle)
 
         # Report emotion analysis
-        reporter.emotions_ready(emotion_analysis_output) if reporter is not None else None
+        reporter.emotion_analyzation_ready(emotion_analysis_output) if reporter is not None else None
 
         return emotion_analysis_output
 
@@ -254,18 +303,16 @@ class DialogueDNAPipeline(Pipeline):
 
         return cache
 
-    def _analyze_text_emotions(self, text_segment: TextSegment) -> EmotionAnalyzerByTextOutput:
+    def _analyze_text_emotions_for_segment(self, text_segment: TextSegment) -> EmotionAnalyzerByTextOutput:
         text_analyzer: EmotionTextAnalyzer = self.services.emotion_analysis.by_text
 
         if text_analyzer is None:
-            # TODO: Report
-            return None
+            raise ValueError("Text emotion analyzer not found")
 
         try:
             text_emotions: EmotionAnalyzerByTextOutput = text_analyzer.analyze(text_segment)
         except Exception:
-            # TODO: Report
-            return None
+            raise
 
         return text_emotions
 
@@ -285,17 +332,16 @@ class DialogueDNAPipeline(Pipeline):
           - For non-overlap sub-windows, analyze on original (optionally enhanced) audio
           - Return duration-weighted average distribution over the full segment.
         """
-        emotion_analyzer_by_audio: EmotionAudioAnalyzer = self.services.emotion_analysis.by_audio
+        audio_analyzer: EmotionAudioAnalyzer = self.services.emotion_analysis.by_audio
 
-        if emotion_analyzer_by_audio is None or text_segment.start_time is None or text_segment.end_time is None:
-            # TODO: Report
-            return None
+        if audio_analyzer is None or text_segment.start_time is None or text_segment.end_time is None:
+            raise ValueError("Audio emotion analyzer not found")
 
         segment_speaker = str(text_segment.writer) if text_segment.writer is not None else None
 
         if segment_speaker is None:
             # no diarization → analyze the whole chunk on original audio
-            return emotion_analyzer_by_audio.analyze(
+            return audio_analyzer.analyze(
                 AudioSegment(
                     audio=audio, speaker=None,
                     start_time=text_segment.start_time, end_time=text_segment.end_time,
@@ -331,8 +377,7 @@ class DialogueDNAPipeline(Pipeline):
         enhancer: AudioEnhancer = self.services.audio.enhancer
 
         if enhancer is None:
-            # TODO: Report
-            return None
+            raise ValueError("Audio enhancer not found")
 
         for (a, b) in remaining:
             if b <= a:
@@ -351,7 +396,7 @@ class DialogueDNAPipeline(Pipeline):
             dur = max(0.0, (b - a))
             if dur <= 0:
                 continue
-            d = emotion_analyzer_by_audio.analyze(audio_segment)
+            d = audio_analyzer.analyze(audio_segment)
             if d:
                 distribs.append((dur, d))
         return _weighted_average_distributions(distribs)
@@ -364,8 +409,7 @@ class DialogueDNAPipeline(Pipeline):
         mixer_analyzer = self.services.emotion_analysis.mixed
 
         if mixer_analyzer is None:
-            # TODO: Report
-            return None
+            raise ValueError("Mixer emotion analyzer not found")
 
         req: EmotionAnalyzerMixerInput = EmotionAnalyzerMixerInput(
                 text_results=emotion_analyzed_by_text,
@@ -375,8 +419,7 @@ class DialogueDNAPipeline(Pipeline):
         try:
             mixed_emotions = mixer_analyzer.fuse(req)
         except Exception:
-            # TODO: Report
-            return None
+            raise
 
         return mixed_emotions
 
@@ -386,12 +429,14 @@ class DialogueDNAPipeline(Pipeline):
             per_speaker: bool = None, bullets: bool = None,
             metadata: Dict[str, str] = None, reporter: PipelineReporter = None) -> SummaryOutput:
 
+        reporter.summarization_processing() if reporter is not None else None
+
         # 4) Summarization
         summarizer = self.services.summarization.summarizer
 
         if summarizer is None:
-            # TODO: Report
-            return None
+            reporter.summarization_failed("Summarizer not found") if reporter is not None else None
+            raise ValueError("Summarizer not found")
 
         req = SummaryInput(
             segments=segments,
@@ -406,11 +451,11 @@ class DialogueDNAPipeline(Pipeline):
         try:
             summary = summarizer.summarize(req)
         except Exception:
-            # TODO: Report
-            return None
+            reporter.summarization_failed("Summarization failed") if reporter is not None else None
+            raise
 
         # Report summarization
-        reporter.summary_ready(summary) if reporter is not None else None
+        reporter.summarization_ready(summary) if reporter is not None else None
 
         return summary
 

@@ -1,22 +1,26 @@
 from __future__ import annotations
-from typing import Protocol
 from app.logic.dialogueDNA.interfaces.capabilities import PipelineContext
 from app.logic.dialogueDNA.events import (
-    StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, CompletedEvent, FailedEvent
+    StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, FailedEvent, QueuedEvent, StoppedEvent,
+    ProcessingEvent
 )
+from app.logic.dialogueDNA.interfaces.listeners import PipelineListener
 
-class PipelineListener(Protocol):
-    def on_stage(self, e: StageEvent, ctx: PipelineContext) -> None: ...
-    def on_transcription_ready(self, e: TranscriptionEvent, ctx: PipelineContext) -> None: ...
-    def on_emotions_ready(self, e: EmotionsEvent, ctx: PipelineContext) -> None: ...
-    def on_summary_ready(self, e: SummaryEvent, ctx: PipelineContext) -> None: ...
-    def on_completed(self, e: CompletedEvent, ctx: PipelineContext) -> None: ...
-    def on_failed(self, e: FailedEvent, ctx: PipelineContext) -> None: ...
 
-class BaseListener:
+class BaseListener(PipelineListener):
     def on_stage(self, e: StageEvent, ctx: PipelineContext) -> None: pass
+    def on_transcription_queued(self, e: QueuedEvent, ctx: PipelineContext) -> None: pass
+    def on_transcription_stopped(self, e: StoppedEvent, ctx: PipelineContext) -> None: pass
+    def on_transcription_processing(self, e: ProcessingEvent, ctx: PipelineContext) -> None: pass
     def on_transcription_ready(self, e: TranscriptionEvent, ctx: PipelineContext) -> None: pass
-    def on_emotions_ready(self, e: EmotionsEvent, ctx: PipelineContext) -> None: pass
-    def on_summary_ready(self, e: SummaryEvent, ctx: PipelineContext) -> None: pass
-    def on_completed(self, e: CompletedEvent, ctx: PipelineContext) -> None: pass
-    def on_failed(self, e: FailedEvent, ctx: PipelineContext) -> None: pass
+    def on_transcription_failed(self, e: FailedEvent, ctx: PipelineContext) -> None: pass
+    def on_emotion_analyzation_queued(self, e: QueuedEvent, ctx: PipelineContext) -> None: pass
+    def on_emotion_analyzation_stopped(self, e: StoppedEvent, ctx: PipelineContext) -> None: pass
+    def on_emotion_analyzation_processing(self, e: ProcessingEvent, ctx: PipelineContext) -> None: pass
+    def on_emotion_analyzation_ready(self, e: EmotionsEvent, ctx: PipelineContext) -> None: pass
+    def on_emotion_analyzation_failed(self, e: FailedEvent, ctx: PipelineContext) -> None: pass
+    def on_summarization_queued(self, e: QueuedEvent, ctx: PipelineContext) -> None: pass
+    def on_summarization_stopped(self, e: StoppedEvent, ctx: PipelineContext) -> None: pass
+    def on_summarization_processing(self, e: ProcessingEvent, ctx: PipelineContext) -> None: pass
+    def on_summarization_ready(self, e: SummaryEvent, ctx: PipelineContext) -> None: pass
+    def on_summarization_failed(self, e: FailedEvent, ctx: PipelineContext) -> None: pass

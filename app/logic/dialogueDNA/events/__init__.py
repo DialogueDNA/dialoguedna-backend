@@ -27,7 +27,15 @@ class SummaryEvent:
     summary: SummaryOutput
 
 @dataclass(frozen=True)
-class CompletedEvent:
+class QueuedEvent:
+    pass
+
+@dataclass(frozen=True)
+class StoppedEvent:
+    pass
+
+@dataclass(frozen=True)
+class ProcessingEvent:
     pass
 
 @dataclass(frozen=True)

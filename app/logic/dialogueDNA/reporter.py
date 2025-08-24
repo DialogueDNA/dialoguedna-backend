@@ -8,7 +8,8 @@ from concurrent.futures import ThreadPoolExecutor
 from app.logic.dialogueDNA.events.subscribers.base import PipelineListener
 from app.logic.dialogueDNA.interfaces.capabilities import PipelineContext
 from app.logic.dialogueDNA.events import (
-    StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, CompletedEvent, FailedEvent
+    StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, FailedEvent, QueuedEvent, StoppedEvent,
+    ProcessingEvent
 )
 
 log = logging.getLogger(__name__)
@@ -40,12 +41,22 @@ class PipelineReporter:
         self._subs.clear()
 
     # emits
-    def stage               (self, stage: str, detail: Optional[str] = None):   self._emit("on_stage",               StageEvent(stage, detail))
-    def transcription_ready (self, segments):                                   self._emit("on_transcription_ready", TranscriptionEvent(segments))
-    def emotions_ready      (self, emotions):                                   self._emit("on_emotions_ready",      EmotionsEvent(emotions))
-    def summary_ready       (self, summary):                                    self._emit("on_summary_ready",       SummaryEvent(summary))
-    def completed           (self):                                             self._emit("on_completed",           CompletedEvent())
-    def failed              (self, error: str):                                 self._emit("on_failed",              FailedEvent(error))
+    def stage                           (self, stage: str, detail: Optional[str] = None):   self._emit("on_stage",                          StageEvent(stage, detail))
+    def transcription_queued            (self):                                             self._emit("on_transcription_queued",           QueuedEvent())
+    def transcription_stopped           (self):                                             self._emit("on_transcription_stopped",          StoppedEvent())
+    def transcription_processing        (self):                                             self._emit("on_transcription_processing",       ProcessingEvent())
+    def transcription_ready             (self, segments):                                   self._emit("on_transcription_ready",            TranscriptionEvent(segments))
+    def transcription_failed            (self, error):                                      self._emit("on_transcription_failed",           FailedEvent(error))
+    def emotion_analyzation_queued      (self):                                             self._emit("on_emotion_analyzation_queued",     QueuedEvent())
+    def emotion_analyzation_stopped     (self):                                             self._emit("on_emotion_analyzation_stopped",    StoppedEvent())
+    def emotion_analyzation_processing  (self):                                             self._emit("on_emotion_analyzation_processing", ProcessingEvent())
+    def emotion_analyzation_ready       (self, emotions):                                   self._emit("on_emotion_analyzation_ready",      EmotionsEvent(emotions))
+    def emotion_analyzation_failed      (self, error):                                      self._emit("on_emotion_analyzation_failed",     FailedEvent(error))
+    def summarization_queued            (self):                                             self._emit("on_summarization_queued",           QueuedEvent())
+    def summarization_stopped           (self):                                             self._emit("on_summarization_stopped",          StoppedEvent())
+    def summarization_processing        (self):                                             self._emit("on_summarization_processing",       ProcessingEvent())
+    def summarization_ready             (self, summary):                                    self._emit("on_summarization_ready",            SummaryEvent(summary))
+    def summarization_failed            (self, error):                                      self._emit("on_summarization_failed",           FailedEvent(error))
 
     def _emit(self, method: str, event: Any) -> None:
         for token, sub, ctx in list(self._subs):
