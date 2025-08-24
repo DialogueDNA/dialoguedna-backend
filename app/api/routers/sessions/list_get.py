@@ -1,19 +1,32 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, HTTPException
 from app.api.dependencies.authz import require_user
 from app.api.dependencies.auth import UserContext
+from app.application.facade import ApplicationFacade
 from .schemas import SessionListResponse, SessionResponse
+from ...dependencies.app_facade import get_facade
 
 router = APIRouter()
 
 @router.get("", response_model=SessionListResponse, summary="List my sessions")
-def list_sessions(req: Request, ctx: UserContext = Depends(require_user)):
-    repo = req.app.state.api.database.sessions_repo
-    items = repo.list_for_user(ctx.id)  # ← user-filtered
-    return {"sessions": items}
+def list_sessions(
+        facade: ApplicationFacade = Depends(get_facade),
+        ctx: UserContext = Depends(require_user)):
+    try:
+        return facade.get_sessions(
+            user_id=ctx.id
+        )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
 
 @router.get("/{session_id}", response_model=SessionResponse, summary="Get my session")
-def get_session(session=Depends(...)):
-    # use the ownership dep:
-    from app.api.dependencies.resources import get_owned_session_or_404
-    s = Depends(get_owned_session_or_404)  # or inject directly in signature
-    return {"session": s}
+def get_session(
+        session_id: str,
+        facade: ApplicationFacade = Depends(get_facade),
+        ctx: UserContext = Depends(require_user)):
+    try:
+        return facade.get_session(
+            session_id=session_id,
+            user_id=ctx.id
+        )
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))

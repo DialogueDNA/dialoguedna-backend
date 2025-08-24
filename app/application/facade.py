@@ -2,7 +2,6 @@ from __future__ import annotations
 import uuid
 from typing import Any, Dict, Optional
 
-from app.api.routers.sessions.list_get import get_session
 from app.application.queues import TaskQueue
 from app.core.constants.db.supabase_constants import SessionColumn, SessionStatus
 from app.interfaces.logic.pipeline import PipelineInput
@@ -23,6 +22,10 @@ class ApplicationFacade:
         self._logic = DialogueDNAPipeline(app.services)
         self._reporters = ReporterFactory(app.database, app.storage)
 
+    # ------------------------------------ Create ------------------------------------
+
+    # ---------- Full Pipeline ----------
+
     def create_and_analyze(
             self,
             user_id: str,
@@ -39,7 +42,7 @@ class ApplicationFacade:
             title=title,
             audio_local_path=audio_local_path
         )
-        return self.analyze_sessions_dna(
+        return self.analyze_session_dna(
             session_id=session_id,
             user_id=user_id,
             audio_path=audio_blob_path,
@@ -57,7 +60,7 @@ class ApplicationFacade:
         session_id = str(uuid.uuid4())
 
         # TODO: After fixing the upload in the storage, uncommand this line
-        # audio_blob_path = self.app.storage.client.upload(audio_local_path)
+        audio_blob_path = self._app.storage.client.upload(audio_local_path)
 
         record = {
             SessionColumn.session_id: session_id,
@@ -68,7 +71,7 @@ class ApplicationFacade:
         self._app.database.sessions_repo.create(record)
         return session_id, audio_blob_path
 
-    def analyze_sessions_dna(
+    def analyze_session_dna(
             self,
             session_id: str,
             user_id: str,
@@ -171,84 +174,73 @@ class ApplicationFacade:
         # if patch:
         #     self.app.database.sessions_repo.update(session_id, patch)
 
-    # ---------- REBUILD: only emotions on existing transcript ----------
-    def rebuild_transcription(self, *, session_id: str, user_id: str) -> Dict[str, Any]:
+    # ------------------------------------ Update ------------------------------------
 
-        session = self._app.database.sessions_repo.get_for_user(session_id=session_id, user_id=user_id)
+    # ---------- Rebuilders ----------
 
-        if not session:
-            raise ValueError("Session not found")
+    # REBUILD: only transcript on existing audio
+    def rebuild_transcript(self, *, session_id: str, user_id: str) -> Dict[str, Any]:
 
-        audio_path: str = session.get(SessionColumn.transcript_url, None)
-
-        if not audio_path:
-            raise ValueError("Audio file url not found")
-
-        # TODO: After fixing the download in the storage, uncommand this line
-        # audio = self.app.storage.client.download(audio_path)
+        audio_local_path = self.get_audio(
+            session_id=session_id,
+            user_id=user_id
+        )
 
         reporter = self._reporters.for_session(session_id=session_id)
 
         self._logic.transcribe(
-            audio=audio,
+            audio=audio_local_path,
             reporter=reporter
         )
 
         return self._app.database.sessions_repo.get_for_user(session_id, user_id)
 
-    # ---------- REBUILD: only emotions on existing transcript ----------
+    # REBUILD: only emotions on existing audio and transcript
     def rebuild_emotions(self, *, session_id: str, user_id: str) -> Dict[str, Any]:
 
-        session = self._app.database.sessions_repo.get_for_user(session_id=session_id, user_id=user_id)
+        audio_local_path = self.get_audio(
+            session_id=session_id,
+            user_id=user_id
+        )
 
-        if not session:
-            raise ValueError("Session not found")
+        transcription = self.get_transcript(
+            session_id=session_id,
+            user_id=user_id
+        )
 
-        audio_path: str = session.get(SessionColumn.audio_file_url, None)
-
-        if not audio_path:
-            raise ValueError("audio file url not found")
-
-        # TODO: After fixing the download in the storage, uncommand this line
-        # audio = self.app.storage.client.download(audio_path)
-
-        transcript_url: str = session.get(SessionColumn.transcript_url, None)
-
-        if not transcript_url:
-            raise ValueError("transcript url not found")
-
-        # TODO: After fixing the download in the storage, uncommand this line
-        # transcription = self.app.storage.client.download(transcript_url)
+        if not transcription:
+            transcription = self.rebuild_transcript(
+                session_id=session_id,
+                user_id=user_id
+            )
 
         reporter = self._reporters.for_session(session_id=session_id)
 
         self._logic.analyze_emotions_on_transcript(
-            audio=audio,
+            audio=audio_local_path,
             transcription=transcription,
             reporter=reporter
         )
 
         return self._app.database.sessions_repo.get_for_user(session_id, user_id)
 
-    # ---------- REBUILD: only summary (using current transcript+emotions) ----------
+    # REBUILD: only summary on existing audio, transcript and emotions
     def rebuild_summary(self, *, session_id: str, user_id: str, style: str, max_token: Optional[int] = None,
                         language_hint: Optional[str] = None, inline_save: bool = False,
                         per_speaker: Optional[bool] = None, bullets: Optional[bool] = None,
                         metadata: Optional[Dict[str, str]] = None
                         ) -> Dict[str, Any]:
 
-        session = self._app.database.sessions_repo.get_for_user(session_id=session_id, user_id=user_id)
+        analyzed_emotions = self.get_analyzed_emotions(
+            session_id=session_id,
+            user_id=user_id,
+        )
 
-        if not session:
-            raise ValueError("Session not found")
-
-        analyzed_emotions_url: str = session.get(SessionColumn.emotion_breakdown_url, None)
-
-        if not analyzed_emotions_url:
-            raise ValueError("analyzed emotions url not found")
-
-        # TODO: After fixing the download in the storage, uncommand this line
-        # analyzed_emotions = self.app.storage.client.download(analyzed_emotions_url)
+        if not analyzed_emotions:
+            analyzed_emotions = self.rebuild_emotions(
+                session_id=session_id,
+                user_id=user_id,
+            )
 
         self._logic.summarize(
             segments=analyzed_emotions,
@@ -262,6 +254,8 @@ class ApplicationFacade:
 
         return self._app.database.sessions_repo.get_for_user(session_id, user_id)
 
+    # ------------------------------------ Read ------------------------------------
+
     def get_session(self, session_id: str, user_id: str):
         session = self._app.database.sessions_repo.get_for_user(session_id=session_id, user_id=user_id)
 
@@ -270,9 +264,37 @@ class ApplicationFacade:
 
         return session
 
+    def get_audio(self, session_id: str, user_id: str):
+        session = self.get_session(session_id=session_id, user_id=user_id)
+
+        audio_status: SessionStatus = session.get(SessionColumn.audio_file_status, None)
+
+        if audio_status is not SessionStatus.completed:
+            return None
+
+        audio_file_url: str = session.get(SessionColumn.audio_file_url, None)
+
+        if not audio_file_url:
+            raise ValueError("audio file url not found")
+
+        # TODO: Fix the download in the storage
+        try:
+            audio = self._app.storage.client.download(audio_file_url)
+        except Exception as e:
+            raise ValueError("Failed to download audio: {}".format(e))
+
+        # TODO: Save in temp file and return the audio local path
+
+        return audio
+
     def get_transcript(self, session_id: str, user_id: str):
 
-        session = get_session(session_id=session_id, user_id=user_id)
+        session = self.get_session(session_id=session_id, user_id=user_id)
+
+        transcript_status: SessionStatus = session.get(SessionColumn.transcript_status, None)
+
+        if transcript_status is not SessionStatus.completed:
+            return None
 
         transcript_url: str = session.get(SessionColumn.transcript_url, None)
 
@@ -287,9 +309,9 @@ class ApplicationFacade:
 
         return transcription
 
-    def get_emotions(self, session_id: str, user_id: str):
+    def get_analyzed_emotions(self, session_id: str, user_id: str):
 
-        session = get_session(session_id=session_id, user_id=user_id)
+        session = self.get_session(session_id=session_id, user_id=user_id)
 
         analyzed_emotions_status: SessionStatus = session.get(SessionColumn.emotion_breakdown_status, None)
 
@@ -305,10 +327,37 @@ class ApplicationFacade:
         try:
             analyzed_emotions = self._app.storage.client.download(analyzed_emotions_url)
         except Exception as e:
-            raise ValueError("Failed to download transcription: {}".format(e))
+            raise ValueError("Failed to download analyzed emotions: {}".format(e))
 
         return analyzed_emotions
 
     def get_summary(self, session_id: str, user_id: str):
 
+        session = self.get_session(session_id=session_id, user_id=user_id)
+
+        summary_status: SessionStatus = session.get(SessionColumn.summary_status, None)
+
+        if summary_status is not SessionStatus.completed:
+            return None
+
+        summary_url: str = session.get(SessionColumn.summary_url, None)
+
+        if not summary_url:
+            raise ValueError("analyzed emotions url not found")
+
+        # TODO: Fix the download in the storage
+        try:
+            summarization = self._app.storage.client.download(summary_url)
+        except Exception as e:
+            raise ValueError("Failed to download summary: {}".format(e))
+
+        return summarization
+
+    def get_sessions(self, user_id: str):
+        return self._app.database.sessions_repo.list_for_user(user_id)
+
+    # ------------------------------------ Delete ------------------------------------
+
+    def delete_session(self, session_id: str, user_id: str):
+        return self._app.database.sessions_repo.delete(user_id)
 

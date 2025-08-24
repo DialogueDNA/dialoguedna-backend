@@ -13,7 +13,7 @@ def get_transcript(
         facade: ApplicationFacade = Depends(get_facade),
         ctx: UserContext = Depends(require_user)):
     try:
-        return facade.getTranscript(
+        return facade.get_transcript(
             session_id=session_id,
             user_id=ctx.id
         )
