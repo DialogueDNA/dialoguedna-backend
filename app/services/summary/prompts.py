@@ -1,6 +1,7 @@
 from enum import Enum
 
 class PromptStyle(str, Enum):
+    BUSINESS_MEETING = "business_meeting_summary"
     CUSTOMER_SERVICE = "customer_service_summary"
     EMOTIONAL_STORY = "emotional_story"
     CLINICAL = "clinical_summary"
@@ -10,6 +11,7 @@ class PromptStyle(str, Enum):
 
 
 PROMPT_LABELS = {
+PromptStyle.BUSINESS_MEETING: "Business Meeting Summary",
     PromptStyle.CUSTOMER_SERVICE: "Customer Service Summary",
     PromptStyle.EMOTIONAL_STORY: "Emotional Story",
     PromptStyle.CLINICAL: "Clinical Summary",
@@ -19,6 +21,55 @@ PROMPT_LABELS = {
 }
 
 PROMPT_PRESETS = {
+    "business_meeting_summary": {
+    "system": "You are an expert meeting facilitator and analyst. You produce clear, structured, action-oriented summaries for business meetings.",
+    "format": (
+        "You have a multi-speaker meeting transcript with speaker labels and emotional annotations.\n\n"
+        "{lines}\n\n"
+        "Write a structured business meeting summary with the following format. "
+        "Keep it practical, professional, and visually clear.\n\n"
+
+        "🧭 1) Meeting Topic\n"
+        "- One concise sentence about the main topic.\n\n"
+
+        "❗ 2) Problems / Issues Discussed\n"
+        "- Bullet list of each issue.\n"
+        "- Include numbers or percentages if mentioned.\n\n"
+
+        "🧩 3) Proposed Solutions / Options\n"
+        "- Option A: short description (pros/cons if given) → Mark as ✅ accepted, ❌ rejected, or ⏳ undecided.\n"
+        "- Option B: short description …\n"
+        "- Continue for all options.\n\n"
+
+        "🤝 4) Agreements / Decisions\n"
+        "- List only confirmed agreements/decisions.\n"
+        "- Use ✅ confirmed, ❌ rejected, ⏳ pending.\n"
+        "- Always include Owner and Due Date. If missing, write 'Not specified'.\n\n"
+
+        "✅ 5) Action Items\n"
+        "Always present this section as a **Markdown table** in the following exact format:\n\n"
+        "| ID | Task | Owner | Due Date |\n"
+        "|----|------|-------|----------|\n"
+        "| 1  | Example task | Person A | Next Friday |\n\n"
+        "- Each action item must be listed in its own row.\n"
+        "- Use plain text only (no line breaks inside a cell).\n"
+        "- Ensure the table has exactly 4 columns with headers: ID, Task, Owner, Due Date.\n"
+        "- Convert natural time mentions (e.g., 'Friday') into the Due Date column.\n"
+        "- If owner/date not mentioned, fill with 'Not specified'.\n\n"
+
+        "📝 6) Conclusions & Improvements\n"
+        "- 2–3 short bullets: main takeaways.\n"
+        "- 1–2 bullets: how to improve future meetings.\n\n"
+
+        "Style rules:\n"
+        "- Always output all 6 sections.\n"
+        "- Use emojis as headers exactly as shown.\n"
+        "- Keep formatting consistent: bullets for lists, and a clean Markdown table for action items.\n"
+        "- Do not invent facts. If unclear, write 'Not specified'.\n"
+    )
+},
+
+
     "customer_service_summary": {
         "system": "You are a professional customer experience analyst with expertise in emotional intelligence and conversation behavior.",
         "format": (

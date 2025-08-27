@@ -41,7 +41,7 @@ def test_transcription_with_diarization():
     """
 
     # 📂 Local test audio file
-    local_audio_path = Path(r"C:\Users\Yarden Daniel\PycharmProjects\dialoguedna-backend\app\tests\extracted_audio.wav")
+    local_audio_path = Path(r"C:\Users\Amal Amsis\Downloads\extracted_from_video.wav")
     assert local_audio_path.exists(), f"Test audio file not found: {local_audio_path}"
 
     # 🎛️ Ensure correct format for Azure Speech
