@@ -90,44 +90,73 @@ PROMPT_PRESETS = {
 
 
     "customer_service_summary": {
-        "system": "You are a professional customer experience analyst with expertise in emotional intelligence and conversation behavior.",
-        "format": (
-            "You’ve received a transcript of a service interaction between a customer and a support agent. The transcript includes speaker labels and emotional annotations (e.g., [angry], [relieved], [confused]).\n\n"
-            "{lines}\n\n"
-            "Your task is to write a clear, structured, and emotionally insightful summary of this interaction.\n"
-            "Focus on the customer’s emotional journey, identify key emotional triggers, evaluate the agent’s performance, and offer recommendations for improvement.\n"
-            "Avoid quoting raw emotion scores — translate them into meaningful human interpretations.\n"
-            "Write in a professional yet compassionate tone.\n\n"
-            "Structure your output with the following sections:\n\n"
-            "📋 1. Interaction Summary\n"
-            "- What was the customer’s issue or request?\n"
-            "- What actions were taken and what was the final outcome?\n\n"
-            "💬 2. Customer Emotional Journey\n"
-            "- How did the customer feel during the interaction?\n"
-            "- Identify emotional turning points.\n"
-            "- Use **bold** for emotionally significant lines or reactions.\n"
-            "- Reflect on whether the customer felt heard and understood.\n\n"
-            "⚠️ 3. Emotional Triggers & Causes\n"
-            "- What caused any negative or positive emotional shifts?\n"
-            "- Be specific about moments that escalated or de-escalated tension.\n\n"
-            "🧑‍💼 4. Agent Performance Evaluation\n"
-            "- How well did the agent respond emotionally and professionally?\n"
-            "- What worked well, and what could have been improved?\n"
-            "- Focus on empathy, clarity, tone, and resolution.\n\n"
-            "🛠️ 5. Recommendations for Improvement\n"
-            "- Offer concrete suggestions to improve future service experiences.\n"
-            "- These can include phrasing changes, empathy training, or process adjustments.\n\n"
-            "🧭 6. Conclusion\n"
-            "- Was the issue resolved practically and emotionally?\n"
-            "- What emotional state did the customer leave in?\n"
-            "- Is follow-up recommended?\n\n"
-            "🎁 7. Optional: Customer Retention Insight\n"
-            "- Based on the conversation, what is the customer likely to feel toward the brand?\n"
-            "- Would they return, churn, or recommend the service?\n"
-            "- Suggest a possible gesture (e.g., apology, compensation) if appropriate.\n\n"
-            "Be detailed, empathetic, and focused on delivering insights that can improve both the agent’s performance and the overall customer experience."
-        )
-    },
+    "system": "You are an expert customer service analyst. You produce clear, structured, action-oriented summaries of support calls.",
+    "format": (
+        "You have a multi-speaker customer service call transcript with speaker labels (e.g., Agent, Customer, names) and optional emotion annotations.\n\n"
+        "{lines}\n\n"
+        "Write a structured customer service summary with the following format. "
+        "Keep it practical, professional, and visually clear. Do not invent facts. "
+        "Prefer real speaker names (e.g., 'Agent Sarah', 'Customer John') over numeric labels when available. "
+        "Do not show raw emotion scores; describe tone only in human terms when helpful (e.g., frustrated, calm, escalating).\n\n"
+
+        "**🧭 1) Call Topic**\n"
+        "- One concise sentence describing the main reason for the call.\n\n"
+
+        "**❗ 2) Customer Issue / Pain Point**\n"
+        "- Bullet list of the concrete problem(s) the customer reports.\n\n"
+
+        "**🎚️ 3) Sentiment & Tone (interpreted)**\n"
+        "- Describe the customer’s emotional tone and changes during the call.\n\n"
+
+        "**🛠️ 4) Steps Taken During the Call**\n"
+        "- What checks/troubleshooting did the agent do?\n\n"
+
+        "**🧩 5) Proposed Solutions / Offers**\n"
+        "- Option A / Option B etc. → mark as ✅ accepted, ❌ rejected, ⏳ undecided.\n\n"
+
+        "**🤝 6) Decisions / Resolutions**\n"
+        "- Explicitly agreed outcomes, with Owner and Due Date if possible.\n\n"
+
+        "**✅ 7) Action Items**\n"
+        "Render as an HTML table with 4 columns (ID, Task, Owner, Due Date) + inline CSS for formatting.\n\n"
+        "<table style=\"border-collapse: collapse; width: 100%; text-align: left; font-family: Arial, sans-serif; font-size: 14px;\">\n"
+        "  <thead>\n"
+        "    <tr style=\"background-color: #f2f2f2;\">\n"
+        "      <th style=\"border: 1px solid #ccc; padding: 8px;\">ID</th>\n"
+        "      <th style=\"border: 1px solid #ccc; padding: 8px;\">Task</th>\n"
+        "      <th style=\"border: 1px solid #ccc; padding: 8px;\">Owner</th>\n"
+        "      <th style=\"border: 1px solid #ccc; padding: 8px;\">Due Date</th>\n"
+        "    </tr>\n"
+        "  </thead>\n"
+        "  <tbody>\n"
+        "    <tr>\n"
+        "      <td style=\"border: 1px solid #ccc; padding: 8px;\">1</td>\n"
+        "      <td style=\"border: 1px solid #ccc; padding: 8px;\">Example task</td>\n"
+        "      <td style=\"border: 1px solid #ccc; padding: 8px;\">Agent Name</td>\n"
+        "      <td style=\"border: 1px solid #ccc; padding: 8px;\">Tomorrow</td>\n"
+        "    </tr>\n"
+        "  </tbody>\n"
+        "</table>\n\n"
+
+        "**🧾 8) Compliance / Risk Flags (if any)**\n"
+        "- Identity verification, policy limits, escalation markers, sensitive points.\n\n"
+
+        "**📝 9) Summary & Next Steps**\n"
+        "- Final status and immediate next actions.\n\n"
+
+        "**💡 10) Recommendations for Improvement**\n"
+        "- 1–2 bullets on how the agent could improve behavior or communication style (tone, empathy, clarity).\n"
+        "- 1–2 bullets on company-level improvements (policy clarity, training, tools, escalation process).\n\n"
+
+        "Style rules:\n"
+        "- Use exactly one blank line between sections.\n"
+        "- Use the section headers and emoji exactly as shown.\n"
+        "- Keep it concise, professional, and structured.\n"
+        "- Do not invent facts. If unclear/missing, write 'Not specified'.\n"
+    )
+},
+
+
     "emotional_story": {
         "system": "You are a sensitive and insightful journalist with a background in psychology and conversation analysis.",
         "format": (
