@@ -6,8 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="Fixed a little bit in the controller and deleted unwanted files and folders">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summary/summarizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summary/summarizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summary/summarizer_engine.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/tests/transcribe_with_diarization_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/tests/transcribe_with_diarization_test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,21 +81,21 @@
     "Python.emotion_test.executor": "Run",
     "Python.print result.executor": "Run",
     "Python.run.executor": "Run",
-    "Python.transcribe_with_diarization_test.executor": "Run",
+    "Python.transcribe_with_diarization_test.executor": "Debug",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feature/tone",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/Amal Amsis/Desktop/AmalA/Computer Science/DNA_DIALOGE/dialoguedna-backend",
+    "last_opened_file_path": "C:/Users/Yarden Daniel/PycharmProjects/webidoscope-react",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "com.intellij.pycharm.community.ide.impl.configuration.PythonContentEntriesConfigurable",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -228,8 +227,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.run" />
-        <item itemvalue="Python tests.Python tests in emotion_test.py" />
         <item itemvalue="Python.transcribe_with_diarization_test" />
+        <item itemvalue="Python tests.Python tests in emotion_test.py" />
         <item itemvalue="Python.print result" />
         <item itemvalue="Python.emotion_test" />
       </list>
@@ -545,11 +544,6 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/tests/transcribe_with_diarization_test.py</url>
-          <line>24</line>
-          <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app/tests/emotion_test.py</url>
           <line>28</line>
           <option name="timeStamp" value="19" />
@@ -564,14 +558,34 @@
           <line>62</line>
           <option name="timeStamp" value="54" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/tests/transcribe_with_diarization_test.py</url>
+          <line>18</line>
+          <option name="timeStamp" value="56" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/tests/transcribe_with_diarization_test.py</url>
+          <line>20</line>
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/tests/transcribe_with_diarization_test.py</url>
+          <line>22</line>
+          <option name="timeStamp" value="58" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/app/services/transcript/transcriber.py</url>
+          <line>90</line>
+          <option name="timeStamp" value="59" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/dialoguedna_backend$print_result.coverage" NAME="print result Coverage Results" MODIFIED="1748727037359" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/tests" />
-    <SUITE FILE_PATH="coverage/dialoguedna_backend$transcribe_with_diarization_test.coverage" NAME="transcribe_with_diarization_test Coverage Results" MODIFIED="1748720005831" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/tests" />
     <SUITE FILE_PATH="coverage/dialoguedna_backend$.coverage" NAME=" Coverage Results" MODIFIED="1748726316720" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/tests" />
-    <SUITE FILE_PATH="coverage/dialoguedna_backend$run.coverage" NAME="run Coverage Results" MODIFIED="1749041872471" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
+    <SUITE FILE_PATH="coverage/dialoguedna_backend$print_result.coverage" NAME="print result Coverage Results" MODIFIED="1748727037359" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/tests" />
     <SUITE FILE_PATH="coverage/dialoguedna_backend$emotion_test.coverage" NAME="emotion_test Coverage Results" MODIFIED="1748726921085" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/tests" />
+    <SUITE FILE_PATH="coverage/dialoguedna_backend$transcribe_with_diarization_test.coverage" NAME="transcribe_with_diarization_test Coverage Results" MODIFIED="1756210054764" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/tests" />
+    <SUITE FILE_PATH="coverage/dialoguedna_backend$run.coverage" NAME="run Coverage Results" MODIFIED="1756207918873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
   </component>
 </project>
