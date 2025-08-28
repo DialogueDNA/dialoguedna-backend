@@ -82,6 +82,7 @@ class Transcriber:
             "displayName": name,
             "properties": {
                 "diarizationEnabled": True,
+                "diarization": {"speakers": {"minCount": 1, "maxCount": 5}},
                 "wordLevelTimestampsEnabled": True,
                 "punctuationMode": "DictatedAndAutomatic",
                 "profanityFilterMode": "Masked"
