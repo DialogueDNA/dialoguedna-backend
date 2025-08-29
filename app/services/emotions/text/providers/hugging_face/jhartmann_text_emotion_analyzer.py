@@ -23,7 +23,7 @@ class JHartmannTextEmotionAnalyzer(EmotionTextAnalyzer):
     Input:
       - segment.text: str (required; empty/whitespace yields empty emotion_analysis)
       - segment.language / writer / start_time / end_time are ignored here, but kept
-        on the segment for pipeline compatibility elsewhere.
+        on the segment for DialogueDNA compatibility elsewhere.
 
     Output:
       - EmotionAnalyzerOutput(emotion_analysis: Dict[str, float])
@@ -32,7 +32,7 @@ class JHartmannTextEmotionAnalyzer(EmotionTextAnalyzer):
     def __init__(self, cfg: JHartmannConfig):
         self._cfg = cfg
         os.makedirs(cfg.cache_dir, exist_ok=True)
-        # Build an HF pipeline. If top_k is None we ask for all scores.
+        # Build an HF DialogueDNA. If top_k is None we ask for all scores.
         self._clf = pipeline(
             task="text-classification",
             model=cfg.model,
@@ -47,7 +47,7 @@ class JHartmannTextEmotionAnalyzer(EmotionTextAnalyzer):
         if not text:
             return EmotionAnalyzerOutput(emotions_intensity_dict={})
 
-        # HF pipeline returns (for single string):
+        # HF DialogueDNA returns (for single string):
         # - top_k=None, return_all_scores=True: [ [ {label, score}, ... ] ]
         # - top_k=K:                           [ [ {label, score} x K ] ]
         # - top_k default (=1):                [ {label, score} ]

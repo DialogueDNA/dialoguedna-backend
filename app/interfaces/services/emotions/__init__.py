@@ -1,29 +1,21 @@
 from dataclasses import dataclass
-from typing import Dict, Optional, List
+from typing import Optional
 
 from app.interfaces.services import SpeakerType
-from app.interfaces.services.emotions.audio import EmotionAnalyzerByAudioOutput
-from app.interfaces.services.emotions.mixed import EmotionAnalyzerMixerOutput
-from app.interfaces.services.emotions.text import EmotionAnalyzerByTextOutput
 from app.interfaces.services.text import TextSegment
+from .type import EmotionAnalyzerOutput
 
-EmotionLabel = str
-EmotionScore = float
-EmotionsDict = Dict[EmotionLabel, EmotionScore]
-
-@dataclass
-class EmotionAnalyzerOutput:
-    emotions_intensity_dict:    EmotionsDict
-    whom:                       Optional[SpeakerType]     = None
-    start_time:                 Optional[float]           = None
-    end_time:                   Optional[float]           = None
 
 @dataclass
 class EmotionAnalyzerBundle:
-    text:           Optional[EmotionAnalyzerByTextOutput]     = None
-    audio:          Optional[EmotionAnalyzerByAudioOutput]    = None
-    mixed:          Optional[EmotionAnalyzerMixerOutput]      = None
-    whom:           Optional[SpeakerType]                     = None
-    transcription:  Optional[TextSegment]                     = None
-    start_time:     Optional[float]                           = None
-    end_time:       Optional[float]                           = None
+    # All analyzers (text/audio/mixed) return EmotionAnalyzerOutput.
+    text:  Optional[EmotionAnalyzerOutput] = None
+    audio: Optional[EmotionAnalyzerOutput] = None
+    mixed: Optional[EmotionAnalyzerOutput] = None
+    whom:  Optional[SpeakerType] = None
+    transcription: Optional[TextSegment] = None
+    start_time: Optional[float] = None
+    end_time: Optional[float] = None
+
+# Re-exports for convenience
+# from .types import EmotionAnalyzerOutput, EmotionLabel, EmotionScore, EmotionsDict  # noqa: E402,F401

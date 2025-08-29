@@ -3,7 +3,7 @@ import logging
 from app.bootstrap.wire_app import wire_app
 from app.common.plugin_discovery import discover_plugins
 from app.core.config import AppConfig
-from app.logic.dialogueDNA.pipeline import DialogueDNAPipeline
+from app.logic.DialogueDNA.pipeline import DialogueDNAPipeline
 from app.services.authz import AuthZ
 
 

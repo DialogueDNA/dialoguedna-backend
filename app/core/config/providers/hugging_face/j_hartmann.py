@@ -13,7 +13,7 @@ class JHartmannConfig:
     Fields:
       - model: Hugging Face hub id or local path to an emotion classifier.
                Good default: "j-hartmann/emotion-english-distilroberta-base".
-      - device: HF pipeline device index (e.g., -1=CPU, 0=CUDA:0).
+      - device: HF DialogueDNA device index (e.g., -1=CPU, 0=CUDA:0).
       - top_k: If None -> return scores for ALL labels; otherwise return top-k labels.
       - cache_dir: where to store downloaded model files.
     """

@@ -1,11 +1,14 @@
 from typing import Dict, List, Optional
 from pydantic import BaseModel, Field
 
-class TranscriptRow(BaseModel):
+class TranscriptRowDTO(BaseModel):
     speaker: Optional[str] = None
     text: str
     start: Optional[float] = None
     end: Optional[float] = None
+
+class TranscriptDTO(BaseModel):
+    transcript: List[TranscriptRowDTO]
 
 class EmotionRow(BaseModel):
     speaker: Optional[str] = None
@@ -22,12 +25,18 @@ class SummaryDTO(BaseModel):
 class SessionDTO(BaseModel):
     id: str
     title: str
-    transcript: List[TranscriptRow] = Field(default_factory=list)
-    emotions: List[EmotionRow] = Field(default_factory=list)
-    summary: SummaryDTO = SummaryDTO()
-    audio_path: Optional[str] = None
+    audio_status: Optional[str] = None
     audio_url: Optional[str] = None
-    created_at: Optional[str] = None  # let DB fill if you prefer timestamp
+    transcript_status: Optional[str] = None
+    transcript_url: Optional[str] = None
+    emotion_status: Optional[str] = None
+    emotions_url: Optional[str] = None
+    summary_status: Optional[str] = None
+    summary_url: Optional[str] = None
+    duration: Optional[float] = None
+    participants: Optional[List[str]] = None
+    language: Optional[str] = None
+    created_at: Optional[str] = None
 
 class SessionCreateRequest(BaseModel):
     title: str
@@ -39,7 +48,7 @@ class SessionResponse(BaseModel):
     session: SessionDTO
 
 class TranscriptResponse(BaseModel):
-    transcript: List[TranscriptRow]
+    transcript: List[TranscriptRowDTO]
 
 class EmotionsResponse(BaseModel):
     emotions: List[EmotionRow]

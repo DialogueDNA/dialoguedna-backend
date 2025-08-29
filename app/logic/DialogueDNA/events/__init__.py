@@ -7,7 +7,7 @@ from app.interfaces.services.summary import SummaryOutput
 from app.interfaces.services.transcription import TranscriptionOutput
 
 
-# ---- pipeline milestone events ----
+# ---- DialogueDNA milestone events ----
 
 @dataclass(frozen=True)
 class StageEvent:

@@ -10,6 +10,7 @@ class SessionUpdater(Protocol):
 # ---- Minimal artifact writer for blobs ----
 class ArtifactWriter(Protocol):
     def put_json_get_url(self, container: str, blob: str, some_json: List[Dict[str, Any]]) -> Optional[str]: ...
+    def put_wav_path_get_url(self, container: str, blob: str, some_wav_path: str) -> Optional[str]: ...
 
 # ---- Per-run context with only the least privileges needed ----
 @dataclass(frozen=True)

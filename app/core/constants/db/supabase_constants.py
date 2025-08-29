@@ -1,6 +1,16 @@
 # Constants for supabase
 # Database config for Supabase
-from enum import StrEnum
+from enum import Enum
+
+
+class StrEnum(str, Enum):
+    """
+    Backport of Python 3.11's StrEnum.
+    Acts like both str and Enum.
+    """
+
+    def __str__(self) -> str:
+        return str(self.value)
 
 # === Table Constants ===
 AUTH_TABLE_NAME = "auth"

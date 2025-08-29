@@ -6,7 +6,7 @@ from app.interfaces.logic.pipeline import Pipeline, PipelineOutput, PipelineInpu
 from app.interfaces.services.audio.enhancer import AudioEnhancer
 from app.interfaces.services.emotions.mixed import EmotionAnalyzerMixerInput, EmotionAnalyzerMixerOutput
 from app.interfaces.services.text import TextSegment
-from app.logic.dialogueDNA.reporter import PipelineReporter
+from app.logic.DialogueDNA.events.reporter import PipelineReporter
 from app.services.summary.prompts.prompts import PromptStyle
 from app.state.app_states import ServicesState
 from app.interfaces.services.audio import AudioType, AudioSegment
@@ -55,7 +55,7 @@ class DialogueDNAPipeline(Pipeline):
 
     def run(self, pipeline_input: PipelineInput) -> PipelineOutput:
         """
-        Execute the DialogueDNA pipeline on `audio`.
+        Execute the DialogueDNA DialogueDNA on `audio`.
 
         `always_enhance_non_overlap`: if True and enhancer exists, also enhance non-overlap parts.
         """

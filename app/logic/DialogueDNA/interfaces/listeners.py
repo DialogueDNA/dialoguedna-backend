@@ -1,8 +1,8 @@
 from typing import Protocol
 
-from app.logic.dialogueDNA.events import StageEvent, QueuedEvent, StoppedEvent, ProcessingEvent, TranscriptionEvent, \
+from app.logic.DialogueDNA.events import StageEvent, QueuedEvent, StoppedEvent, ProcessingEvent, TranscriptionEvent, \
     FailedEvent, EmotionsEvent, SummaryEvent
-from app.logic.dialogueDNA.interfaces.capabilities import PipelineContext
+from app.logic.DialogueDNA.interfaces.capabilities import PipelineContext
 
 
 class PipelineListener(Protocol):

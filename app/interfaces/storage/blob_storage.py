@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Protocol, BinaryIO
+from typing import Protocol, BinaryIO, Dict, List, Any
+
 
 class BlobStorage(Protocol):
     def upload              (self, container: str, blob: str, data: bytes | BinaryIO, *, content_type: str | None = None)   -> str: ...

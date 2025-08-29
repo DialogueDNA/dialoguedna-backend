@@ -1,10 +1,10 @@
 from __future__ import annotations
-from app.logic.dialogueDNA.interfaces.capabilities import PipelineContext
-from app.logic.dialogueDNA.events import (
+from app.logic.DialogueDNA.interfaces.capabilities import PipelineContext
+from app.logic.DialogueDNA.events import (
     StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, FailedEvent, QueuedEvent, StoppedEvent,
     ProcessingEvent
 )
-from app.logic.dialogueDNA.interfaces.listeners import PipelineListener
+from app.logic.DialogueDNA.interfaces.listeners import PipelineListener
 
 
 class BaseListener(PipelineListener):

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from app.core.constants.db.supabase_constants import SessionColumn, SessionStatus
-from app.logic.dialogueDNA.events.subscribers.base import BaseListener
-from app.logic.dialogueDNA.interfaces.capabilities import PipelineContext
-from app.logic.dialogueDNA.events import StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, \
+from app.logic.DialogueDNA.events.subscribers.base import BaseListener
+from app.logic.DialogueDNA.interfaces.capabilities import PipelineContext
+from app.logic.DialogueDNA.events import StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, \
     FailedEvent, QueuedEvent, StoppedEvent, ProcessingEvent
 
 

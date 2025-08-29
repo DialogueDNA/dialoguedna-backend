@@ -5,9 +5,9 @@ from typing import Any, List, Optional, Tuple
 from uuid import uuid4
 from concurrent.futures import ThreadPoolExecutor
 
-from app.logic.dialogueDNA.events.subscribers.base import PipelineListener
-from app.logic.dialogueDNA.interfaces.capabilities import PipelineContext
-from app.logic.dialogueDNA.events import (
+from app.logic.DialogueDNA.events.subscribers.base import PipelineListener
+from app.logic.DialogueDNA.interfaces.capabilities import PipelineContext
+from app.logic.DialogueDNA.events import (
     StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, FailedEvent, QueuedEvent, StoppedEvent,
     ProcessingEvent
 )
@@ -22,7 +22,7 @@ class PipelineReporter:
 
     def __post_init__(self):
         if self.dispatch == "thread":
-            self._executor = ThreadPoolExecutor(max_workers=8, thread_name_prefix="pipeline-listener")
+            self._executor = ThreadPoolExecutor(max_workers=8, thread_name_prefix="DialogueDNA-listener")
 
     # subscribe with a specific least-privilege context
     def subscribe(self, listener: PipelineListener, ctx: PipelineContext) -> str:

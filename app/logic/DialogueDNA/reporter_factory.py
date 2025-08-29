@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from app.logic.dialogueDNA.adapters.capability_adapters import RepoSessionUpdater, StorageArtifactWriter
-from app.logic.dialogueDNA.events.subscribers.blob_artifacts import BlobArtifactsSubscriber
-from app.logic.dialogueDNA.events.subscribers.db_progress import DBProgressSubscriber
-from app.logic.dialogueDNA.interfaces.capabilities import PipelineContext
-from app.logic.dialogueDNA.reporter import PipelineReporter
+from app.logic.DialogueDNA.adapters.capability_adapters import RepoSessionUpdater, StorageArtifactWriter
+from app.logic.DialogueDNA.events.subscribers.blob_artifacts import BlobArtifactsSubscriber
+from app.logic.DialogueDNA.events.subscribers.db_progress import DBProgressSubscriber
+from app.logic.DialogueDNA.interfaces.capabilities import PipelineContext
+from app.logic.DialogueDNA.events.reporter import PipelineReporter
 from app.state.app_states import DatabaseState, StorageState
 
 
-class ReporterFactory:
+class DialogueDNAPipelineReporterFactory:
     def __init__(self, database: DatabaseState, storage: StorageState):
         self.database = database
         self.storage = storage

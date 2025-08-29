@@ -5,7 +5,7 @@ from app.interfaces.services.audio import AudioType
 from app.interfaces.services.emotions import EmotionAnalyzerBundle
 from app.interfaces.services.summary import SummaryOutput
 from app.interfaces.services.transcription import TranscriptionOutput
-from app.logic.dialogueDNA.reporter import PipelineReporter
+from app.logic.DialogueDNA.events.reporter import PipelineReporter
 
 
 @dataclass

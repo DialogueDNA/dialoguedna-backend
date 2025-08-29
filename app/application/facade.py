@@ -1,14 +1,26 @@
 from __future__ import annotations
+
+import mimetypes
 import uuid
-from typing import Any, Dict, Optional
+from pathlib import Path
+from typing import Any, Dict, Optional, List
 
 from app.application.queues import TaskQueue
 from app.core.constants.db.supabase_constants import SessionColumn, SessionStatus
+from app.core.constants.storage.azure_constants import SESSION_TRANSCRIPT_PATH, SESSION_AUDIO_PATH, MAIN_CONTAINER, \
+    SESSION_EMOTIONS_PATH, SESSION_SUMMARY_PATH
 from app.interfaces.logic.pipeline import PipelineInput
-from app.logic.dialogueDNA.pipeline import DialogueDNAPipeline
+from app.interfaces.services.emotions import EmotionAnalyzerBundle
+from app.interfaces.services.summary import SummaryOutput
+from app.interfaces.services.text import TextSegment
+from app.interfaces.services.transcription import TranscriptionOutput
+from app.logic.DialogueDNA.adapters.capability_adapters import StorageArtifactWriter, StorageArtifactReader
+from app.logic.DialogueDNA.interfaces.capabilities import ArtifactWriter
+from app.logic.DialogueDNA.pipeline import DialogueDNAPipeline
+from app.models.session import SessionDB
 from app.state.app_states import AppState
 
-from app.application.reporter_factory import ReporterFactory
+from app.logic.DialogueDNA.reporter_factory import DialogueDNAPipelineReporterFactory
 
 class ApplicationFacade:
     """
@@ -20,7 +32,10 @@ class ApplicationFacade:
     def __init__(self, app: AppState):
         self._app = app
         self._logic = DialogueDNAPipeline(app.services)
-        self._reporters = ReporterFactory(app.database, app.storage)
+        self._reporter = DialogueDNAPipelineReporterFactory(app.database, app.storage)
+
+        self._write = StorageArtifactWriter(app.storage.client)
+        self._reader = StorageArtifactReader(app.storage.client)
 
     # ------------------------------------ Create ------------------------------------
 
@@ -59,17 +74,20 @@ class ApplicationFacade:
 
         session_id = str(uuid.uuid4())
 
-        # TODO: After fixing the upload in the storage, uncommand this line
-        audio_blob_path = self._app.storage.client.upload(audio_local_path)
+        blob_url: str = self._write.put_wav_path_get_url(
+            container="sessions",
+            blob="audio.wav",
+            some_wav_path=audio_local_path
+        )
 
         record = {
             SessionColumn.session_id: session_id,
             SessionColumn.user_id: user_id,
             SessionColumn.title: title,
-            SessionColumn.audio_file_url: audio_blob_path,
+            SessionColumn.audio_file_url: blob_url,
         }
         self._app.database.sessions_repo.create(record)
-        return session_id, audio_blob_path
+        return session_id, blob_url
 
     def analyze_session_dna(
             self,
@@ -121,13 +139,13 @@ class ApplicationFacade:
     ) -> None:
 
         # Build new session reporter
-        reporter = self._reporters.for_session(
+        reporter = self._reporter.for_session(
             session_id=session_id,
             inline_save=inline_save,
             dispatch=dispatch,
         )
 
-        # Run pipeline
+        # Run DialogueDNA
         pipeline_results = self._logic.run(PipelineInput(audio=audio_path, reporter=reporter))
 
         # # (Optional) Final update in case we didn't provide reporter
@@ -186,7 +204,7 @@ class ApplicationFacade:
             user_id=user_id
         )
 
-        reporter = self._reporters.for_session(session_id=session_id)
+        reporter = self._reporter.for_session(session_id=session_id)
 
         self._logic.transcribe(
             audio=audio_local_path,
@@ -214,7 +232,7 @@ class ApplicationFacade:
                 user_id=user_id
             )
 
-        reporter = self._reporters.for_session(session_id=session_id)
+        reporter = self._reporter.for_session(session_id=session_id)
 
         self._logic.analyze_emotions_on_transcript(
             audio=audio_local_path,
@@ -264,7 +282,7 @@ class ApplicationFacade:
 
         return session
 
-    def get_audio(self, session_id: str, user_id: str):
+    def get_audio(self, session_id: str, user_id: str) -> str | None:
         session = self.get_session(session_id=session_id, user_id=user_id)
 
         audio_status: SessionStatus = session.get(SessionColumn.audio_file_status, None)
@@ -277,17 +295,18 @@ class ApplicationFacade:
         if not audio_file_url:
             raise ValueError("audio file url not found")
 
-        # TODO: Fix the download in the storage
         try:
-            audio = self._app.storage.client.download(audio_file_url)
+            audio: str = self._write.put_wav_path_get_url(
+                container=MAIN_CONTAINER,
+                blob=f"{session_id}/{SESSION_AUDIO_PATH}",
+                some_wav_path=audio_file_url,
+            )
         except Exception as e:
             raise ValueError("Failed to download audio: {}".format(e))
 
-        # TODO: Save in temp file and return the audio local path
-
         return audio
 
-    def get_transcript(self, session_id: str, user_id: str):
+    def get_transcript(self, session_id: str, user_id: str) -> TranscriptionOutput | None:
 
         session = self.get_session(session_id=session_id, user_id=user_id)
 
@@ -301,15 +320,18 @@ class ApplicationFacade:
         if not transcript_url:
             raise ValueError("transcript url not found")
 
-        # TODO: Fix the download in the storage
         try:
-            transcription = self._app.storage.client.download(transcript_url)
+            transcription = self._reader.load_many(
+                container=MAIN_CONTAINER,
+                blob=f"{session_id}/{SESSION_TRANSCRIPT_PATH}",
+                cls=TextSegment
+            )
         except Exception as e:
             raise ValueError("Failed to download transcription: {}".format(e))
 
         return transcription
 
-    def get_analyzed_emotions(self, session_id: str, user_id: str):
+    def get_analyzed_emotions(self, session_id: str, user_id: str) -> List[EmotionAnalyzerBundle] | None:
 
         session = self.get_session(session_id=session_id, user_id=user_id)
 
@@ -323,15 +345,18 @@ class ApplicationFacade:
         if not analyzed_emotions_url:
             raise ValueError("analyzed emotions url not found")
 
-        # TODO: Fix the download in the storage
         try:
-            analyzed_emotions = self._app.storage.client.download(analyzed_emotions_url)
+            analyzed_emotions = self._reader.load_many(
+                container=MAIN_CONTAINER,
+                blob=f"{session_id}/{SESSION_EMOTIONS_PATH}",
+                cls=EmotionAnalyzerBundle
+            )
         except Exception as e:
             raise ValueError("Failed to download analyzed emotions: {}".format(e))
 
         return analyzed_emotions
 
-    def get_summary(self, session_id: str, user_id: str):
+    def get_summary(self, session_id: str, user_id: str) -> SummaryOutput | None:
 
         session = self.get_session(session_id=session_id, user_id=user_id)
 
@@ -345,19 +370,23 @@ class ApplicationFacade:
         if not summary_url:
             raise ValueError("analyzed emotions url not found")
 
-        # TODO: Fix the download in the storage
         try:
-            summarization = self._app.storage.client.download(summary_url)
+            summarization = self._reader.load_many(
+                container=MAIN_CONTAINER,
+                blob=f"{session_id}/{SESSION_SUMMARY_PATH}",
+                cls=SummaryOutput
+            )
+            summarization = summarization[0]
         except Exception as e:
             raise ValueError("Failed to download summary: {}".format(e))
 
         return summarization
 
-    def get_sessions(self, user_id: str):
+    def get_sessions(self, user_id: str) -> List[SessionDB] | None:
         return self._app.database.sessions_repo.list_for_user(user_id)
 
     # ------------------------------------ Delete ------------------------------------
 
     def delete_session(self, session_id: str, user_id: str):
-        return self._app.database.sessions_repo.delete(user_id)
+        return self._app.database.sessions_repo.delete(session_id)
 

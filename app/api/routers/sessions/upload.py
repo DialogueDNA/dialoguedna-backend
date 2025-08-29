@@ -2,13 +2,13 @@ import os
 import shutil
 from tempfile import NamedTemporaryFile
 
-from fastapi import APIRouter, UploadFile, File, Form, Request, HTTPException, Depends, BackgroundTasks
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends, BackgroundTasks
 
 from app.api.dependencies.app_facade import get_facade
 from app.api.dependencies.auth import UserContext
 from app.api.dependencies.authz import require_user
 
-from app.api.routers.sessions.schemas import SessionResponse
+from app.api.schemas.schemas import SessionResponse
 from app.application.facade import ApplicationFacade
 from app.application.queues import BackgroundTasksQueue
 
