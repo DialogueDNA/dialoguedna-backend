@@ -6,7 +6,7 @@ from app.db.session_db import SessionDB
 from app.storage.session_storage import SessionStorage
 
 from app.services.transcript.transcriber import Transcriber
-from app.services.emotions.emotioner import Emotioner
+from app.services.emotions.emotion_controller import EmotionController
 from app.services.summary.summarizer import Summarizer
 from app.services.summary.prompts import PromptStyle
 class DialogueProcessor:
@@ -15,7 +15,7 @@ class DialogueProcessor:
         self.session_storage = SessionStorage()
 
         self.transcriber = Transcriber()
-        self.emotion_analyzer = Emotioner()
+        self.emotion_analyzer = EmotionController()
         self.summarizer = Summarizer()
 
         self._saved_audio_path = None
@@ -79,7 +79,7 @@ class DialogueProcessor:
         self.session_db.set_status(session_id, "emotion_breakdown_status", "processing")
 
         try:
-            emotion_json = self.emotion_analyzer.get_emotions(transcript_json)
+            emotion_json = self.emotion_analyzer.get_emotions(transcript=transcript_json, audio_path=audio_blob_path)
             emotion_blob = self.session_storage.store_emotions(session_id, emotion_json)
             self.session_db.set_status(session_id, "emotion_breakdown_url", emotion_blob)
             self.session_db.set_status(session_id, "emotion_breakdown_status", "completed")
