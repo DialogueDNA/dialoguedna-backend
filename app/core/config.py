@@ -32,7 +32,17 @@ AZURE_CONTAINER_NAME = os.getenv("AZURE_CONTAINER_NAME")
 
 # === Text-based emotion model ===
 TEXT_EMOTION_MODEL = os.getenv("TEXT_EMOTION_MODEL", "j-hartmann/emotion-english-distilroberta-base")
-TOP_K_EMOTIONS = os.getenv("TOP_K_EMOTIONS")  # can convert to int later if needed
+TOP_K_EMOTIONS = int(os.getenv("TOP_K_EMOTIONS")) # can convert to int later if needed
+
+# === Audio-based emotion model (tone) ===
+TONE_EMOTION_MODEL = os.getenv("TONE_EMOTION_MODEL", "superb/hubert-large-superb-er")
+TONE_DEVICE = os.getenv("TONE_DEVICE", "cpu")            # "cpu" | "cuda"
+TONE_WINDOW_SEC = float(os.getenv("TONE_WINDOW_SEC", "4.0"))
+TONE_HOP_FRACTION = float(os.getenv("TONE_HOP_FRACTION", "0.5"))
+
+# === Fusion (text + tone) ===
+FUSION_AUDIO_WEIGHT = float(os.getenv("FUSION_AUDIO_WEIGHT", "0.6"))
+FUSION_TEXT_WEIGHT = float(os.getenv("FUSION_TEXT_WEIGHT", "0.4"))
 
 # === Azure OpenAI for Summary Generation ===
 AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
@@ -50,3 +60,4 @@ supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 SAMPLE_RATE = 16000
 CHUNK_DURATION_SEC = 5
 OVERLAP_DURATION_SEC = 1.5
+
