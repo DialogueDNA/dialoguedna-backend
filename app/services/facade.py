@@ -20,6 +20,7 @@ class DialogueProcessor:
         self.session_db = SessionDB()
         self.session_storage = SessionStorage()
 
+        #new by Yarden
         self.audio_processor = AudioProcessor()
 
         self.transcriber = Transcriber()
@@ -33,6 +34,7 @@ class DialogueProcessor:
         if not file:
             raise ValueError("File must be provided.")
 
+        #new by Yarden
         # 🎙️ Prepare audio (convert if needed)
         ready_path, meta = await self.audio_processor.prepare(file)
 
@@ -46,6 +48,7 @@ class DialogueProcessor:
         self.session_id = session_id
         self._saved_audio_path = blob_path
 
+        #new by Yarden
         # 📝 Log audio details
         logger.info(
             f"Audio uploaded (session={session_id}): "
@@ -54,6 +57,7 @@ class DialogueProcessor:
             f"converted={meta['was_converted']} reason={meta['reason']}"
         )
 
+        #new by Yarden
         # 🧹 Cleanup temp file
         try:
             ready_path.unlink(missing_ok=True)

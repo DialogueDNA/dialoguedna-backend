@@ -1,0 +1,344 @@
+[
+  {
+    "speaker": 1,
+    "text": "Lachman services Arshi speaking.",
+    "start_time": 1.4,
+    "end_time": 2.76
+  },
+  {
+    "speaker": 1,
+    "text": "How can I help you?",
+    "start_time": 2.76,
+    "end_time": 3.36
+  },
+  {
+    "speaker": 2,
+    "text": "Yeah, I'm calling for update.",
+    "start_time": 4.6,
+    "end_time": 6.92
+  },
+  {
+    "speaker": 2,
+    "text": "I'm returning a phone call.",
+    "start_time": 7.2,
+    "end_time": 8.2
+  },
+  {
+    "speaker": 1,
+    "text": "Yeah, I think I gave you a phone call.",
+    "start_time": 8.92,
+    "end_time": 10.6
+  },
+  {
+    "speaker": 1,
+    "text": "This was for Jennings Rd.",
+    "start_time": 10.6,
+    "end_time": 11.8
+  },
+  {
+    "speaker": 1,
+    "text": "Yeah.",
+    "start_time": 11.8,
+    "end_time": 12.12
+  },
+  {
+    "speaker": 2,
+    "text": "Yes.",
+    "start_time": 13.12,
+    "end_time": 13.6
+  },
+  {
+    "speaker": 1,
+    "text": "Yeah, I also sent you a message, not sure if you saw it.",
+    "start_time": 13.92,
+    "end_time": 16.12
+  },
+  {
+    "speaker": 1,
+    "text": "We have the right key for you now and the specialist was trying to ask you whether she can schedule with you for Monday 3:00 PM.",
+    "start_time": 16.52,
+    "end_time": 22.32
+  },
+  {
+    "speaker": 2,
+    "text": "Why not today?",
+    "start_time": 24.6,
+    "end_time": 25.56
+  },
+  {
+    "speaker": 2,
+    "text": "What you mean Monday?",
+    "start_time": 26.08,
+    "end_time": 27.0
+  },
+  {
+    "speaker": 2,
+    "text": "Why not today?",
+    "start_time": 27.0,
+    "end_time": 28.0
+  },
+  {
+    "speaker": 1,
+    "text": "Today, unfortunately, she is not available.",
+    "start_time": 28.36,
+    "end_time": 30.16
+  },
+  {
+    "speaker": 1,
+    "text": "She is giving me the slot for Monday.",
+    "start_time": 30.16,
+    "end_time": 33.28
+  },
+  {
+    "speaker": 1,
+    "text": "Do you want to do it?",
+    "start_time": 33.28,
+    "end_time": 34.28
+  },
+  {
+    "speaker": 2,
+    "text": "Man, I just want the key.",
+    "start_time": 37.2,
+    "end_time": 38.32
+  },
+  {
+    "speaker": 2,
+    "text": "I just want the key.",
+    "start_time": 38.32,
+    "end_time": 39.08
+  },
+  {
+    "speaker": 2,
+    "text": "What I paid for.",
+    "start_time": 39.08,
+    "end_time": 39.76
+  },
+  {
+    "speaker": 2,
+    "text": "Just give me what I paid for.",
+    "start_time": 39.76,
+    "end_time": 41.0
+  },
+  {
+    "speaker": 2,
+    "text": "That's it, OK?",
+    "start_time": 41.4,
+    "end_time": 42.56
+  },
+  {
+    "speaker": 2,
+    "text": "That's all I want.",
+    "start_time": 42.84,
+    "end_time": 43.56
+  },
+  {
+    "speaker": 1,
+    "text": "Yeah, well, she she's going to have to program to.",
+    "start_time": 44.4,
+    "end_time": 46.32
+  },
+  {
+    "speaker": 2,
+    "text": "Your car.",
+    "start_time": 46.56,
+    "end_time": 46.8
+  },
+  {
+    "speaker": 2,
+    "text": "So keep calling, keep calling me, putting me off, putting me off, putting me off, putting me off.",
+    "start_time": 46.8,
+    "end_time": 52.2
+  },
+  {
+    "speaker": 2,
+    "text": "It's been a ******* week already.",
+    "start_time": 52.36,
+    "end_time": 53.84
+  },
+  {
+    "speaker": 2,
+    "text": "Why do you keep putting me off?",
+    "start_time": 53.84,
+    "end_time": 54.88
+  },
+  {
+    "speaker": 2,
+    "text": "Y'all got my money already?",
+    "start_time": 54.88,
+    "end_time": 56.28
+  },
+  {
+    "speaker": 2,
+    "text": "Y'all have my money?",
+    "start_time": 56.92,
+    "end_time": 57.8
+  },
+  {
+    "speaker": 1,
+    "text": "Yeah, we are not doing because.",
+    "start_time": 58.52,
+    "end_time": 59.8
+  },
+  {
+    "speaker": 2,
+    "text": "We want so.",
+    "start_time": 59.8,
+    "end_time": 60.68
+  },
+  {
+    "speaker": 2,
+    "text": "So if you got the key, well, I should be first priority.",
+    "start_time": 60.76,
+    "end_time": 64.68
+  },
+  {
+    "speaker": 2,
+    "text": "It's been a week already.",
+    "start_time": 65.2,
+    "end_time": 66.4
+  },
+  {
+    "speaker": 2,
+    "text": "I should be first priority.",
+    "start_time": 66.4,
+    "end_time": 67.6
+  },
+  {
+    "speaker": 2,
+    "text": "You should even have to ask me to schedule.",
+    "start_time": 67.6,
+    "end_time": 69.88
+  },
+  {
+    "speaker": 2,
+    "text": "You should already come.",
+    "start_time": 70.0,
+    "end_time": 71.0
+  },
+  {
+    "speaker": 2,
+    "text": "You should already have somebody coming to see me without even asking me.",
+    "start_time": 71.2,
+    "end_time": 75.92
+  },
+  {
+    "speaker": 2,
+    "text": "You keep calling me.",
+    "start_time": 76.64,
+    "end_time": 77.44
+  },
+  {
+    "speaker": 2,
+    "text": "Y'all keep calling me and calling me.",
+    "start_time": 77.44,
+    "end_time": 79.08
+  },
+  {
+    "speaker": 2,
+    "text": "Ain't nothing getting done though.",
+    "start_time": 79.92,
+    "end_time": 81.36
+  },
+  {
+    "speaker": 2,
+    "text": "Then you call me talking about Monday.",
+    "start_time": 82.48,
+    "end_time": 84.08
+  },
+  {
+    "speaker": 2,
+    "text": "I work too.",
+    "start_time": 85.44,
+    "end_time": 86.44
+  },
+  {
+    "speaker": 1,
+    "text": "I understand that you do, yeah.",
+    "start_time": 87.44,
+    "end_time": 88.96
+  },
+  {
+    "speaker": 2,
+    "text": "I don't even like come out of my character like this because I'm a grown *** ******* man.",
+    "start_time": 90.28,
+    "end_time": 94.16
+  },
+  {
+    "speaker": 2,
+    "text": "I still have to come out of my character like this because I've paid for.",
+    "start_time": 94.52,
+    "end_time": 98.32
+  },
+  {
+    "speaker": 2,
+    "text": "I've paid for the ******* service.",
+    "start_time": 98.56,
+    "end_time": 100.36
+  },
+  {
+    "speaker": 2,
+    "text": "I paid and now you keep putting me off every ******* time I talk to one of y'all.",
+    "start_time": 100.84,
+    "end_time": 106.32
+  },
+  {
+    "speaker": 2,
+    "text": "Y'all put me off.",
+    "start_time": 106.56,
+    "end_time": 107.44
+  },
+  {
+    "speaker": 2,
+    "text": "Y'all put me off.",
+    "start_time": 107.6,
+    "end_time": 108.44
+  },
+  {
+    "speaker": 2,
+    "text": "Y'all put me off, Y'all put me off.",
+    "start_time": 108.6,
+    "end_time": 110.48
+  },
+  {
+    "speaker": 2,
+    "text": "It's been a ******* week already and y'all still putting me off.",
+    "start_time": 111.0,
+    "end_time": 114.84
+  },
+  {
+    "speaker": 1,
+    "text": "Yes, Sir, I understand you're not.",
+    "start_time": 115.84,
+    "end_time": 116.92
+  },
+  {
+    "speaker": 2,
+    "text": "Doing this once I get this, yo just just just bring me my ******* key.",
+    "start_time": 117.16,
+    "end_time": 121.56
+  },
+  {
+    "speaker": 2,
+    "text": "That's it.",
+    "start_time": 121.76,
+    "end_time": 122.24
+  },
+  {
+    "speaker": 1,
+    "text": "OK, I'm not if we can just bring you to keep without programming it if you don't, if you want it like that, OK, one second.",
+    "start_time": 123.04,
+    "end_time": 128.72
+  },
+  {
+    "speaker": 1,
+    "text": "I'm going to talk to her right now.",
+    "start_time": 134.28,
+    "end_time": 136.32
+  },
+  {
+    "speaker": 1,
+    "text": "I'm going to give you a call back in 5 minutes to let you know if you can.",
+    "start_time": 136.48,
+    "end_time": 138.88
+  }
+]
