@@ -1,4 +1,7 @@
 import uuid
+import logging
+logger = logging.getLogger(__name__)
+
 from typing import Optional
 from fastapi import UploadFile
 
@@ -9,10 +12,15 @@ from app.services.transcript.transcriber import Transcriber
 from app.services.emotions.emotion_controller import EmotionController
 from app.services.summary.summarizer import Summarizer
 from app.services.summary.prompts import PromptStyle
+
+from app.services.audio.processor.audio_processor import AudioProcessor
+
 class DialogueProcessor:
     def __init__(self):
         self.session_db = SessionDB()
         self.session_storage = SessionStorage()
+
+        self.audio_processor = AudioProcessor()
 
         self.transcriber = Transcriber()
         self.emotion_analyzer = EmotionController()
@@ -21,19 +29,36 @@ class DialogueProcessor:
         self._saved_audio_path = None
         self.session_id = None
 
-    def upload_audio_file(self, file: UploadFile) -> tuple[str, str]:
+    async def upload_audio_file(self, file: UploadFile) -> tuple[str, str]:
         if not file:
             raise ValueError("File must be provided.")
+
+        # 🎙️ Prepare audio (convert if needed)
+        ready_path, meta = await self.audio_processor.prepare(file)
 
         # 🆔 Generate a unique session ID
         session_id = str(uuid.uuid4())
 
         # ☁️ Upload audio and return blob path
-        blob_path = self.session_storage.store_audio(session_id, file)
+        blob_path = self.session_storage.store_audio(session_id, ready_path)
 
         # 🔐 Store for later use (e.g., in process_audio)
         self.session_id = session_id
         self._saved_audio_path = blob_path
+
+        # 📝 Log audio details
+        logger.info(
+            f"Audio uploaded (session={session_id}): "
+            f"codec={meta['codec']}, sr={meta['sample_rate']}, "
+            f"channels={meta['channels']}, duration={meta['duration_sec']:.1f}s, "
+            f"converted={meta['was_converted']} reason={meta['reason']}"
+        )
+
+        # 🧹 Cleanup temp file
+        try:
+            ready_path.unlink(missing_ok=True)
+        except Exception:
+            pass
 
         return session_id, blob_path
 

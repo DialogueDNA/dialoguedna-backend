@@ -57,7 +57,13 @@ SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET")
 supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 # === Audio settings ===
-SAMPLE_RATE = 16000
-CHUNK_DURATION_SEC = 5
-OVERLAP_DURATION_SEC = 1.5
+SAMPLE_RATE = 16000            # target sample rate for transcription
+CHUNK_DURATION_SEC = 5         # chunk size when splitting long audio
+OVERLAP_DURATION_SEC = 1.5     # overlap between chunks for context
+
+# target audio format for transcription-friendly processing
+TARGET_CHANNELS = 1            # mono
+TARGET_BIT_DEPTH = 16          # PCM s16
+TARGET_CONTAINER = "wav"       # container
+TARGET_CODEC = "pcm_s16le"     # codec inside wav
 
