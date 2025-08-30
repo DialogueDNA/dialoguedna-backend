@@ -8,6 +8,7 @@ from app.storage.session_storage import SessionStorage
 from app.services.transcript.transcriber import Transcriber
 from app.services.emotions.emotioner import Emotioner
 from app.services.summary.summarizer import Summarizer
+from app.services.summary.runner import try_run_summary
 from app.services.summary.prompts import PromptStyle
 class DialogueProcessor:
     def __init__(self):
@@ -46,7 +47,7 @@ class DialogueProcessor:
         print(f"📥 Processing audio: {audio_blob_path}")
 
         # ----------------------------- Session Initialization -----------------------------
-        self.session_db.set_status(session_id, "summary_status", "processing")
+        self.session_db.set_status(session_id, "summary_status", "not_started")
 
         # ----------------------------- Transcription -----------------------------
         self.session_db.set_status(session_id, "transcript_status", "processing")
@@ -92,20 +93,21 @@ class DialogueProcessor:
             return
 
         # ----------------------------- Summarization -----------------------------
-        self.session_db.set_status(session_id, "summary_status", "processing")
-
-        try:
-            summary_text = self.summarizer.summarize(transcript_json, emotion_json, PromptStyle.EMOTIONAL_STORY)
-            summary_blob = self.session_storage.store_summary(session_id, summary_text)
-            self.session_db.set_status(session_id, "summary_url", summary_blob)
-            self.session_db.set_status(session_id, "summary_status", "completed")
-            print("✅ Summarization complete.")
-        except Exception as e:
-            self.session_db.set_status(session_id, "summary_status", "failed")
-            self.session_db.set_status(session_id, "session_status", "failed")
-            self.session_db.set_status(session_id, "processing_error", str(e))
-            print(f"❌ Summarization failed: {e}")
-            return
+        # self.session_db.set_status(session_id, "summary_status", "processing")
+        #
+        # try:
+        #     summary_text = self.summarizer.summarize(transcript_json, emotion_json, PromptStyle.CUSTOMER_SERVICE)
+        #     summary_blob = self.session_storage.store_summary(session_id, summary_text)
+        #     self.session_db.set_status(session_id, "summary_url", summary_blob)
+        #     self.session_db.set_status(session_id, "summary_status", "completed")
+        #     print("✅ Summarization complete.")
+        # except Exception as e:
+        #     self.session_db.set_status(session_id, "summary_status", "failed")
+        #     self.session_db.set_status(session_id, "session_status", "failed")
+        #     self.session_db.set_status(session_id, "processing_error", str(e))
+        #     print(f"❌ Summarization failed: {e}")
+        #     return
+        try_run_summary(session_id)
 
         # ----------------------------- Saving Session Status -----------------------------
         try:
