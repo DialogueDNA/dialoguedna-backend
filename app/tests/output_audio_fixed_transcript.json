@@ -1,0 +1,176 @@
+[
+  {
+    "speaker": 1,
+    "text": "So I'm happy to report we have succeeded in rerouting our flagships way ahead of schedule yet again.",
+    "start_time": 6.08,
+    "end_time": 13.16
+  },
+  {
+    "speaker": 1,
+    "text": "This has allowed us to improve our US PS by 90%.",
+    "start_time": 14.24,
+    "end_time": 17.6
+  },
+  {
+    "speaker": 1,
+    "text": "That's nine out of every 10.",
+    "start_time": 19.52,
+    "end_time": 20.96
+  },
+  {
+    "speaker": 2,
+    "text": "Excellent.",
+    "start_time": 21.72,
+    "end_time": 22.2
+  },
+  {
+    "speaker": 2,
+    "text": "Thank you, Samuel.",
+    "start_time": 22.2,
+    "end_time": 23.04
+  },
+  {
+    "speaker": 2,
+    "text": "Timothy, what's the status with the linear solutions?",
+    "start_time": 24.0,
+    "end_time": 27.4
+  },
+  {
+    "speaker": 2,
+    "text": "Can you give us the latest on the Square project?",
+    "start_time": 27.52,
+    "end_time": 29.8
+  },
+  {
+    "speaker": 3,
+    "text": "The Linear Solutions department has yet again functioned at full capacity and we have fulfilled 114% of this month's objectives.",
+    "start_time": 30.2,
+    "end_time": 38.0
+  },
+  {
+    "speaker": 3,
+    "text": "You can read the handouts for a detailed account, but in short, as I reported last week, we've decided to use the right angle for the square project.",
+    "start_time": 38.68,
+    "end_time": 46.64
+  },
+  {
+    "speaker": 3,
+    "text": "Now there's still some debate as to how big a right angle is, so we're testing currently at 9097 a hundred and 101°.",
+    "start_time": 47.28,
+    "end_time": 56.6
+  },
+  {
+    "speaker": 3,
+    "text": "As agreed, I've ensured Anderson cross checks the design, removing any left angles and doesn't use them in future.",
+    "start_time": 57.36,
+    "end_time": 63.6
+  },
+  {
+    "speaker": 3,
+    "text": "Overall, we have very good progress with the design.",
+    "start_time": 64.32,
+    "end_time": 66.4
+  },
+  {
+    "speaker": 2,
+    "text": "Are we on track with the schedule?",
+    "start_time": 66.96,
+    "end_time": 68.48
+  },
+  {
+    "speaker": 2,
+    "text": "When are we required to start delivering?",
+    "start_time": 68.84,
+    "end_time": 70.56
+  },
+  {
+    "speaker": 3,
+    "text": "I'm happy to report that we are ready to start first deliveries tomorrow, which is way ahead of the requested delivery schedule.",
+    "start_time": 71.24,
+    "end_time": 77.76
+  },
+  {
+    "speaker": 4,
+    "text": "We've only just finished system testing the prototype and are only halfway through performance testing.",
+    "start_time": 78.04,
+    "end_time": 83.32
+  },
+  {
+    "speaker": 4,
+    "text": "We haven't even released an alpha version yet.",
+    "start_time": 83.56,
+    "end_time": 86.24
+  },
+  {
+    "speaker": 3,
+    "text": "As I said earlier, we've had very good progress with the design.",
+    "start_time": 86.48,
+    "end_time": 88.92
+  },
+  {
+    "speaker": 4,
+    "text": "Yes, we've had very good progress, but I'd say the design of the product is only 75% complete.",
+    "start_time": 89.2,
+    "end_time": 95.48
+  },
+  {
+    "speaker": 3,
+    "text": "Well, exactly.",
+    "start_time": 95.52,
+    "end_time": 96.4
+  },
+  {
+    "speaker": 3,
+    "text": "That's three out of every four, so we're ready to start shipping tomorrow.",
+    "start_time": 96.4,
+    "end_time": 100.2
+  },
+  {
+    "speaker": 4,
+    "text": "It doesn't work like that.",
+    "start_time": 101.64,
+    "end_time": 103.2
+  },
+  {
+    "speaker": 3,
+    "text": "We'll produce, say, 4 units, but only ship the first 3.",
+    "start_time": 104.52,
+    "end_time": 108.04
+  },
+  {
+    "speaker": 3,
+    "text": "Then when you're finally 100% complete with the design, we can then ship the 4th.",
+    "start_time": 108.36,
+    "end_time": 113.2
+  },
+  {
+    "speaker": 2,
+    "text": "Excellent work, Timothy.",
+    "start_time": 116.6,
+    "end_time": 117.76
+  },
+  {
+    "speaker": 2,
+    "text": "You can proceed with the production.",
+    "start_time": 118.0,
+    "end_time": 119.36
+  },
+  {
+    "speaker": 2,
+    "text": "Anderson, send me please a revised delivery schedule so I can share it with a client.",
+    "start_time": 119.8,
+    "end_time": 123.76
+  },
+  {
+    "speaker": 2,
+    "text": "Well, thank you everyone.",
+    "start_time": 124.44,
+    "end_time": 126.36
+  },
+  {
+    "speaker": 2,
+    "text": "This was very productive yet again.",
+    "start_time": 126.76,
+    "end_time": 129.68
+  }
+]
