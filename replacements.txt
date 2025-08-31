@@ -1,0 +1,9 @@
+﻿regex:(SPEECH_KEY\s*=\s*["\'])([^"\']+)(["\'])==>\1***REMOVED***\3
+regex:(AZURE_OPENAI_API_KEY\s*=\s*["\'])([^"\']+)(["\'])==>\1***REMOVED***\3
+regex:(AZURE_STORAGE_CONNECTION_STRING\s*=\s*["\'])([^"\']+)(["\'])==>\1***REMOVED***\3
+regex:(SUPABASE_SERVICE_ROLE_KEY\s*=\s*["\'])([^"\']+)(["\'])==>\1***REMOVED***\3
+regex:(SUPABASE_JWT_SECRET\s*=\s*["\'])([^"\']+)(["\'])==>\1***REMOVED***\3
+regex:([A-Z0-9_]*KEY\s*=\s*["\'])([^"\']+)(["\'])==>\1***REMOVED***\3
+regex:([A-Z0-9_]*TOKEN\s*=\s*["\'])([^"\']+)(["\'])==>\1***REMOVED***\3
+regex:([A-Z0-9_]*SECRET\s*=\s*["\'])([^"\']+)(["\'])==>\1***REMOVED***\3
+regex:([A-Z0-9_]*CONNECTION_STRING\s*=\s*["\'])([^"\']+)(["\'])==>\1***REMOVED***\3
