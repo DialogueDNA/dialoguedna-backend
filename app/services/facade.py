@@ -10,6 +10,7 @@ from app.storage.session_storage import SessionStorage
 
 from app.services.transcript.transcriber import Transcriber
 from app.services.emotions.emotion_controller import EmotionController
+from app.services.emotions.emotioner import Emotioner
 from app.services.summary.summarizer import Summarizer
 from app.services.summary.prompts import PromptStyle
 
@@ -25,8 +26,8 @@ class DialogueProcessor:
 
         self.transcriber = Transcriber()
 
-        #todo: do it right now analysis only from text ans the merge..
-        self.emotion_analyzer = EmotionController()
+        #todo: right now analysis only from text, change to EmotionController when ready
+        self.emotion_analyzer = Emotioner()
         self.summarizer = Summarizer()
 
         self._saved_audio_path = None
