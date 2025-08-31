@@ -1,3 +1,6 @@
+from pydantic import BaseModel
+from app.services.summary.prompts import PROMPT_LABELS, PromptStyle
+from app.services.summary.runner import try_run_summary
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from app.db.session_db import SessionDB
@@ -9,6 +12,37 @@ import requests
 router = APIRouter()
 session_db = SessionDB()
 session_storage = SessionStorage()
+
+@router.get("/presets")
+def list_summary_presets(current_user: dict = Depends(get_current_user)):
+    """
+    Returns the list of available summary styles (for the UI dropdown).
+    """
+    return {"presets": [{"key": k.value, "label": v} for k, v in PROMPT_LABELS.items()]}
+
+class GenerateBody(BaseModel):
+    preset: PromptStyle
+
+@router.post("/{session_id}/generate")
+def generate_summary(session_id: str, body: GenerateBody, current_user: dict = Depends(get_current_user)):
+    """
+    Force-generate (or re-generate) a summary with a specific preset.
+    Prerequisites: transcript & emotions must be completed.
+    """
+    session = session_db.get_session(session_id)
+    if not session or session["user_id"] != current_user["id"]:
+        raise HTTPException(status_code=404, detail="Session not found or access denied")
+
+    if session.get("transcript_status") != "completed" or session.get("emotion_breakdown_status") != "completed":
+        raise HTTPException(status_code=409, detail="Prerequisites not ready (transcript/emotions)")
+
+    # Save the chosen preset and run the summary trigger once (will run now)
+    session_db.update_session(session_id, {"summary_preset": body.preset.value, "summary_status": "not_started"})
+    ran = try_run_summary(session_id)
+    if not ran:
+        raise HTTPException(status_code=500, detail="Summary generation did not run due to unexpected state")
+
+    return {"status": "completed", "preset": body.preset.value}
 
 # GET: text summary of a session
 @router.get("/{session_id}")
