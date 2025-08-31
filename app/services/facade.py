@@ -24,6 +24,8 @@ class DialogueProcessor:
         self.audio_processor = AudioProcessor()
 
         self.transcriber = Transcriber()
+
+        #todo: do it right now analysis only from text ans the merge..
         self.emotion_analyzer = EmotionController()
         self.summarizer = Summarizer()
 
