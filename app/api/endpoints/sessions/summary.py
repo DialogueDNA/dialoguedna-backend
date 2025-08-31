@@ -23,11 +23,19 @@ def list_summary_presets(current_user: dict = Depends(get_current_user)):
 class GenerateBody(BaseModel):
     preset: PromptStyle
 
+# POST: (re)generate summary with a chosen preset (idempotent)
 @router.post("/{session_id}/generate")
 def generate_summary(session_id: str, body: GenerateBody, current_user: dict = Depends(get_current_user)):
     """
     Force-generate (or re-generate) a summary with a specific preset.
     Prerequisites: transcript & emotions must be completed.
+
+    Idempotent behavior:
+    - Always persist the new preset.
+    - Reset summary_status -> 'not_started' (optionally clear URL).
+    - Trigger try_run_summary().
+    - Return current DB state (processing/completed) instead of failing
+      just because try_run_summary() returned False.
     """
     session = session_db.get_session(session_id)
     if not session or session["user_id"] != current_user["id"]:
@@ -36,29 +44,54 @@ def generate_summary(session_id: str, body: GenerateBody, current_user: dict = D
     if session.get("transcript_status") != "completed" or session.get("emotion_breakdown_status") != "completed":
         raise HTTPException(status_code=409, detail="Prerequisites not ready (transcript/emotions)")
 
-    # Save the chosen preset and run the summary trigger once (will run now)
-    session_db.update_session(session_id, {"summary_preset": body.preset.value, "summary_status": "not_started"})
-    ran = try_run_summary(session_id)
-    if not ran:
-        raise HTTPException(status_code=500, detail="Summary generation did not run due to unexpected state")
+    # 1) Persist preset + reset status (optional: clear old URL to avoid stale UI)
+    session_db.update_session(session_id, {
+        "summary_preset": body.preset.value,
+        "summary_status": "not_started",
+        # "summary_url": None,   # uncomment if you prefer to hide old summary during regen
+        "processing_error": None,
+    })
 
-    return {"status": "completed", "preset": body.preset.value}
+    # 2) Try to run now (may return False even if state moved to processing/completed)
+    _ = try_run_summary(session_id)
+
+    # 3) Read fresh state and respond idempotently
+    s2 = session_db.get_session(session_id)
+    st = s2.get("summary_status")
+    if st in ("processing", "completed"):
+        return {
+            "status": st,
+            "preset": body.preset.value,
+            "summary_url": s2.get("summary_url"),
+        }
+    if st == "failed":
+        raise HTTPException(status_code=500, detail=f"Summary failed: {s2.get('processing_error')}")
+    if st == "not_started":
+        # Unexpected: trigger didn't start; expose reason if recorded
+        raise HTTPException(status_code=500, detail=f"Summary did not start. error={s2.get('processing_error')}")
+
+    # Fallback (shouldn't reach here)
+    raise HTTPException(status_code=500, detail=f"Unexpected summary status: {st}")
+
 
 # GET: text summary of a session
 @router.get("/{session_id}")
 def get_summary(session_id: str, current_user: dict = Depends(get_current_user)):
     session = session_db.get_session(session_id)
-
     if not session or session["user_id"] != current_user["id"]:
         raise HTTPException(status_code=404, detail="Summary not found or access denied")
 
     summary_status = session.get("summary_status")
     summary_blob = session.get("summary_url")
 
+    # Include error for easier debugging/UX
+    error = session.get("processing_error")
+
     if summary_status != "completed" or not summary_blob:
         return {
             "status": summary_status,
-            "data": None
+            "data": None,
+            "error": error,
         }
 
     try:
@@ -68,8 +101,10 @@ def get_summary(session_id: str, current_user: dict = Depends(get_current_user))
 
     return {
         "status": "completed",
-        "data": summary_url
+        "data": summary_url,
+        "error": None,
     }
+
 
 # GET: download summary as PDF
 @router.get("/{session_id}/download")
