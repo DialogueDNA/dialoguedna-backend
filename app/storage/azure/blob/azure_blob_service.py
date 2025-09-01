@@ -1,9 +1,18 @@
+# app/storage/azure/blob/azure_blob_service.py
+
+# Thin service that the rest of the app calls. Keeps API clear:
+# - upload_audio_file(...)  -> AUDIO from FastAPI UploadFile
+# - upload_file(...)        -> CONTENT from local path (back-compat name)
+# - upload_content_file(...) -> CONTENT with explicit MIME
+
 from pathlib import Path
+from typing import Optional
 from fastapi import UploadFile
 
 from app.storage.azure.blob.azure_blob_deleter import AzureBlobDeleter
 from app.storage.azure.blob.azure_blob_fetcher import AzureBlobFetcher
 from app.storage.azure.blob.azure_blob_uploader import AzureBlobUploader
+
 
 class AzureBlobService:
     def __init__(self):
@@ -12,12 +21,18 @@ class AzureBlobService:
         self.fetcher = AzureBlobFetcher()
 
     # === Upload ===
-    def upload_uploadfile(self, file: UploadFile, blob_name: str, convert_to_wav: bool = True) -> None:
-        """Upload a FastAPI UploadFile to Azure."""
-        return self.uploader.upload_uploadfile(file, blob_name, convert_to_wav)
+    def upload_audio_file(self, file: UploadFile, blob_name: str) -> str:
+        """Audio path: receives UploadFile, converts if needed, sets audio/wav."""
+        return self.uploader.upload_audio_file(file, blob_name)
 
-    def upload_file(self, tmp_path, blob_path):
-        return self.uploader.uploadfile(tmp_path, blob_path)
+    def upload_file(self, tmp_path: Path, blob_path: str) -> str:
+        """Generic content upload (no audio conversion)."""
+        return self.uploader.upload_content_file(tmp_path, blob_path)
+
+    # === CONTENT (local path) — with explicit MIME ===
+    def upload_content_file(self, file_path: Path, blob_name: str, content_type: Optional[str]) -> str:
+        """Generic content upload with explicit Content-Type (e.g. application/json)."""
+        return self.uploader.upload_content_file(Path(file_path), blob_name, content_type)
 
     # === Fetch ===
     def generate_sas_url(self, blob_name: str) -> str:
@@ -25,7 +40,7 @@ class AzureBlobService:
         return self.fetcher.generate_sas_url(blob_name)
 
     def blob_exists(self, blob_name: str) -> bool:
-        """Check if a blob exists (requires implementation in AzureFetcher)."""
+        """Check if a blob exists."""
         return self.fetcher.blob_exists(blob_name)
 
     # === Delete ===

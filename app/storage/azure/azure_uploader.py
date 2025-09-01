@@ -1,6 +1,7 @@
 # app/storage/azure/azure_uploader.py
 
 from pathlib import Path
+from typing import Optional
 from azure.storage.blob import BlobServiceClient, ContentSettings
 
 from app.core.config import AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
@@ -13,12 +14,15 @@ class AzureUploader:
         self.client = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
         self.container = self.client.get_container_client(AZURE_CONTAINER_NAME)
 
-    def upload_file(self, file_path: Path, blob_name: str):
+
+    # === 1) AUDIO ===
+    def upload_audio_file(self, file_path: Path, blob_name: str)->str:
         """
-        Converts audio to Azure-compatible format (WAV, PCM s16, 16kHz, mono) if needed,
-        uploads it with correct Content-Type, and deletes temporary file afterwards.
+               Convert to WAV/PCM s16/16kHz/mono if needed, then upload with audio/wav.
         """
         file_path = Path(file_path)
+        if not file_path.exists():
+            raise FileNotFoundError(f"File not found: {file_path}")
 
         # 1) Ensure the file is in the correct transcription-ready format
         fixed_path = ensure_transcription_ready(file_path)
@@ -40,6 +44,34 @@ class AzureUploader:
                 except Exception:
                     # If deletion fails, ignore silently (could log here if desired)
                     pass
+
+        return blob_name
+
+
+    # === 2) GENERIC CONTENT (JSON/TXT/וכו') ===
+    def upload_content_file(self, file_path: Path, blob_name: str, content_type: Optional[str] = None) -> str:
+        """
+        Upload file as-is (no conversion). Optionally set Content-Type.
+        """
+        file_path = Path(file_path)
+        if not file_path.exists():
+            raise FileNotFoundError(f"File not found: {file_path}")
+
+        cs = ContentSettings(content_type=content_type) if content_type else None
+        with open(file_path, "rb") as f:
+            self.container.upload_blob(
+                name=blob_name,
+                data=f,
+                overwrite=True,
+                content_settings=cs,
+            )
+        return blob_name
+
+
+
+
+
+#todo: delete if not needed
 
     # Legacy method (no longer needed, kept only for backward compatibility)
     def convert_to_wav(self, file_path: Path) -> Path:
