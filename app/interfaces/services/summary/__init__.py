@@ -3,13 +3,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Protocol, List, Dict, Optional
 
-from app.interfaces.services import SpeakerType
-from app.interfaces.services.emotions import EmotionAnalyzerBundle
-from app.interfaces.services.text import TextType
+from app.interfaces.services.emotions import EmotionAnalysisOutput
 
 @dataclass
 class SummaryInput:
-    segments:       List[EmotionAnalyzerBundle]
+    segments:       EmotionAnalysisOutput
     style:          str                                         # key from prompts.PROMPT_PRESETS, e.g. "ALL_IN_ONE"
     max_tokens:     Optional[int]             = None            # optional max tokens for the summary
     language:       Optional[str]             = None            # optional forced output language

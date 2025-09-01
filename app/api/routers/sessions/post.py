@@ -1,5 +1,6 @@
 import os
 import shutil
+from distutils import debug
 from tempfile import NamedTemporaryFile
 
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends, BackgroundTasks
@@ -7,6 +8,7 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends, B
 from app.api.dependencies.app_facade import get_facade
 from app.api.dependencies.auth import UserContext
 from app.api.dependencies.authz import require_user
+from app.api.mappers.session_mapper import to_session_dto, to_session_response
 
 from app.api.schemas.schemas import SessionResponse
 from app.application.facade import ApplicationFacade
@@ -27,13 +29,13 @@ async def create_session(
         shutil.copyfileobj(file.file, tmp)
 
     try:
-        return facade.create_and_analyze(
+        return to_session_response(facade.create_and_analyze(
             user_id=ctx.id,
             title=title,
             audio_local_path=tmp_path,
             inline_save=False,
-            queue=BackgroundTasksQueue(background),
-        )
+            queue=BackgroundTasksQueue(background) if not debug else None,
+        ))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:

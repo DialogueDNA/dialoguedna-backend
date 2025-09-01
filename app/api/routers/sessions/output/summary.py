@@ -3,19 +3,18 @@ from fastapi import APIRouter, HTTPException, Depends
 from app.api.dependencies.app_facade import get_facade
 from app.api.dependencies.auth import UserContext
 from app.api.dependencies.authz import require_user
+from app.api.mappers.artifacts_mapper import to_summary_response
+from app.api.schemas.schemas import SummaryResponse
 from app.application.facade import ApplicationFacade
 
 router = APIRouter()
 
-@router.get("/{session_id}/summary", summary="Get summary for a session")
+@router.get("/{session_id}/summary", response_model=SummaryResponse ,summary="Get summary for a session")
 def get_summary(
         session_id: str,
         facade: ApplicationFacade = Depends(get_facade),
         ctx: UserContext = Depends(require_user)):
     try:
-        return facade.get_summary(
-            session_id=session_id,
-            user_id=ctx.id
-        )
+        return to_summary_response(facade.get_summary_view(session_id=session_id, user_id=ctx.id))
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))

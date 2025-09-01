@@ -7,7 +7,7 @@ def wire_summarization(
     summarization_cfg: SummarizationConfig,
 ) -> SummarizationState:
     summarization = SummarizationState()
-    name = (getattr(summarization_cfg, "main_summarizer", "") or "").strip().lower()
+    name = (summarization_cfg.main_summarizer or "").strip().lower()
     if not name:
         raise ValueError("SummarizationConfig.main_summarizer is empty")
 

@@ -6,7 +6,9 @@ import json
 import os
 import tempfile
 from datetime import datetime, timedelta
-from typing import BinaryIO, List, Dict, Any
+from typing import BinaryIO, List, Dict, Any, Tuple
+from urllib.parse import urlparse
+
 from azure.storage.blob import (
     BlobServiceClient, ContentSettings, generate_blob_sas, BlobSasPermissions
 )
@@ -14,6 +16,7 @@ from azure.storage.blob import (
 from app.core.config import StorageConfig
 from app.core.constants.storage.azure_constants import MAIN_CONTAINER
 from app.interfaces.storage.blob_storage import BlobStorage
+
 
 
 class AzureBlobStorage(BlobStorage):
@@ -25,16 +28,16 @@ class AzureBlobStorage(BlobStorage):
     @classmethod
     def from_config(cls, cfg: StorageConfig) -> "AzureBlobStorage":
         azure_cfg = cfg.azure
-        if getattr(azure_cfg, "connection_string", None):
+        if azure_cfg.connection_string or None:
             svc = BlobServiceClient.from_connection_string(azure_cfg.connection_string)
             account_key = azure_cfg.account_key
         else:
-            if not (getattr(azure_cfg, "account_name", None) and getattr(azure_cfg, "account_key", None)):
+            if not (azure_cfg.account_name and azure_cfg.account_key):
                 raise RuntimeError("Azure storage requires either connection string or (account+key).")
             endpoint = f"https://{azure_cfg.account_name}.blob.core.windows.net"
             svc = BlobServiceClient(account_url=endpoint, credential=azure_cfg.account_key)
             account_key = azure_cfg.account_key
-        return cls(svc, public_base=getattr(azure_cfg, "public_base_url", "") or "", account_key=account_key)
+        return cls(svc, public_base=azure_cfg.public_base_url or "", account_key=account_key)
 
     def upload(self, container: str, blob: str, data: bytes | BinaryIO, *, content_type: str | None = None) -> str:
         stream = io.BytesIO(data) if isinstance(data, (bytes, bytearray)) else data
@@ -74,3 +77,38 @@ class AzureBlobStorage(BlobStorage):
         base_url = self._svc.get_blob_client(container=container, blob=blob).url
         sep = "&" if "?" in base_url else "?"
         return f"{base_url}{sep}{sas}"
+
+    @staticmethod
+    def split_blob_url(url: str) -> tuple[str, str]:
+        """
+        Split a full blob URL into (container, blob_path).
+        Example:
+            https://acct.blob.core.windows.net/mycontainer/results/file.wav
+            -> ("mycontainer", "output/file.wav")
+        """
+        parsed = urlparse(url)
+        parts = parsed.path.lstrip("/").split("/", 1)
+        container = parts[0]
+        blob = parts[1] if len(parts) > 1 else ""
+        return container, blob
+
+    def generate_read_sas_from_url(self, blob_url: str, minutes: int = 10) -> Tuple[str, str]:
+        container, blob = self.split_blob_url(blob_url)
+        return self.generate_read_sas(container, blob, minutes)
+
+    def generate_read_sas(self, container: str, blob: str, minutes: int = 10) -> Tuple[str, str]:
+        exp = datetime.utcnow() + timedelta(minutes=minutes)
+        token = generate_blob_sas(
+            account_name=self._svc.account_name,
+            container_name=container,
+            blob_name=blob,
+            account_key=self._account_key,
+            permission=BlobSasPermissions(read=True),
+            expiry=exp,
+        )
+        url = f"https://{self._svc.account_name}.blob.core.windows.net/{container}/{blob}?{token}"
+        return url, exp.isoformat()
+
+
+
+

@@ -19,7 +19,6 @@ class DialogueDNAPipelineReporterFactory:
         *,
         inline_save: bool = False,
         dispatch: str = "thread",
-        base_prefix: str = "sessions"
     ) -> PipelineReporter:
 
         reporter = PipelineReporter(dispatch=dispatch)
@@ -31,7 +30,7 @@ class DialogueDNAPipelineReporterFactory:
 
         artifacts = StorageArtifactWriter(self.storage.client)
 
-        reporter.subscribe(BlobArtifactsSubscriber(base_prefix=base_prefix),
+        reporter.subscribe(BlobArtifactsSubscriber(),
                       PipelineContext(session_id=session_id, sessions=sessions, artifacts=artifacts))
 
         return reporter

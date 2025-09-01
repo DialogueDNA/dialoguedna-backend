@@ -11,11 +11,11 @@ class SessionDB(BaseModel):
     title: Optional[str]
     audio_file_url: Optional[str]
     transcript_url: Optional[str]
-    emotion_breakdown_url: Optional[Dict[str, Any]]
+    emotion_breakdown_url: Optional[str]
     summary_url: Optional[str]
 
     duration: Optional[float]
-    participants: Optional[str]
+    participants: Optional[List[str]]
 
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
@@ -24,7 +24,7 @@ class SessionDB(BaseModel):
     source: Optional[str]
     processing_error: Optional[str]
     is_favorite: Optional[bool]
-    tags: Optional[str]
+    tags: Optional[List[str]]
 
     audio_file_status: Optional[str]
     transcript_status: Optional[str]
@@ -41,3 +41,4 @@ class SessionDB(BaseModel):
 
     summarizer_backend: Optional[str]
     summarizer_params: Optional[Dict[str, Any]]
+    summary_preset: Optional[str]

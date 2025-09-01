@@ -9,7 +9,7 @@ from app.logic.DialogueDNA.events.subscribers.base import PipelineListener
 from app.logic.DialogueDNA.interfaces.capabilities import PipelineContext
 from app.logic.DialogueDNA.events import (
     StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, FailedEvent, QueuedEvent, StoppedEvent,
-    ProcessingEvent
+    ProcessingEvent, SessionEvent
 )
 
 log = logging.getLogger(__name__)
@@ -42,6 +42,11 @@ class PipelineReporter:
 
     # emits
     def stage                           (self, stage: str, detail: Optional[str] = None):   self._emit("on_stage",                          StageEvent(stage, detail))
+    def session_queued                  (self):                                             self._emit("on_session_queued",                 QueuedEvent())
+    def session_stopped                 (self):                                             self._emit("on_session_stopped",                StoppedEvent())
+    def session_processing              (self):                                             self._emit("on_session_processing",             ProcessingEvent())
+    def session_ready                   (self):                                             self._emit("on_session_ready",                  SessionEvent())
+    def session_failed                  (self, error):                                      self._emit("on_session_failed",                 FailedEvent(error))
     def transcription_queued            (self):                                             self._emit("on_transcription_queued",           QueuedEvent())
     def transcription_stopped           (self):                                             self._emit("on_transcription_stopped",          StoppedEvent())
     def transcription_processing        (self):                                             self._emit("on_transcription_processing",       ProcessingEvent())

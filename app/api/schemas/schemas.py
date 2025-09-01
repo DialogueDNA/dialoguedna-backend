@@ -1,45 +1,41 @@
-from typing import Dict, List, Optional
-from pydantic import BaseModel, Field
+from datetime import datetime
+from typing import List, Optional, Literal
+from pydantic import BaseModel, Field, conlist
 
-class TranscriptRowDTO(BaseModel):
-    speaker: Optional[str] = None
-    text: str
-    start: Optional[float] = None
-    end: Optional[float] = None
+# =============== DTOs ===============
 
-class TranscriptDTO(BaseModel):
-    transcript: List[TranscriptRowDTO]
-
-class EmotionRow(BaseModel):
-    speaker: Optional[str] = None
-    start: Optional[float] = None
-    end: Optional[float] = None
-    text: Optional[Dict[str, float]] = None
-    audio: Optional[Dict[str, float]] = None
-    fused: Optional[Dict[str, float]] = None
-
-class SummaryDTO(BaseModel):
-    text: Optional[str] = None
-    bullets: Optional[List[str]] = None
+ProcessingStatus = Literal["not_started", "queued", "processing", "completed", "failed"]
 
 class SessionDTO(BaseModel):
     id: str
     title: str
+
     audio_status: Optional[str] = None
-    audio_url: Optional[str] = None
     transcript_status: Optional[str] = None
-    transcript_url: Optional[str] = None
     emotion_status: Optional[str] = None
-    emotions_url: Optional[str] = None
     summary_status: Optional[str] = None
+
+    audio_url: Optional[str] = None
+    transcript_url: Optional[str] = None
+    emotions_url: Optional[str] = None
     summary_url: Optional[str] = None
+
     duration: Optional[float] = None
     participants: Optional[List[str]] = None
     language: Optional[str] = None
-    created_at: Optional[str] = None
 
-class SessionCreateRequest(BaseModel):
-    title: str
+    created_at: Optional[datetime] = None
+
+class ArtifactAccess(BaseModel):
+    object_path: str
+    access_url: str
+    expires_at: datetime
+
+class ArtifactDTO(BaseModel):
+    status: ProcessingStatus
+    result: Optional[ArtifactAccess]
+
+# =============== Sessions Responses ===============
 
 class SessionListResponse(BaseModel):
     sessions: List[SessionDTO]
@@ -47,17 +43,24 @@ class SessionListResponse(BaseModel):
 class SessionResponse(BaseModel):
     session: SessionDTO
 
-class TranscriptResponse(BaseModel):
-    transcript: List[TranscriptRowDTO]
-
-class EmotionsResponse(BaseModel):
-    emotions: List[EmotionRow]
-
-class SummaryResponse(BaseModel):
-    summary: SummaryDTO
-
-class UpdateMetadata(BaseModel):
+class SessionCreateRequest(BaseModel):
     title: str
 
-class DeleteResponse(BaseModel):
-    deleted: bool
+# =============== Artifacts Responses ===============
+
+class AudioResponse(BaseModel):
+    audio: ArtifactDTO
+
+class TranscriptResponse(BaseModel):
+    transcript: ArtifactDTO
+
+class AnalyzedEmotionsResponse(BaseModel):
+    analyzed_emotions: ArtifactDTO
+
+class SummaryResponse(BaseModel):
+    summary: ArtifactDTO
+
+class BulkDeleteRequest(BaseModel):
+    session_ids: conlist(str, min_length=1) = Field(..., description="IDs to delete")
+    delete_blobs: bool = Field(False, description="Also delete storage blobs")
+

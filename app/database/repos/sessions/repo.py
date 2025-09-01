@@ -1,4 +1,6 @@
 from typing import Any
+
+from app.core.constants.db.supabase_constants import SessionColumn
 from app.interfaces.db.domains.sessions_repo import SessionsRepo
 from app.interfaces.db.table_gateway import TableGateway
 from app.models.session import SessionDB
@@ -13,7 +15,7 @@ class SessionsRepoImpl(SessionsRepo):
             return session.model_dump(exclude_none=True)
         return session
 
-    def create(self, session: SessionDB | dict[str, Any]) -> SessionDB:
+    def create(self, session: SessionDB | dict[SessionColumn, Any]) -> SessionDB:
         return self.t.insert(self._to_dict(session))
 
     def get_for_user(self, session_id: str, user_id: str) -> SessionDB | None:

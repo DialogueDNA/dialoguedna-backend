@@ -1,5 +1,4 @@
 from __future__ import annotations
-import os
 from dataclasses import dataclass, field
 from typing import Optional, Literal
 
@@ -28,24 +27,20 @@ class SepformerConfig:
 
     # Optional / advanced
     cache_dir: str = field(
-        default_factory=lambda: getattr(
-            env,
-            "SEPFORMER_CACHE_DIR",
-            os.path.join(os.path.expanduser("~"), ".cache", "speechbrain", "sepformer"),
-        )
+        default_factory=lambda: env.SEPFORMER_CACHE_DIR
     )
     model_sample_rate: int = field(
-        default_factory=lambda: getattr(env, "SEPFORMER_MODEL_SAMPLE_RATE", 16_000)
+        default_factory=lambda: env.SEPFORMER_MODEL_SAMPLE_RATE
     )
     downmix_mode: Literal["mean", "left", "right"] = field(
-        default_factory=lambda: getattr(env, "SEPFORMER_DOWNMIX_MODE", "mean")
+        default_factory=lambda: env.SEPFORMER_DOWNMIX_MODE
     )
     chunk_sec: float = field(
-        default_factory=lambda: getattr(env, "SEPFORMER_CHUNK_SEC", 12.0)
+        default_factory=lambda: env.SEPFORMER_CHUNK_SEC
     )
     hop_fraction: float = field(
-        default_factory=lambda: getattr(env, "SEPFORMER_HOP_FRACTION", 0.5)
+        default_factory=lambda: env.SEPFORMER_HOP_FRACTION
     )
     num_speakers: Optional[int] = field(
-        default_factory=lambda: getattr(env, "SEPFORMER_NUM_SPEAKERS", None)
+        default_factory=lambda: env.SEPFORMER_NUM_SPEAKERS
     )

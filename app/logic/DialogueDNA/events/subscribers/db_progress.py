@@ -15,6 +15,26 @@ class DBProgressSubscriber(BaseListener):
         ctx.sessions.update(ctx.session_id, {
             SessionColumn.session_status: e.stage
         })
+    def on_session_queued(self, e: QueuedEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.session_status: SessionStatus.queued
+        })
+    def on_session_stopped(self, e: QueuedEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.session_status: SessionStatus.stopped
+        })
+    def on_session_processing(self, e: QueuedEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.session_status: SessionStatus.processing
+        })
+    def on_session_ready(self, e: TranscriptionEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.session_status: SessionStatus.completed
+        })
+    def on_session_failed(self, e: FailedEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.session_status: SessionStatus.failed
+        })
     def on_transcription_queued(self, e: QueuedEvent, ctx: PipelineContext) -> None:
         ctx.sessions.update(ctx.session_id, {
             SessionColumn.transcript_status: SessionStatus.queued
@@ -25,7 +45,7 @@ class DBProgressSubscriber(BaseListener):
         })
     def on_transcription_processing(self, e: ProcessingEvent, ctx: PipelineContext) -> None:
         ctx.sessions.update(ctx.session_id, {
-            SessionColumn.transcript_status: SessionStatus.progressing
+            SessionColumn.transcript_status: SessionStatus.processing
         })
     def on_transcription_ready(self, e: TranscriptionEvent, ctx: PipelineContext) -> None:
         ctx.sessions.update(ctx.session_id, {
@@ -45,7 +65,7 @@ class DBProgressSubscriber(BaseListener):
         })
     def on_emotion_analyzation_processing(self, e: ProcessingEvent, ctx: PipelineContext) -> None:
         ctx.sessions.update(ctx.session_id, {
-            SessionColumn.emotion_breakdown_status: SessionStatus.progressing
+            SessionColumn.emotion_breakdown_status: SessionStatus.processing
         })
     def on_emotion_analyzation_ready(self, e: EmotionsEvent, ctx: PipelineContext) -> None:
         ctx.sessions.update(ctx.session_id, {
@@ -65,7 +85,7 @@ class DBProgressSubscriber(BaseListener):
         })
     def on_summarization_processing(self, e: ProcessingEvent, ctx: PipelineContext) -> None:
         ctx.sessions.update(ctx.session_id, {
-            SessionColumn.summary_status: SessionStatus.progressing
+            SessionColumn.summary_status: SessionStatus.processing
         })
     def on_summarization_ready(self, e: SummaryEvent, ctx: PipelineContext) -> None:
         ctx.sessions.update(ctx.session_id, {

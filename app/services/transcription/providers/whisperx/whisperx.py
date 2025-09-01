@@ -31,7 +31,7 @@ class WhisperXTranscriber(Transcriber):
         self._align_model = None
         self._align_meta = None
         self._diar = None
-        self._batch_size: int = getattr(cfg, "batch_size", 16)
+        self._batch_size: int = cfg.batch_size
 
     # ---------------- Public API ----------------
     @torch.inference_mode()

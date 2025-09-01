@@ -38,9 +38,9 @@ class AzureOpenAISummarizer(Summarizer):
             )
             text = (resp.choices[0].message.content or "").strip()
             usage: Dict[str, float] = {
-                "prompt_tokens": float(getattr(resp.usage, "prompt_tokens", 0) or 0),
-                "completion_tokens": float(getattr(resp.usage, "completion_tokens", 0) or 0),
-                "total_tokens": float(getattr(resp.usage, "total_tokens", 0) or 0),
+                "prompt_tokens": float(resp.usage.prompt_tokens or 0),
+                "completion_tokens": float(resp.usage.completion_tokens or 0),
+                "total_tokens": float(resp.usage.total_tokens or 0),
             }
             return SummaryOutput(
                 summary=text,
@@ -75,12 +75,12 @@ class AzureOpenAISummarizer(Summarizer):
         # Build lines: "Speaker: text [top_emotion]"
         lines: List[str] = []
         for s in req.segments:
-            spk = str(s.speaker) if s.speaker is not None else "SPEAKER"
+            spk = str(s.whom) if s.whom is not None else "SPEAKER"
             txt = (s.text or "").strip()
 
             emo_hint = ""
-            if s.emotions and getattr(s.emotions, "emotion_analysis", None):
-                lab, _ = max(s.emotions.emotions_intensity_dict.items(), key=lambda kv: kv[1])
+            if s.mixed and s.mixed.emotions_intensity_dict:
+                lab, _ = max(s.mixed.emotions_intensity_dict.items(), key=lambda kv: kv[1])
                 emo_hint = f" [{lab}]"
 
             lines.append(f"{spk}: {txt}{emo_hint}")

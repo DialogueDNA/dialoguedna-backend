@@ -8,3 +8,4 @@ class WhisperXConfig:
     compute_type: str = env.WHISPERX_COMPUTE_TYPE
     device: str = env.DEVICE or "cpu"
     hf_token: str = env.HUGGINGFACE_WHISPERX_TOKEN
+    batch_size: int = 16

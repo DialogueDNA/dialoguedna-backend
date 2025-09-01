@@ -51,7 +51,7 @@ class SessionStatus(StrEnum):
     not_started = "not_started"
     queued = "queued"
     stopped = "stopped"
-    progressing = "progressing"
+    processing = "processing"
     completed = "completed"
     failed = "failed"
 

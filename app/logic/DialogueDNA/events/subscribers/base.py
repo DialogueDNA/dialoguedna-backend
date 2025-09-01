@@ -9,6 +9,11 @@ from app.logic.DialogueDNA.interfaces.listeners import PipelineListener
 
 class BaseListener(PipelineListener):
     def on_stage(self, e: StageEvent, ctx: PipelineContext) -> None: pass
+    def on_session_queued(self, e: QueuedEvent, ctx: PipelineContext) -> None: pass
+    def on_session_stopped(self, e: QueuedEvent, ctx: PipelineContext) -> None: pass
+    def on_session_processing(self, e: QueuedEvent, ctx: PipelineContext) -> None: pass
+    def on_session_ready(self, e: TranscriptionEvent, ctx: PipelineContext) -> None: pass
+    def on_session_failed(self, e: FailedEvent, ctx: PipelineContext) -> None: pass
     def on_transcription_queued(self, e: QueuedEvent, ctx: PipelineContext) -> None: pass
     def on_transcription_stopped(self, e: StoppedEvent, ctx: PipelineContext) -> None: pass
     def on_transcription_processing(self, e: ProcessingEvent, ctx: PipelineContext) -> None: pass

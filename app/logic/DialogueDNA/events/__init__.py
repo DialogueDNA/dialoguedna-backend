@@ -2,7 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Optional, List
 
-from app.interfaces.services.emotions import EmotionAnalyzerBundle
+from app.interfaces.services.emotions import EmotionAnalyzerBundle, EmotionAnalysisOutput
 from app.interfaces.services.summary import SummaryOutput
 from app.interfaces.services.transcription import TranscriptionOutput
 
@@ -20,11 +20,15 @@ class TranscriptionEvent:
 
 @dataclass(frozen=True)
 class EmotionsEvent:
-    emotions: List[EmotionAnalyzerBundle]
+    emotions: EmotionAnalysisOutput
 
 @dataclass(frozen=True)
 class SummaryEvent:
     summary: SummaryOutput
+
+@dataclass(frozen=True)
+class SessionEvent:
+    pass
 
 @dataclass(frozen=True)
 class QueuedEvent:

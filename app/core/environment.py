@@ -83,11 +83,26 @@ AUDIO_ENHANCER_MODEL_NAME = os.getenv("AUDIO_ENHANCER_ADAPTER", "rnnoise")  # no
 
 # RNNoise Enhancer Settings
 RNNOISE_ENHANCER_STRENGTH = os.getenv("RNNOISE_ENHANCER_STRENGTH", "medium")  # light|medium|strong
+RNNOISE_TARGET_SAMPLE_RATE = os.getenv("RNNOISE_TARGET_SAMPLE_RATE", 48_000)
 
 # === Separation Model ===
 ENABLE_AUDIO_SEPARATION = os.getenv("ENABLE_SEPARATION", "false").lower() == "true" # Enable or disable audio separation
 AUDIO_SEPARATOR_MODEL_NAME = os.getenv("AUDIO_SEPARATION_ADAPTER", "sepformer") # sepformer|demucs|spleeter
 SEPFORMER_MODEL_NAME = os.getenv("SEPFORMER_MODEL_NAME", "speechbrain/sepformer-whamr") # Default: speechbrain/sepformer-whamr
+
+# Sepformer Seperator Settings
+
+SEPFORMER_CACHE_DIR = os.getenv("SEPFORMER_CACHE_DIR", os.path.join(os.path.expanduser("~"), ".cache", "speechbrain", "sepformer"))
+SEPFORMER_MODEL_SAMPLE_RATE = os.getenv("SEPFORMER_MODEL_SAMPLE_RATE", 16_000)
+SEPFORMER_DOWNMIX_MODE = os.getenv("SEPFORMER_DOWNMIX_MODE", "mean")
+SEPFORMER_CHUNK_SEC = os.getenv("SEPFORMER_CHUNK_SEC", 12.0)
+SEPFORMER_HOP_FRACTION = os.getenv("SEPFORMER_HOP_FRACTION", 0.5)
+SEPFORMER_NUM_SPEAKERS = os.getenv("SEPFORMER_NUM_SPEAKERS", None)
+RNNOISE_ENABLE_RESAMPLE = os.getenv("RNNOISE_ENABLE_RESAMPLE", True)
+RNNOISE_PASSES_LIGHT = os.getenv("RNNOISE_PASSES_LIGHT", 1)
+RNNOISE_PASSES_MEDIUM = os.getenv("RNNOISE_PASSES_MEDIUM", 2)
+RNNOISE_PASSES_STRONG = os.getenv("RNNOISE_PASSES_STRONG", 3)
+RNNOISE_CLAMP_AFTER = os.getenv("RNNOISE_CLAMP_AFTER", True)
 
 # ============================ Summarization Generation Settings ============================
 
