@@ -5,14 +5,21 @@ from app.security.jwt_verifier import JWTVerifier
 bearer_scheme = HTTPBearer()
 _verifier = JWTVerifier()
 
-def get_jwt_claims(credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme)):
+def _unauthorized(msg="Not authenticated"):
+    return HTTPException(
+        status_code=401, detail=msg, headers={"WWW-Authenticate": "Bearer"}
+    )
+
+def get_jwt_claims(credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme)) -> dict:
+    if credentials is None or (credentials.scheme or "").lower() != "bearer":
+        raise _unauthorized()
     token = credentials.credentials
     try:
         claims = _verifier.verify_and_decode(token)
         return claims
     except Exception:
-        raise HTTPException(status_code=401, detail="Invalid token")
-                                                                                                                                                
+        raise _unauthorized("Invalid token")
+
 # ---- UserContext ----
 from dataclasses import dataclass
 from typing import Optional, Sequence

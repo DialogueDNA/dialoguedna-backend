@@ -12,7 +12,7 @@ def wire_audio(
     audio = AudioState()
 
     if enhancer_cfg is not None:
-        name = (getattr(enhancer_cfg, "main_enhancer", "") or "").strip().lower()
+        name = (enhancer_cfg.main_enhancer or "").strip().lower()
         if not name:
             raise ValueError("AudioEnhancerConfig.main_enhancer is empty")
         try:
@@ -24,7 +24,7 @@ def wire_audio(
             )
 
     if separator_cfg is not None:
-        name = (getattr(separator_cfg, "main_separator", "") or "").strip().lower()
+        name = (separator_cfg.main_separator or "").strip().lower()
         if not name:
             raise ValueError("AudioSeparatorConfig.main_separator is empty")
         try:

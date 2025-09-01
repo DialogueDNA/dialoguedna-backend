@@ -22,7 +22,7 @@ from app.interfaces.services.emotions.text import (
     EmotionTextAnalyzer,
     EmotionAnalyzerByTextOutput,
 )
-from app.interfaces.services.emotions import EmotionAnalyzerBundle, EmotionAnalyzerOutput
+from app.interfaces.services.emotions import EmotionAnalyzerBundle, EmotionAnalyzerOutput, EmotionAnalysisOutput
 from app.interfaces.services.summary import (
     SummaryInput, SummaryOutput
 )
@@ -76,7 +76,7 @@ class DialogueDNAPipeline(Pipeline):
             raise
 
         try:
-            emotions: List[EmotionAnalyzerBundle] = self.analyze_emotions_on_transcript(
+            emotions: EmotionAnalysisOutput = self.analyze_emotions_on_transcript(
                 audio=pipeline_input.audio,
                 transcription=transcription,
                 reporter=pipeline_input.reporter
@@ -135,7 +135,7 @@ class DialogueDNAPipeline(Pipeline):
 
         return transcription
 
-    def analyze_emotions_on_transcript(self, *, audio: AudioType, transcription: TranscriptionOutput, reporter: PipelineReporter = None) -> List[EmotionAnalyzerBundle]:
+    def analyze_emotions_on_transcript(self, *, audio: AudioType, transcription: TranscriptionOutput, reporter: PipelineReporter = None) -> EmotionAnalysisOutput:
 
         reporter.emotion_analyzation_processing() if reporter is not None else None
 
@@ -155,7 +155,7 @@ class DialogueDNAPipeline(Pipeline):
 
         # 3) Emotions per segment (text + audio with overlap-aware analysis)
 
-        emotion_analysis_output: List[EmotionAnalyzerBundle] = []
+        emotion_analysis_output: EmotionAnalysisOutput = []
 
         for segment in transcription:
             whom: Optional[str] = segment.writer
@@ -197,7 +197,7 @@ class DialogueDNAPipeline(Pipeline):
                 reporter.emotion_analyzation_failed("Mix emotion analyzation failed") if reporter is not None else None
                 pass
 
-            # Bundle the emotion analysis results
+            # Bundle the emotion analysis output
             emotion_bundle: EmotionAnalyzerBundle = EmotionAnalyzerBundle(
                 text=analyzed_text_segment,
                 audio=analyzed_audio_segment,
@@ -207,7 +207,7 @@ class DialogueDNAPipeline(Pipeline):
                 end_time=end_time
             )
 
-            # Save the results
+            # Save the output
             emotion_analysis_output.append(emotion_bundle)
 
         # Report emotion analysis
@@ -264,11 +264,11 @@ class DialogueDNAPipeline(Pipeline):
         Returns:
           cache[(start, end, speakers_tuple)] = { speaker_id: AudioSegment(...), ... }
         """
-        separator = getattr(self.services.audio, "separator", None) \
-              if getattr(self.services, "audio", None) and getattr(self.services.audio, "separation", None) \
+        separator = self.services.audio.separator or None \
+              if self.services.audio or None and self.services.audio.separator or None \
               else None
-        enhancer = getattr(self.services.audio, "enhancer", None) \
-              if getattr(self.services, "audio", None) and getattr(self.services.audio, "enhance", None) \
+        enhancer = self.services.audio.enhancer or None \
+              if self.services.audio or None and self.services.audio.enhancer or None \
               else None
 
         cache: Dict[Tuple[float, float, Tuple[str, ...]], Dict[str, AudioSegment]] = {}
@@ -424,7 +424,7 @@ class DialogueDNAPipeline(Pipeline):
         return mixed_emotions
 
     def summarize(
-            self, *, segments: List[EmotionAnalyzerBundle], style: str,
+            self, *, segments: EmotionAnalysisOutput, style: str,
             max_tokens: int = None, language: str = None,
             per_speaker: bool = None, bullets: bool = None,
             metadata: Dict[str, str] = None, reporter: PipelineReporter = None) -> SummaryOutput:

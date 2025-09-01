@@ -11,7 +11,7 @@ def wire_database(database_cfg: DatabaseConfig) -> DatabaseState:
     database = DatabaseState()
     gw = GatewayRegistry()
 
-    name = (getattr(database_cfg, "main_database", "") or "").strip().lower()
+    name = (database_cfg.main_database or "").strip().lower()
     if not name:
         raise ValueError("DatabaseConfig.main_database is empty")
 

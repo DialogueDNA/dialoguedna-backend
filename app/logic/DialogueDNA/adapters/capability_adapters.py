@@ -8,6 +8,8 @@ import os
 import tempfile
 from typing import Any, Mapping, Optional, Dict, List, TypeVar, Type
 
+from azure.storage.blob import BlobSasPermissions
+
 from app.interfaces.storage.blob_storage import BlobStorage
 from app.logic.DialogueDNA.interfaces.capabilities import SessionUpdater, ArtifactWriter
 
@@ -60,6 +62,9 @@ class StorageArtifactWriter(ArtifactWriter):
 
         # If no URL mechanism exists, return None (caller can resolve later if needed).
         return None
+
+    def generate_read_sas(self, container: str, blob: str, expiry_seconds: int = 3600) -> str:
+        return self.blob_storage.generate_sas_url(container=container, blob=blob, expiry_seconds=expiry_seconds)
 
 
 

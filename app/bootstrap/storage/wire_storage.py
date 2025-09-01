@@ -5,7 +5,7 @@ from app.core.config import StorageConfig
 
 def wire_storage(storage_cfg: StorageConfig) -> StorageState:
     storage = StorageState()
-    name = (getattr(storage_cfg, "main_storage", "") or "").strip().lower()
+    name = (storage_cfg.main_storage or "").strip().lower()
     if not name:
         raise ValueError("StorageConfig.main_storage is empty")
 

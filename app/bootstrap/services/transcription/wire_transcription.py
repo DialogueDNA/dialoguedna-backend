@@ -5,7 +5,7 @@ from app.state.app_states import TranscriptionState
 
 def wire_transcription(transcription_cfg: TranscriptionConfig) -> TranscriptionState:
     transcription = TranscriptionState()
-    name = (getattr(transcription_cfg, "main_transcriber", "") or "").strip().lower()
+    name = (transcription_cfg.main_transcriber or "").strip().lower()
     if not name:
         raise ValueError("TranscriptionConfig.main_transcriber is empty")
 

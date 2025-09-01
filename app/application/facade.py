@@ -1,21 +1,15 @@
 from __future__ import annotations
 
-import mimetypes
 import uuid
-from pathlib import Path
-from typing import Any, Dict, Optional, List
+from typing import Dict, Optional, List
 
 from app.application.queues import TaskQueue
 from app.core.constants.db.supabase_constants import SessionColumn, SessionStatus
-from app.core.constants.storage.azure_constants import SESSION_TRANSCRIPT_PATH, SESSION_AUDIO_PATH, MAIN_CONTAINER, \
-    SESSION_EMOTIONS_PATH, SESSION_SUMMARY_PATH
+from app.core.constants.storage.azure_constants import MAIN_CONTAINER
 from app.interfaces.logic.pipeline import PipelineInput
 from app.interfaces.services.emotions import EmotionAnalyzerBundle
-from app.interfaces.services.summary import SummaryOutput
 from app.interfaces.services.text import TextSegment
-from app.interfaces.services.transcription import TranscriptionOutput
 from app.logic.DialogueDNA.adapters.capability_adapters import StorageArtifactWriter, StorageArtifactReader
-from app.logic.DialogueDNA.interfaces.capabilities import ArtifactWriter
 from app.logic.DialogueDNA.pipeline import DialogueDNAPipeline
 from app.models.session import SessionDB
 from app.state.app_states import AppState
@@ -50,7 +44,7 @@ class ApplicationFacade:
             inline_save: bool = False,
             dispatch: str = "thread",
             queue: TaskQueue
-    )-> Dict[str, Any]:
+    )-> SessionDB | None:
 
         session_id, audio_blob_path = self.create_new_session(
             user_id=user_id,
@@ -98,7 +92,7 @@ class ApplicationFacade:
             inline_save: bool = False,
             dispatch: str = "thread",
             queue: TaskQueue = None,
-    ) -> Dict[str, Any]:
+    ) -> SessionDB | None:
 
         # If audio_path is None, try to find it in the database
         if not audio_path:
@@ -197,12 +191,18 @@ class ApplicationFacade:
     # ---------- Rebuilders ----------
 
     # REBUILD: only transcript on existing audio
-    def rebuild_transcript(self, *, session_id: str, user_id: str) -> Dict[str, Any]:
+    def rebuild_transcript(self, *, session_id: str, user_id: str) -> str | None:
 
-        audio_local_path = self.get_audio(
+        audio_blob_path = self.get_audio_url(
             session_id=session_id,
             user_id=user_id
         )
+
+        if not audio_blob_path:
+            raise ValueError("Audio file path not found")
+
+        # TODO: Download blob to temp file
+        audio_local_path = audio_blob_path
 
         reporter = self._reporter.for_session(session_id=session_id)
 
@@ -211,26 +211,41 @@ class ApplicationFacade:
             reporter=reporter
         )
 
-        return self._app.database.sessions_repo.get_for_user(session_id, user_id)
+        return self._app.database.sessions_repo.get_for_user(session_id, user_id).transcript_url
 
     # REBUILD: only emotions on existing audio and transcript
-    def rebuild_emotions(self, *, session_id: str, user_id: str) -> Dict[str, Any]:
+    def rebuild_emotions(self, *, session_id: str, user_id: str) -> str | None:
 
-        audio_local_path = self.get_audio(
+        audio_blob_path = self.get_audio_url(
             session_id=session_id,
             user_id=user_id
         )
 
-        transcription = self.get_transcript(
+        if not audio_blob_path:
+            raise ValueError("Audio file path not found")
+
+        # TODO: Download blob to temp file
+        audio_local_path = audio_blob_path
+
+        transcription_url = self.get_transcript_url(
             session_id=session_id,
             user_id=user_id
         )
 
-        if not transcription:
-            transcription = self.rebuild_transcript(
+        if not transcription_url:
+            transcription_url = self.rebuild_transcript(
                 session_id=session_id,
                 user_id=user_id
             )
+
+        try:
+            transcription = self._reader.load_many(
+                container=MAIN_CONTAINER,
+                blob=transcription_url,
+                cls=TextSegment
+            )
+        except Exception as e:
+            raise ValueError("Failed to download transcription: {}".format(e))
 
         reporter = self._reporter.for_session(session_id=session_id)
 
@@ -240,25 +255,34 @@ class ApplicationFacade:
             reporter=reporter
         )
 
-        return self._app.database.sessions_repo.get_for_user(session_id, user_id)
+        return self._app.database.sessions_repo.get_for_user(session_id, user_id).emotion_breakdown_url
 
     # REBUILD: only summary on existing audio, transcript and emotions
     def rebuild_summary(self, *, session_id: str, user_id: str, style: str, max_token: Optional[int] = None,
                         language_hint: Optional[str] = None, inline_save: bool = False,
                         per_speaker: Optional[bool] = None, bullets: Optional[bool] = None,
                         metadata: Optional[Dict[str, str]] = None
-                        ) -> Dict[str, Any]:
+                        ) -> SessionDB | None:
 
-        analyzed_emotions = self.get_analyzed_emotions(
+        analyzed_emotions_url = self.get_analyzed_emotions_url(
             session_id=session_id,
             user_id=user_id,
         )
 
-        if not analyzed_emotions:
-            analyzed_emotions = self.rebuild_emotions(
+        if not analyzed_emotions_url:
+            analyzed_emotions_url = self.rebuild_emotions(
                 session_id=session_id,
                 user_id=user_id,
             )
+
+        try:
+            analyzed_emotions = self._reader.load_many(
+                container=MAIN_CONTAINER,
+                blob=analyzed_emotions_url,
+                cls=EmotionAnalyzerBundle
+            )
+        except Exception as e:
+            raise ValueError("Failed to download analyzed emotions: {}".format(e))
 
         self._logic.summarize(
             segments=analyzed_emotions,
@@ -282,7 +306,10 @@ class ApplicationFacade:
 
         return session
 
-    def get_audio(self, session_id: str, user_id: str) -> str | None:
+    def get_sessions(self, user_id: str) -> List[SessionDB] | None:
+        return self._app.database.sessions_repo.list_for_user(user_id)
+
+    def get_audio_url(self, session_id: str, user_id: str) -> str | None:
         session = self.get_session(session_id=session_id, user_id=user_id)
 
         audio_status: SessionStatus = session.get(SessionColumn.audio_file_status, None)
@@ -295,95 +322,115 @@ class ApplicationFacade:
         if not audio_file_url:
             raise ValueError("audio file url not found")
 
-        try:
-            audio: str = self._write.put_wav_path_get_url(
-                container=MAIN_CONTAINER,
-                blob=f"{session_id}/{SESSION_AUDIO_PATH}",
-                some_wav_path=audio_file_url,
-            )
-        except Exception as e:
-            raise ValueError("Failed to download audio: {}".format(e))
+        return audio_file_url
 
-        return audio
+    def get_audio_view(self, session_id: str, user_id: str) -> dict:
 
-    def get_transcript(self, session_id: str, user_id: str) -> TranscriptionOutput | None:
+        audio_status, audio_url = self.get_audio_url(session_id=session_id, user_id=user_id)
+
+        sas_url, expires_at = self._app.storage.client.generate_read_sas_from_url(blob_url=audio_url)
+
+        return {
+            "status": audio_status,
+            "result": {
+                "blob_path": audio_url,
+                "sas_url": sas_url,
+                "expires_at": expires_at
+            }
+        }
+
+    def get_transcript_url(self, session_id: str, user_id: str) -> tuple[SessionStatus, Optional[str]]:
 
         session = self.get_session(session_id=session_id, user_id=user_id)
 
         transcript_status: SessionStatus = session.get(SessionColumn.transcript_status, None)
 
         if transcript_status is not SessionStatus.completed:
-            return None
+            return transcript_status, None
 
         transcript_url: str = session.get(SessionColumn.transcript_url, None)
 
         if not transcript_url:
             raise ValueError("transcript url not found")
 
-        try:
-            transcription = self._reader.load_many(
-                container=MAIN_CONTAINER,
-                blob=f"{session_id}/{SESSION_TRANSCRIPT_PATH}",
-                cls=TextSegment
-            )
-        except Exception as e:
-            raise ValueError("Failed to download transcription: {}".format(e))
+        return transcript_status, transcript_url
 
-        return transcription
+    def get_transcript_view(self, session_id: str, user_id: str) -> dict:
 
-    def get_analyzed_emotions(self, session_id: str, user_id: str) -> List[EmotionAnalyzerBundle] | None:
+        transcript_status, transcript_url = self.get_transcript_url(session_id=session_id, user_id=user_id)
+
+        sas_url, expires_at = self._app.storage.client.generate_read_sas_from_url(blob_url=transcript_url)
+
+        return {
+            "status": transcript_status,
+            "result": {
+                "blob_path": transcript_url,
+                "sas_url": sas_url,
+                "expires_at": expires_at
+            }
+        }
+
+    def get_analyzed_emotions_url(self, session_id: str, user_id: str) -> tuple[SessionStatus, Optional[str]]:
 
         session = self.get_session(session_id=session_id, user_id=user_id)
 
         analyzed_emotions_status: SessionStatus = session.get(SessionColumn.emotion_breakdown_status, None)
 
         if analyzed_emotions_status is not SessionStatus.completed:
-            return None
+            return analyzed_emotions_status, None
 
         analyzed_emotions_url: str = session.get(SessionColumn.emotion_breakdown_url, None)
 
         if not analyzed_emotions_url:
             raise ValueError("analyzed emotions url not found")
 
-        try:
-            analyzed_emotions = self._reader.load_many(
-                container=MAIN_CONTAINER,
-                blob=f"{session_id}/{SESSION_EMOTIONS_PATH}",
-                cls=EmotionAnalyzerBundle
-            )
-        except Exception as e:
-            raise ValueError("Failed to download analyzed emotions: {}".format(e))
+        return analyzed_emotions_status, analyzed_emotions_url
 
-        return analyzed_emotions
+    def get_analyzed_emotions_view(self, session_id: str, user_id: str) -> dict:
 
-    def get_summary(self, session_id: str, user_id: str) -> SummaryOutput | None:
+        analyzed_emotions_status, analyzed_emotions_url = self.get_analyzed_emotions_url(session_id=session_id, user_id=user_id)
+
+        sas_url, expires_at = self._app.storage.client.generate_read_sas_from_url(blob_url=analyzed_emotions_url)
+
+        return {
+            "status": analyzed_emotions_status,
+            "result": {
+                "blob_path": analyzed_emotions_url,
+                "sas_url": sas_url,
+                "expires_at": expires_at
+            }
+        }
+
+    def get_summary_url(self, session_id: str, user_id: str) -> tuple[SessionStatus, Optional[str]]:
 
         session = self.get_session(session_id=session_id, user_id=user_id)
 
         summary_status: SessionStatus = session.get(SessionColumn.summary_status, None)
 
         if summary_status is not SessionStatus.completed:
-            return None
+            return summary_status, None
 
         summary_url: str = session.get(SessionColumn.summary_url, None)
 
         if not summary_url:
             raise ValueError("analyzed emotions url not found")
 
-        try:
-            summarization = self._reader.load_many(
-                container=MAIN_CONTAINER,
-                blob=f"{session_id}/{SESSION_SUMMARY_PATH}",
-                cls=SummaryOutput
-            )
-            summarization = summarization[0]
-        except Exception as e:
-            raise ValueError("Failed to download summary: {}".format(e))
+        return summary_status, summary_url
 
-        return summarization
+    def get_summary_view(self, session_id: str, user_id: str) -> dict:
 
-    def get_sessions(self, user_id: str) -> List[SessionDB] | None:
-        return self._app.database.sessions_repo.list_for_user(user_id)
+        summary_status, summary_url = self.get_summary_url(session_id=session_id, user_id=user_id)
+
+        sas_url, expires_at = self._app.storage.client.generate_read_sas_from_url(blob_url=summary_url)
+
+        return {
+            "status": summary_status,
+            "result": {
+                "blob_path": summary_url,
+                "sas_url": sas_url,
+                "expires_at": expires_at
+            }
+        }
 
     # ------------------------------------ Delete ------------------------------------
 

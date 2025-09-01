@@ -44,17 +44,13 @@ class SepformerSeparator(AudioSeparator):
         self._lock = threading.Lock()
 
         # --- Config defaults (kept defensive to avoid breaking current configs) ---
-        self._device: str = getattr(cfg, "device", "cpu")
-        self._cache_dir: str = getattr(
-            cfg,
-            "cache_dir",
-            os.path.join(os.path.expanduser("~"), ".cache", "speechbrain", "sepformer"),
-        )
-        self._model_sr: int = int(getattr(cfg, "model_sample_rate", 16_000))
-        self._downmix_mode: str = getattr(cfg, "downmix_mode", "mean")  # "mean" | "left" | "right"
-        self._chunk_sec: float = float(getattr(cfg, "chunk_sec", 12.0))  # chunk length in seconds
-        self._hop_fraction: float = float(getattr(cfg, "hop_fraction", 0.5))  # 50% overlap
-        self._num_speakers: Optional[int] = getattr(cfg, "num_speakers", None)
+        self._device: str = cfg.device
+        self._cache_dir: str = cfg.cache_dir
+        self._model_sr: int = int(cfg.model_sample_rate)
+        self._downmix_mode: str = cfg.downmix_mode
+        self._chunk_sec: float = float(cfg.chunk_sec)
+        self._hop_fraction: float = float(cfg.hop_fraction)
+        self._num_speakers: Optional[int] = cfg.num_speakers
 
         os.makedirs(self._cache_dir, exist_ok=True)
 
@@ -221,7 +217,7 @@ class SepformerSeparator(AudioSeparator):
         if wf.dim() == 1:
             wf = wf.unsqueeze(0)  # [1, T]
         assert wf.dim() == 2, "waveform must be [C, T] or [T]"
-        sr = int(getattr(audio, "sample_rate", 16_000))
+        sr = int(audio.sample_rate)
         return wf, sr
 
     def _downmix_to_mono(self, wf: torch.Tensor) -> torch.Tensor:

@@ -20,23 +20,23 @@ class RNNoiseConfig:
     - clamp_after: lightly clamp output to [-1, 1] to avoid inter-frame spikes.
     """
     enhancer_strength: StrengthT = field(
-        default_factory=lambda: getattr(env, "RNNOISE_ENHANCER_STRENGTH", "medium")
+        default_factory=lambda: env.RNNOISE_ENHANCER_STRENGTH
     )
     target_sample_rate: int = field(
-        default_factory=lambda: getattr(env, "RNNOISE_TARGET_SAMPLE_RATE", 48_000)
+        default_factory=lambda: env.RNNOISE_TARGET_SAMPLE_RATE
     )
     enable_resample: bool = field(
-        default_factory=lambda: getattr(env, "RNNOISE_ENABLE_RESAMPLE", True)
+        default_factory=lambda: env.RNNOISE_ENABLE_RESAMPLE
     )
     passes_light: int = field(
-        default_factory=lambda: getattr(env, "RNNOISE_PASSES_LIGHT", 1)
+        default_factory=lambda: env.RNNOISE_PASSES_LIGHT
     )
     passes_medium: int = field(
-        default_factory=lambda: getattr(env, "RNNOISE_PASSES_MEDIUM", 2)
+        default_factory=lambda: env.RNNOISE_PASSES_MEDIUM
     )
     passes_strong: int = field(
-        default_factory=lambda: getattr(env, "RNNOISE_PASSES_STRONG", 3)
+        default_factory=lambda: env.RNNOISE_PASSES_STRONG
     )
     clamp_after: bool = field(
-        default_factory=lambda: getattr(env, "RNNOISE_CLAMP_AFTER", True)
+        default_factory=lambda: env.RNNOISE_CLAMP_AFTER
     )

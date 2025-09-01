@@ -46,7 +46,7 @@ class RNNoiseEnhancer(AudioEnhancer):
         if wf.dim() == 1:
             wf = wf.unsqueeze(0)  # [1, T]
         assert wf.dim() == 2, "waveform must be [C, T] or [T]"
-        orig_sr: int = int(getattr(audio, "sample_rate", self._cfg.target_sample_rate))
+        orig_sr: int = int(audio.sample_rate or self._cfg.target_sample_rate)
         device = wf.device
         in_dtype = wf.dtype
 
@@ -64,7 +64,7 @@ class RNNoiseEnhancer(AudioEnhancer):
         np.clip(wf_proc, -1.0, 1.0, out=wf_proc)
 
         # ---- Denoise per channel with fresh RNNoise instances ----
-        strength: StrengthT = getattr(self._cfg, "enhancer_strength", "medium")
+        strength: StrengthT = self._cfg.enhancer_strength
         num_passes = max(1, int(self._passes_by_strength.get(strength, 2)))
 
         denoised_list = []

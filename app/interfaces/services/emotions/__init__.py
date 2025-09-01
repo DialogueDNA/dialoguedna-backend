@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 from app.interfaces.services import SpeakerType
 from app.interfaces.services.text import TextSegment
@@ -17,5 +17,6 @@ class EmotionAnalyzerBundle:
     start_time: Optional[float] = None
     end_time: Optional[float] = None
 
+EmotionAnalysisOutput = List[EmotionAnalyzerBundle]
 # Re-exports for convenience
 # from .types import EmotionAnalyzerOutput, EmotionLabel, EmotionScore, EmotionsDict  # noqa: E402,F401

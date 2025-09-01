@@ -8,6 +8,7 @@ from app.application.facade import ApplicationFacade
 from app.bootstrap.wire_app import wire_app
 from app.core.config import AppConfig
 
+
 log = logging.getLogger("app")
 
 @asynccontextmanager

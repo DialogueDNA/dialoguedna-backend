@@ -16,7 +16,7 @@ def wire_emotion_analysis(
 ) -> EmotionAnalysisState:
     emotions = EmotionAnalysisState()
 
-    name = (getattr(text_cfg, "main_text_analyzer", "") or "").strip().lower()
+    name = (text_cfg.main_text_analyzer or "").strip().lower()
     if not name:
         raise ValueError("EmotionTextAnalysisConfig.main_text_analyzer is empty")
 
@@ -28,7 +28,7 @@ def wire_emotion_analysis(
             f"Available: {', '.join(list_emotion_text_analyzer())}"
         )
 
-    name = (getattr(audio_cfg, "main_audio_analyzer", "") or "").strip().lower()
+    name = (audio_cfg.main_audio_analyzer or "").strip().lower()
     if not name:
         raise ValueError("AudioEmotionAnalysisConfig.main_audio_analyzer is empty. ")
 
@@ -41,7 +41,7 @@ def wire_emotion_analysis(
         )
 
     if mixed_cfg is not None:
-        name = (getattr(mixed_cfg, "main_mixer_analyzer", "") or "").strip().lower()
+        name = (mixed_cfg.main_mixer_analyzer or "").strip().lower()
         if not name:
             raise ValueError("MixedEmotionConfig.main_mixer is empty")
         try:
