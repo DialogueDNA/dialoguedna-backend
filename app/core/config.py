@@ -1,4 +1,6 @@
 import os
+import httpx
+from postgrest import SyncPostgrestClient, Timeout
 from pathlib import Path
 from datetime import datetime
 from dotenv import load_dotenv
@@ -45,6 +47,19 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET")
 supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+
+
+# force HTTP/1.1 (no HTTP/2)
+_http = httpx.Client(http2=False, timeout=Timeout(10.0))
+
+POSTGREST = SyncPostgrestClient(
+    f"{SUPABASE_URL}/rest/v1",
+    headers={
+        "apikey": SUPABASE_SERVICE_ROLE_KEY,
+        "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE_KEY}",
+    },
+    http_client=_http,
+)
 
 # === Audio settings ===
 SAMPLE_RATE = 16000            # target sample rate for transcription

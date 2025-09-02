@@ -8,7 +8,7 @@ from fastapi import UploadFile
 
 from app.storage.azure.blob.azure_blob_service import AzureBlobService
 
-VISIBLE_TMP_DIR = Path("app/temp_converted_audio_file/content")  # visible, debuggable
+VISIBLE_TMP_DIR = Path("temp_converted_audio_file/content")  # visible, debuggable
 
 
 class SessionStorage:
@@ -37,30 +37,28 @@ class SessionStorage:
 
     def _store_text(self, session_id: str, name: str, content: str) -> str:
         """Write a temp .txt locally, then upload as text/plain (no audio conversion)."""
-        blob_path = f"{session_id}/{name}.txt"
-        tmp_path = self._write_temp_file(content, suffix=".txt")
-        self.azure.upload_content_file(tmp_path, blob_path, "text/plain; charset=utf-8")
-        tmp_path.unlink(missing_ok=True)
+        local_path = self._write_fixed_file("summary.txt", content)
+        blob_path = f"{session_id}/{name}"
+        self.azure.upload_content_file(local_path, blob_path, "text/plain; charset=utf-8")
+        local_path.unlink(missing_ok=True)
         return blob_path
 
     def _store_json(self, session_id: str, name: str, content: dict | list) -> str:
         """Write a temp .json locally, then upload as application/json (no audio conversion)."""
-        blob_path = f"{session_id}/{name}.json"
-        tmp_path = self._write_temp_file(json.dumps(content, indent=2,ensure_ascii=False), suffix=".json")
-        self.azure.upload_content_file(tmp_path, blob_path, "application/json")
-        tmp_path.unlink(missing_ok=True)
+        local_filename = "transcript.json" if name == "transcript" else "emotion.json"  # לפי בקשתך
+        local_path = self._write_fixed_file(local_filename, json.dumps(content, indent=2, ensure_ascii=False))
+        blob_path = f"{session_id}/{name}"  # ב-Azure נשאר "transcript.json" / "emotions.json"
+        self.azure.upload_content_file(local_path, blob_path, "application/json")
+        local_path.unlink(missing_ok=True)
         return blob_path
 
-    def _write_temp_file(self, content: str, suffix: str = ".tmp") -> Path:
-        """
-        Write content to a visible, stable temp file (Windows-friendly).
-        File is NOT auto-deleted here; caller deletes after successful upload.
-        """
+    def _write_fixed_file(self, filename: str, content: str) -> Path:
+        """Write to a visible, stable path with a fixed filename."""
         VISIBLE_TMP_DIR.mkdir(parents=True, exist_ok=True)
-        tmp_path = VISIBLE_TMP_DIR / f"{uuid4().hex}{suffix}"
-        with open(tmp_path, "w", encoding="utf-8", newline="") as f:
+        path = VISIBLE_TMP_DIR / filename
+        with open(path, "w", encoding="utf-8", newline="") as f:
             f.write(content)
-        return tmp_path
+        return path
 
     # === Fetch ===
 
@@ -76,13 +74,16 @@ class SessionStorage:
         self.azure.delete_blob(f"{session_id}/audio.wav")
 
     def delete_transcript(self, session_id: str):
-        self.azure.delete_blob(f"{session_id}/transcript.json")  # add suffix
+        self.azure.delete_blob(f"{session_id}/transcript")
+        self.azure.delete_blob(f"{session_id}/transcript.json")
 
     def delete_summary(self, session_id: str):
-        self.azure.delete_blob(f"{session_id}/summary.txt")      # add suffix
+        self.azure.delete_blob(f"{session_id}/summary")
+        self.azure.delete_blob(f"{session_id}/summary.txt")
 
     def delete_emotions(self, session_id: str):
-        self.azure.delete_blob(f"{session_id}/emotions.json")    # add suffix
+        self.azure.delete_blob(f"{session_id}/emotions")
+        self.azure.delete_blob(f"{session_id}/emotions.json")
 
     def delete_all(self, session_id: str):
         self.delete_audio(session_id)

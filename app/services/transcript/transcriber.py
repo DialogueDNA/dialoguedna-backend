@@ -58,7 +58,7 @@ class Transcriber:
         # 📥 Fetch result
         files_url = result_data["links"]["files"]
         transcription_json = self.fetch_transcription_file(files_url)
-        print("📥 Result JSON:", transcription_json)
+        # print("📥 Result JSON:", transcription_json)
         if not transcription_json:
             raise Exception("No transcription result returned.")
 

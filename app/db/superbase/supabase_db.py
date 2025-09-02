@@ -1,8 +1,10 @@
-from app.core.config import supabase
+#app/db/superbase/supabase_db.py
+
+from app.core.config import POSTGREST
 
 class SupabaseDB:
     def __init__(self, table_name: str):
-        self.table = supabase.table(table_name)
+        self.table = POSTGREST.table(table_name)
 
     def insert(self, data: dict):
         return self.table.insert(data).execute()
