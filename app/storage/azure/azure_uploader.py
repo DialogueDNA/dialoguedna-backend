@@ -2,7 +2,11 @@ from pathlib import Path
 from azure.storage.blob import BlobServiceClient, ContentSettings
 from pydub import AudioSegment
 
-from app.core.config import AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
+from app.core.config import( AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME,
+    AUDIO_TARGET_SAMPLE_RATE,
+    AUDIO_TARGET_CHANNELS,
+    AUDIO_TARGET_BIT_DEPTH,
+)
 
 class AzureUploader:
     def __init__(self):
@@ -30,9 +34,9 @@ class AzureUploader:
 
         audio = AudioSegment.from_file(file_path)
         audio = (
-            audio.set_frame_rate(16000)  # 16 kHz
-            .set_channels(1)  # mono
-            .set_sample_width(2)  # 16-bit = 2 bytes
+            audio.set_frame_rate(AUDIO_TARGET_SAMPLE_RATE)  # 16 kHz
+            .set_channels(AUDIO_TARGET_CHANNELS)  # mono
+            .set_sample_width(AUDIO_TARGET_BIT_DEPTH //8)  # 16-bit = 2 bytes
         )
 
         # Ensure PCM s16le inside WAV container
