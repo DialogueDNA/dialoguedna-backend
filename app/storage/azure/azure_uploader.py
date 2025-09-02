@@ -2,7 +2,11 @@ from pathlib import Path
 from azure.storage.blob import BlobServiceClient, ContentSettings
 from pydub import AudioSegment
 
-from app.core.config import AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME
+from app.core.config import( AZURE_STORAGE_CONNECTION_STRING, AZURE_CONTAINER_NAME,
+    AUDIO_TARGET_SAMPLE_RATE,
+    AUDIO_TARGET_CHANNELS,
+    AUDIO_TARGET_BIT_DEPTH,
+)
 
 class AzureUploader:
     def __init__(self):
@@ -20,10 +24,23 @@ class AzureUploader:
             )
 
     def convert_to_wav(self, file_path: Path) -> Path:
-        """Converts an audio file to .wav format using pydub and returns the new path."""
+        """
+        Convert any audio file to Azure STT friendly WAV:
+        - Sample rate: 16,000 Hz
+        - Channels: mono (1)
+        - Bit depth: 16-bit PCM (s16le)
+        """
         wav_path = file_path.with_suffix(".wav")
+
         audio = AudioSegment.from_file(file_path)
-        audio.export(wav_path, format="wav")
+        audio = (
+            audio.set_frame_rate(AUDIO_TARGET_SAMPLE_RATE)  # 16 kHz
+            .set_channels(AUDIO_TARGET_CHANNELS)  # mono
+            .set_sample_width(AUDIO_TARGET_BIT_DEPTH //8)  # 16-bit = 2 bytes
+        )
+
+        # Ensure PCM s16le inside WAV container
+        audio.export(wav_path, format="wav", codec="pcm_s16le")
         return wav_path
 
     def _guess_mime(self, file_path: Path) -> str:
