@@ -7,6 +7,7 @@ from .emotions import router as emotions_router
 from .summary import router as summary_router
 from .audio import router as audio_router
 from .delete import router as delete_router
+from .speakers import router as speakers_router
 
 router = APIRouter()
 
@@ -17,3 +18,4 @@ router.include_router(emotions_router, prefix="/api/sessions/emotions", tags=["e
 router.include_router(summary_router, prefix="/api/sessions/summary", tags=["summary"])
 router.include_router(audio_router, prefix="/api/sessions/audio", tags=["audio"])
 router.include_router(delete_router, prefix="/api/sessions/delete", tags=["delete"])
+router.include_router(speakers_router,  prefix="/api/sessions/speakers",  tags=["speakers"])
