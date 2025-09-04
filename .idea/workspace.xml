@@ -4,24 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="Made little connection between logic and api">
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/emotions_analyzer/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/emotions_analyzer/emotions_analyzer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/mixer/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/mixer/labels.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/mixer/mixer_strategy.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/mixer/normalize.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/speaker_emotion_state/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/speaker_emotion_state/emotion_state_store.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/speaker_emotion_state/label_stability.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/text_base_analysis/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/text_base_analysis/text_base_analyzer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/tone_base_analysis/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/tone_base_analysis/audio_segment_loader.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/tone_base_analysis/backchannel.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/tone_base_analysis/tone_base_analyzer.py" afterDir="false" />
+    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="**Emotion analysis strategy (concise):**&#10;&#10;* Two parallel paths:&#10;&#10;  * **Text** → full **6 emotions** per sentence.&#10;  * **Tone** → **4 emotions** *(angry, happy, sad, neutral)* + **confidence** + QC (e.g., backchannel).&#10;* **No 4→6 mapping inside tone.** Mapping and weighting happen only in the **mixer**.&#10;* **Public output stays legacy**: final **Top-1** (label + score).&#10;&#10;**Next:** implement **mixer\_strategy** to fuse text + tone using duration/backchannel/confidence and a soft 3→6 mapping when needed.">
+      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/results/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/emotions_new/results/sessions/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions_new/emotions_analyzer/emotions_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions_new/emotions_analyzer/emotions_analyzer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions_new/mixer/labels.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions_new/mixer/labels.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions_new/mixer/mixer_strategy.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions_new/mixer/mixer_strategy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions_new/mixer/normalize.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions_new/mixer/normalize.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions_new/speaker_emotion_state/emotion_state_store.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions_new/speaker_emotion_state/emotion_state_store.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions_new/speaker_emotion_state/label_stability.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions_new/speaker_emotion_state/label_stability.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -638,7 +630,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756449016294</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="**Emotion analysis strategy (concise):**&#10;&#10;* Two parallel paths:&#10;&#10;  * **Text** → full **6 emotions** per sentence.&#10;  * **Tone** → **4 emotions** *(angry, happy, sad, neutral)* + **confidence** + QC (e.g., backchannel).&#10;* **No 4→6 mapping inside tone.** Mapping and weighting happen only in the **mixer**.&#10;* **Public output stays legacy**: final **Top-1** (label + score).&#10;&#10;**Next:** implement **mixer\_strategy** to fuse text + tone using duration/backchannel/confidence and a soft 3→6 mapping when needed.">
+      <option name="closed" value="true" />
+      <created>1756902844240</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1756902844240</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -668,7 +668,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="commit before checkout" />
     <MESSAGE value="feat: integrate session-based audio upload to Azure Blob Storage&#10;&#10;- Moved handle_upload_file into AzureUploader class&#10;- Added session_id parameter to organize files under &lt;session_id&gt;/audio.wav path&#10;- Ensured original upload is saved, converted to WAV, and uploaded with consistent naming&#10;- Returns SAS URL for direct access to the uploaded audio file" />
     <MESSAGE value="refactor(facade): switch to SAS-based transcription pipeline using session_id" />
     <MESSAGE value="refactor(db_loader): update load_audio_from_file to return session_id and sas_url" />
@@ -693,7 +692,8 @@
     <MESSAGE value="Did some of the dialogue_dna.py, not complited" />
     <MESSAGE value="Made the facade, almost ready" />
     <MESSAGE value="Made little connection between logic and api" />
-    <option name="LAST_COMMIT_MESSAGE" value="Made little connection between logic and api" />
+    <MESSAGE value="**Emotion analysis strategy (concise):**&#10;&#10;* Two parallel paths:&#10;&#10;  * **Text** → full **6 emotions** per sentence.&#10;  * **Tone** → **4 emotions** *(angry, happy, sad, neutral)* + **confidence** + QC (e.g., backchannel).&#10;* **No 4→6 mapping inside tone.** Mapping and weighting happen only in the **mixer**.&#10;* **Public output stays legacy**: final **Top-1** (label + score).&#10;&#10;**Next:** implement **mixer\_strategy** to fuse text + tone using duration/backchannel/confidence and a soft 3→6 mapping when needed." />
+    <option name="LAST_COMMIT_MESSAGE" value="**Emotion analysis strategy (concise):**&#10;&#10;* Two parallel paths:&#10;&#10;  * **Text** → full **6 emotions** per sentence.&#10;  * **Tone** → **4 emotions** *(angry, happy, sad, neutral)* + **confidence** + QC (e.g., backchannel).&#10;* **No 4→6 mapping inside tone.** Mapping and weighting happen only in the **mixer**.&#10;* **Public output stays legacy**: final **Top-1** (label + score).&#10;&#10;**Next:** implement **mixer\_strategy** to fuse text + tone using duration/backchannel/confidence and a soft 3→6 mapping when needed." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
