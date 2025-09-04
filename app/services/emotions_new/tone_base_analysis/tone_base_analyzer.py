@@ -16,7 +16,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Union
 
 from .audio_segment_loader import AudioSegmentLoader
 from .backchannel import detect as detect_backchannel

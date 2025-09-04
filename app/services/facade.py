@@ -1,3 +1,5 @@
+# app/services/facade.py
+
 import uuid
 from typing import Optional
 from fastapi import UploadFile
@@ -6,9 +8,11 @@ from app.db.session_db import SessionDB
 from app.storage.session_storage import SessionStorage
 
 from app.services.transcript.transcriber import Transcriber
-from app.services.emotions.emotioner import Emotioner
+# from app.services.emotions.emotioner import Emotioner
+from app.services.emotions_new.emotions_analyzer.emotions_analyzer import EmotionsAnalyzer
 from app.services.summary.summarizer import Summarizer
 from app.services.summary.runner import try_run_summary
+
 from app.services.summary.prompts import PromptStyle
 class DialogueProcessor:
     def __init__(self):
@@ -16,7 +20,13 @@ class DialogueProcessor:
         self.session_storage = SessionStorage()
 
         self.transcriber = Transcriber()
-        self.emotion_analyzer = Emotioner()
+
+        #new emotion analyzer
+        self.emotion_analyzer = EmotionsAnalyzer()
+
+        #old emotion analyzer
+        #self.emotion_analyzer = Emotioner()
+
         self.summarizer = Summarizer()
 
         self._saved_audio_path = None
@@ -80,7 +90,10 @@ class DialogueProcessor:
         self.session_db.set_status(session_id, "emotion_breakdown_status", "processing")
 
         try:
-            emotion_json = self.emotion_analyzer.get_emotions(transcript_json)
+            # New emotion analyzer
+            emotion_json = self.emotion_analyzer.analyze_emotions(transcript_json, audio_blob_path)
+            # Old emotion analyzer
+            #emotion_json = self.emotion_analyzer.get_emotions(transcript_json)
             emotion_blob = self.session_storage.store_emotions(session_id, emotion_json)
             self.session_db.set_status(session_id, "emotion_breakdown_url", emotion_blob)
             self.session_db.set_status(session_id, "emotion_breakdown_status", "completed")
