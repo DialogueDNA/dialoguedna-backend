@@ -75,12 +75,14 @@ def try_run_summary(session_id: str) -> bool:
         # <<< KEY FIX: load from DB URLs, not hard-coded paths >>>
         transcript_json = _safe_get_json_from_blob_path(s.get("transcript_url"))
         emotions_json   = _safe_get_json_from_blob_path(s.get("emotion_breakdown_url"))
+        names_map = s.get("speaker_map") or {}
 
         # Run summarizer with Enum (not str)
         summary_text = Summarizer().summarize(
             transcript=transcript_json,
             emotions=emotions_json,
             preset_key=preset_enum,
+            speaker_map=names_map,
         )
 
         # Persist and mark done

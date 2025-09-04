@@ -46,6 +46,7 @@ SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET")
 supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
+# === Audio settings ===
 # === Audio conversion targets (Azure Speech) ===
 AUDIO_TARGET_SAMPLE_RATE=16000
 AUDIO_TARGET_CHANNELS=1

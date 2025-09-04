@@ -47,17 +47,39 @@ class Summarizer:
     # ---------------- Public API ----------------
 
     def summarize(
-        self,
-        transcript: List[Dict[str, Any]],
-        emotions: List[Dict[str, Any]],
-        preset_key: PromptStyle
+            self,
+            transcript: List[Dict[str, Any]],
+            emotions: List[Dict[str, Any]],
+            preset_key: PromptStyle,
+            speaker_map: dict | None = None
     ) -> str:
         """
         Backward-compatible path: returns plain text (string) exactly like before.
+        Now supports optional `speaker_map` (e.g., {"1": "Amal", "2": "Customer"}):
+        we append a roster to the user prompt so the model uses the given names
+        instead of generic "Speaker N".
         """
+        # 1) Build the descriptive context as before
         annotated_sentences = self.annotate_by_matching(transcript, emotions)
         descriptive_lines = self._build_descriptive_lines(annotated_sentences, preset_key)
         system_prompt, user_prompt = self._build_prompts(descriptive_lines, preset_key)
+
+        # 2) NEW: inject speaker roster into the prompt (if provided)
+        if speaker_map:
+            roster_lines = []
+            for k, v in speaker_map.items():
+                if isinstance(v, str) and v.strip():
+                    roster_lines.append(f"Speaker {str(k)} = {v.strip()}")
+            if roster_lines:
+                user_prompt += (
+                        "\n\nUse these speaker names when referring to participants "
+                        "and when attributing quotes or actions:\n"
+                        + "\n".join(roster_lines)
+                        + "\nReplace generic labels like 'Speaker 1' with the mapped names throughout the summary "
+                          "(including TL;DR, decisions, action items, and quotes)."
+                )
+
+        # 3) Call the LLM as before
         text, attempts = self._call_gpt(system_prompt, user_prompt)
         text = (text or "").strip()
         if not text:
