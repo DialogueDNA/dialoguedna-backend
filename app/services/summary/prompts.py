@@ -11,6 +11,7 @@ class PromptStyle(str, Enum):
     PER_SPEAKER = "per_speaker_summary"
     ALL_IN_ONE = "all_in_one"
     EDUCATIONAL_COACHING = "educational_coaching",
+    INSTRUCTIONAL_EXPLAINER = "instructional_explainer"
     # CS_CSAT = "customer_service_csat_predictor"
     # CS_FOLLOWUP = "customer_service_followup"
     # CS_COACHING = "customer_service_coaching"
@@ -25,6 +26,7 @@ PROMPT_LABELS = {
     PromptStyle.PER_SPEAKER: "Per Speaker Reflections",
     PromptStyle.ALL_IN_ONE: "All-in-One Narrative",
     PromptStyle.EDUCATIONAL_COACHING: "Educational Coaching",
+PromptStyle.INSTRUCTIONAL_EXPLAINER: "Instructional Explainer (Grounded)",
     # PromptStyle.CS_CSAT: "Customer Service — CSAT Predictor",
     # PromptStyle.CS_FOLLOWUP: "Customer Service — Follow-up",
     # PromptStyle.CS_COACHING: "Customer Service — Coaching",
@@ -306,6 +308,60 @@ PROMPT_PRESETS = {
             "- Define how progress will be checked (frequency, evidence, lightweight metric)."
         )
     },
+
+    "instructional_explainer": {
+        "system": (
+            "You are an instructional designer and subject-matter summarizer. "
+            "Your task is to explain the topic ONLY based on the provided transcript data. "
+            "STRICT GROUNDING RULES: Do not invent facts, formulas, examples, or definitions that do not appear in the transcript. "
+            "If something is unclear or not present, write 'Not mentioned'. "
+            "Prefer concise clarity over speculation."
+        ),
+        "format": (
+            "STYLE & OUTPUT RULES:\n"
+            "- Use the exact section headers and emojis below.\n"
+            "- Base EVERY statement on the transcript data only; include short evidence quotes where asked.\n"
+            "- If a requested section is not supported by the recording, write 'Not mentioned'.\n"
+            "- Do NOT add external knowledge, analogies, or new examples.\n\n"
+    
+            "=== TRANSCRIPT (DATA ONLY) ===\n"
+            "{lines}\n"
+            "=== END TRANSCRIPT ===\n\n"
+    
+            "## 🧭 Topic Overview\n"
+            "- 2–3 sentences describing the topic as presented in the recording (no external info).\n\n"
+    
+            "## 🎯 Learning Objectives (from the recording)\n"
+            "- Bullet list of what the speaker intends the learner to understand/do.\n"
+            "- If objectives weren’t stated, write 'Not mentioned'.\n\n"
+    
+            "## 🧩 Core Concepts & Definitions (grounded)\n"
+            "- For each key concept: Definition in one sentence.\n"
+            "- **Evidence:** include a short quote (≤12 words) from the transcript that supports the definition.\n\n"
+    
+            "## 🧪 Examples from the Recording (only if given)\n"
+            "- List concrete examples explicitly mentioned in the audio.\n"
+            "- If none were given, write 'Not mentioned'.\n\n"
+    
+            "## 📝 Important Things to Remember\n"
+            "- 5–8 concise bullets with the most important facts/steps to retain.\n"
+            "- Keep strictly to recording content.\n\n"
+    
+            "## ⚠️ Pitfalls / Clarifications (if mentioned)\n"
+            "- Misconceptions, caveats, or tricky points the speaker noted.\n"
+            "- If not in the recording, write 'Not mentioned'.\n\n"
+    
+            "## 📚 Glossary (from the recording only)\n"
+            "- Term → short meaning (grounded in transcript). If no terms, 'Not mentioned'.\n\n"
+    
+            "## ✂️ TL;DR\n"
+            "- 3–4 bullets summarizing the essence as said in the recording.\n\n"
+    
+            "## ✅ Quick Check (from the recording)\n"
+            "- 3–5 comprehension questions with short answers strictly grounded in the recording.\n"
+        )
+    }
+
 
 
 
