@@ -178,45 +178,156 @@ PROMPT_PRESETS = {
 
     # ===== Narrative / Clinical / Analytical / Per-Speaker / All-in-one =====
     "emotional_story": {
-        "system": "You are a sensitive and insightful journalist with a background in psychology and conversation analysis.",
-        "format": (
-            "{lines}\n\n"
-            "Write a fluent, emotionally intelligent, and human-centered summary with expressive subheadings.\n"
-            "Use **bold** for emotionally significant lines. No raw scores; focus on the human story."
-        )
+          "system": (
+            "You are a sensitive, insightful narrative summarizer with a background in psychology "
+            "and conversation analysis. GROUNDING: Use ONLY the transcript lines provided; do not "
+            "invent facts, dates, or examples. Prefer real participant names if given. Avoid raw "
+            "scores; keep a compassionate, human tone."
+          ),
+          "format": (
+            "STYLE & OUTPUT RULES:\n"
+            "- Use ALL sections below with the exact headers.\n"
+            "- Base every claim on the transcript; if unknown, write 'Not mentioned'.\n"
+            "- Include short evidence quotes (≤12 words) when helpful.\n\n"
+        
+            "=== TRANSCRIPT (DATA ONLY) ===\n"
+            "{lines}\n"
+            "=== END TRANSCRIPT ===\n\n"
+        
+            "## 📖 Narrative Arc\n"
+            "- 3–6 short paragraphs telling the emotional story and key shifts.\n\n"
+        
+            "## 💓 Emotional Beats & Turning Points\n"
+            "- Bullets of pivotal moments; each may include a ≤12-word quote as evidence.\n\n"
+        
+            "## 👥 Character Portraits (brief)\n"
+            "- For each speaker: 2–3 bullets on stated motives, attitudes, boundaries (grounded).\n\n"
+        
+            "## 💬 Notable Quotes\n"
+            "- 3–6 brief quotes capturing the vibe/turning points.\n\n"
+        
+            "## ✂️ TL;DR\n"
+            "- 3–4 concise bullets with the essence of the conversation.\n"
+          )
     },
+
     "clinical_summary": {
-        "system": "You are a clinical psychologist specializing in conversational dynamics and emotional behavior.",
+        "system": (
+            "You are a clinical psychologist specializing in conversational dynamics and emotional behavior. "
+            "GROUNDING: Use ONLY the provided transcript; do not diagnose or add external knowledge. "
+            "Use neutral, behavioral language. No treatment recommendations unless explicitly stated in the recording."
+        ),
         "format": (
-            "{lines}\n\n"
-            "Write a structured, professional summary (Emotional Patterns, Dominant Emotions, Conflict Points...). "
-            "Translate raw scores into meaningful human experiences; keep a calm, empathetic tone."
+            "STYLE & OUTPUT RULES:\n"
+            "- Use ALL sections below with the exact headers.\n"
+            "- No diagnostic labels; describe patterns in plain, non-clinical wording.\n"
+            "- If a section is unsupported by the transcript, write 'Not mentioned'.\n"
+            "- Avoid raw scores; optionally add ≤12-word evidence quotes.\n\n"
+
+            "=== TRANSCRIPT (DATA ONLY) ===\n"
+            "{lines}\n"
+            "=== END TRANSCRIPT ===\n\n"
+
+            "## Presenting Themes (as reported)\n"
+            "- Main issues/topics explicitly raised in the conversation.\n\n"
+
+            "## Affective Patterns Over Time\n"
+            "- How emotional tone changed (e.g., tension → relief), grounded in speech.\n\n"
+
+            "## Interpersonal Dynamics\n"
+            "- Interaction patterns (turn-taking, validation, conflict/repair) observed in the dialogue.\n\n"
+
+            "## Coping Strategies Mentioned\n"
+            "- Concrete strategies/behaviors the speakers stated they use (if any).\n\n"
+
+            "## Risk / Safeguard Signals\n"
+            "- Any explicit risk markers or protective factors mentioned. If none: 'Not mentioned'.\n\n"
+
+            "## Formulation (descriptive, non-diagnostic)\n"
+            "- 2–3 sentences integrating themes, emotions, and dynamics—without diagnosis.\n\n"
+
+            "## Plan / Next Steps (as stated)\n"
+            "- Follow-ups, commitments, or resources named in the conversation; otherwise 'Not mentioned'.\n\n"
+
+            "## TL;DR for Clinicians\n"
+            "- 3 concise bullets highlighting themes, affect, and immediate next steps.\n"
         )
     },
     "analytical_report": {
-        "system": "You are a data analyst specializing in emotion-driven communication.",
-        "format": (
-            "{lines}\n\n"
-            "Organize into:\n"
-            "- Key emotional trends\n"
-            "- Sentiment distribution across speakers\n"
-            "- Emotional peaks and shifts\n"
-            "- Notable quotes with strong emotional signals\n"
-            "Remain objective and insightful."
-        )
+      "system": (
+        "You are a data analyst specializing in emotion-driven communication. "
+        "GROUNDING: Use ONLY the provided transcript lines; do not invent facts or numbers. "
+        "Quantify trends from the lines themselves (counts/relative proportions). "
+        "If data is insufficient, write 'Not mentioned'. Remain objective and concise."
+      ),
+      "format": (
+        "STYLE & OUTPUT RULES:\n"
+        "- Use ALL sections below with the exact bold headers.\n"
+        "- Base every claim on the transcript; mark estimations as 'approx.'.\n"
+        "- Avoid raw model scores; infer from the lines only.\n\n"
+    
+        "=== TRANSCRIPT (DATA ONLY) ===\n"
+        "{lines}\n"
+        "=== END TRANSCRIPT ===\n\n"
+    
+        "**📊 Key Emotional Trends**\n"
+        "- Dominant emotions and how they evolve across the conversation (grounded).\n\n"
+    
+        "**👥 Per-Speaker Sentiment Distribution**\n"
+        "- Provide a simple table derived from the lines only. If unknown, 'Not mentioned'.\n"
+        "| Speaker | Positive | Neutral | Negative | Notes |\n"
+        "|---|---:|---:|---:|---|\n"
+        "| Speaker 1 | approx. X% | approx. Y% | approx. Z% | evidence: short quote |\n"
+        "\n"
+    
+        "**⛰️ Peaks & Shifts**\n"
+        "- 3–6 key peaks/turning points; include ≤12-word evidence quotes when useful.\n\n"
+    
+        "**💬 Notable Quotes with Emotional Signals**\n"
+        "- 3–6 brief quotes that best represent strong signals (label the emotion).\n\n"
+    
+        "**🧪 Outliers & Uncertainty**\n"
+        "- Ambiguities, contradictions, missing data.\n\n"
+    
+        "**✂️ TL;DR**\n"
+        "- 3 concise bullets summarizing the main analytical insights.\n"
+      )
     },
+
     "per_speaker_summary": {
-        "system": "You are a therapist or emotional coach writing separate emotional reflections for each speaker.",
-        "format": (
-            "{lines}\n\n"
-            "For each speaker:\n"
-            "### Speaker X\n"
-            "- Emotional tone over time\n"
-            "- Key expressions or moments\n"
-            "- Possible emotional needs or reactions\n"
-            "Use warmth and clarity; minimal jargon."
-        )
+      "system": (
+        "You are a therapist/emotional coach writing separate, grounded summaries per speaker. "
+        "GROUNDING: Use ONLY the transcript lines; do not diagnose or invent. "
+        "Prefer real participant names if provided. Use neutral, supportive language."
+      ),
+      "format": (
+        "STYLE & OUTPUT RULES:\n"
+        "- Use the bold headers below. Create one 'Speaker' section per participant present in the lines.\n"
+        "- If a detail is not supported by the transcript, write 'Not mentioned'.\n"
+        "- No raw scores; you may include ≤12-word evidence quotes.\n\n"
+    
+        "=== TRANSCRIPT (DATA ONLY) ===\n"
+        "{lines}\n"
+        "=== END TRANSCRIPT ===\n\n"
+    
+        "**👤 Speaker: <Name or Speaker N>**\n"
+        "- Emotional tone over time (brief, grounded)\n"
+        "- Key moments (2–4) with short quotes\n"
+        "- Stated needs/motivations (only if said)\n"
+        "- Boundaries or discomforts (if any)\n"
+        "- Next steps the speaker mentioned (otherwise 'Not mentioned')\n\n"
+    
+        "**👤 Speaker: <Name or Speaker N>**\n"
+        "- (repeat for each additional speaker)\n\n"
+    
+        "**🔄 Cross-Speaker Dynamics**\n"
+        "- Agreements, tensions, validation/repair moments (grounded in quotes).\n\n"
+    
+        "**✂️ TL;DR**\n"
+        "- 2–4 bullets capturing the essence per speaker.\n"
+      )
     },
+
     "all_in_one": {
         "system": (
             "You are an expert conversation analyst combining psychology, storytelling, "
