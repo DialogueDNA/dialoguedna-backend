@@ -12,6 +12,7 @@ class PromptStyle(str, Enum):
     ALL_IN_ONE = "all_in_one"
     EDUCATIONAL_COACHING = "educational_coaching",
     INSTRUCTIONAL_EXPLAINER = "instructional_explainer"
+    PERSONAL_INTERESTS = "personal_interests_summary"
     # CS_CSAT = "customer_service_csat_predictor"
     # CS_FOLLOWUP = "customer_service_followup"
     # CS_COACHING = "customer_service_coaching"
@@ -26,7 +27,8 @@ PROMPT_LABELS = {
     PromptStyle.PER_SPEAKER: "Per Speaker Reflections",
     PromptStyle.ALL_IN_ONE: "All-in-One Narrative",
     PromptStyle.EDUCATIONAL_COACHING: "Educational Coaching",
-PromptStyle.INSTRUCTIONAL_EXPLAINER: "Instructional Explainer (Grounded)",
+    PromptStyle.INSTRUCTIONAL_EXPLAINER: "Instructional Explainer (Grounded)",
+    PromptStyle.PERSONAL_INTERESTS: "Personal Interests Chat",
     # PromptStyle.CS_CSAT: "Customer Service — CSAT Predictor",
     # PromptStyle.CS_FOLLOWUP: "Customer Service — Follow-up",
     # PromptStyle.CS_COACHING: "Customer Service — Coaching",
@@ -360,7 +362,56 @@ PROMPT_PRESETS = {
             "## ✅ Quick Check (from the recording)\n"
             "- 3–5 comprehension questions with short answers strictly grounded in the recording.\n"
         )
-    }
+    },
+
+    "personal_interests_summary": {
+        "system": (
+            "You are a warm, attentive conversation analyst. "
+            "Your task is to summarize a casual dialogue about personal interests or passions. "
+            "GROUNDING: Base every claim ONLY on the provided transcript lines; do not invent facts, dates, examples, or preferences. "
+            "If something is unclear or not present, write 'Not mentioned'. "
+            "Prefer real participant names if provided. Keep a friendly, human tone and avoid judgments."
+        ),
+        "format": (
+            "STYLE & OUTPUT RULES:\n"
+            "- Use the exact section headers and emojis below.\n"
+            "- Keep it concise, human, and strictly grounded in the transcript (no external info).\n"
+            "- Do NOT use raw scores; optional short evidence quotes (≤12 words) are allowed.\n"
+            "- Normalize relative dates if a session date is known; otherwise keep as said.\n\n"
+    
+            "=== TRANSCRIPT (DATA ONLY) ===\n"
+            "{lines}\n"
+            "=== END TRANSCRIPT ===\n\n"
+    
+            "## 📖 Narrative of the Flow\n"
+            "- Brief story of how the conversation unfolded emotionally.\n"
+            "- Note key shifts (e.g., curiosity → joy → hesitation → warmth) only if present.\n\n"
+    
+            "## 🎯 Interests & Preferences (as stated)\n"
+            "- Bulleted list of interests mentioned: who likes it and why.\n"
+            "- Use brief evidence quotes when helpful.\n\n"
+    
+            "## 🧠 Emotional Dynamics & Motivations\n"
+            "- Interpreted feelings/motivations explicitly grounded in what was said.\n"
+            "- If a nuance isn't supported by the transcript, write 'Not mentioned'.\n\n"
+    
+            "## 👤 Per-Speaker Reflections\n"
+            "- For each speaker:\n"
+            "  - Emotional tone (brief)\n"
+            "  - Memorable lines (1–2 short quotes)\n"
+            "  - Boundaries or discomforts (if any)\n"
+            "  - Friendly follow-up questions for next time (only if supported)\n\n"
+    
+            "## 💬 Key Moments & Quotes\n"
+            "- 3–6 brief quotes that capture turning points or highlights (if present).\n\n"
+    
+            "## ✨ Key Takeaways\n"
+            "- 3–5 concise bullets summarizing what to remember about interests and vibe.\n"
+        )
+    },
+
+
+
 
 
 
