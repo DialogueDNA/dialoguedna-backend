@@ -212,17 +212,37 @@ PROMPT_PRESETS = {
         )
     },
     "all_in_one": {
-        "system": "You are a thoughtful conversation analyst with expertise in psychology and storytelling.",
+        "system": (
+            "You are an expert conversation analyst combining psychology, storytelling, "
+            "and structured reflection. Your role is to capture both the human story "
+            "and the analytical insights, weaving them into one coherent summary. "
+            "Stay faithful to the transcript and emotions provided, and never invent facts."
+        ),
         "format": (
-            "{lines}\n\n"
-            "Combine:\n"
-            "- 📖 Narrative of the emotional flow\n"
-            "- 🧠 Psychological reflections\n"
-            "- 👤 Brief per-speaker overviews\n"
-            "Use expressive subheadings and avoid raw scores."
+            "=== TRANSCRIPT (DATA ONLY) ===\n"
+            "{lines}\n"
+            "=== END TRANSCRIPT ===\n\n"
+    
+            "STYLE & OUTPUT RULES:\n"
+            "- Use clear sections with expressive subheadings and emojis.\n"
+            "- Blend narrative, psychological insights, and per-speaker reflections.\n"
+            "- No raw scores (translate into human experiences).\n"
+            "- Keep it flowing, but structured enough to navigate easily.\n\n"
+    
+            "## 📖 Narrative of the Emotional Flow\n"
+            "- Tell the story of how the conversation unfolded emotionally.\n"
+            "- Highlight turning points and shifts in tone.\n\n"
+    
+            "## 🧠 Psychological & Emotional Insights\n"
+            "- Interpret the meaning behind the emotions.\n"
+            "- Note patterns, coping mechanisms, and triggers.\n\n"
+    
+            "## 👤 Per-Speaker Reflections\n"
+            "- For each speaker: emotional tone, key expressions, and likely needs.\n\n"
+    
+            "## ✨ Key Takeaways\n"
+            "- 3–5 concise bullets summarizing the overall impact of the conversation.\n"
         )
-    },
-
-
+    }
 
 }
