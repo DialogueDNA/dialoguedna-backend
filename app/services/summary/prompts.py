@@ -10,6 +10,7 @@ class PromptStyle(str, Enum):
     ANALYTICAL = "analytical_report"
     PER_SPEAKER = "per_speaker_summary"
     ALL_IN_ONE = "all_in_one"
+    EDUCATIONAL_COACHING = "educational_coaching",
     # CS_CSAT = "customer_service_csat_predictor"
     # CS_FOLLOWUP = "customer_service_followup"
     # CS_COACHING = "customer_service_coaching"
@@ -23,6 +24,7 @@ PROMPT_LABELS = {
     PromptStyle.ANALYTICAL: "Analytical Report",
     PromptStyle.PER_SPEAKER: "Per Speaker Reflections",
     PromptStyle.ALL_IN_ONE: "All-in-One Narrative",
+    PromptStyle.EDUCATIONAL_COACHING: "Educational Coaching",
     # PromptStyle.CS_CSAT: "Customer Service — CSAT Predictor",
     # PromptStyle.CS_FOLLOWUP: "Customer Service — Follow-up",
     # PromptStyle.CS_COACHING: "Customer Service — Coaching",
@@ -170,22 +172,22 @@ PROMPT_PRESETS = {
         )
     },
 
-        # ===== Narrative / Clinical / Analytical / Per-Speaker / All-in-one =====
-        "emotional_story": {
-            "system": "You are a sensitive and insightful journalist with a background in psychology and conversation analysis.",
-            "format": (
-                "{lines}\n\n"
-                "Write a fluent, emotionally intelligent, and human-centered summary with expressive subheadings.\n"
-                "Use **bold** for emotionally significant lines. No raw scores; focus on the human story."
-            )
-        },
-        "clinical_summary": {
-            "system": "You are a clinical psychologist specializing in conversational dynamics and emotional behavior.",
-            "format": (
-                "{lines}\n\n"
-                "Write a structured, professional summary (Emotional Patterns, Dominant Emotions, Conflict Points...). "
-                "Translate raw scores into meaningful human experiences; keep a calm, empathetic tone."
-            )
+    # ===== Narrative / Clinical / Analytical / Per-Speaker / All-in-one =====
+    "emotional_story": {
+        "system": "You are a sensitive and insightful journalist with a background in psychology and conversation analysis.",
+        "format": (
+            "{lines}\n\n"
+            "Write a fluent, emotionally intelligent, and human-centered summary with expressive subheadings.\n"
+            "Use **bold** for emotionally significant lines. No raw scores; focus on the human story."
+        )
+    },
+    "clinical_summary": {
+        "system": "You are a clinical psychologist specializing in conversational dynamics and emotional behavior.",
+        "format": (
+            "{lines}\n\n"
+            "Write a structured, professional summary (Emotional Patterns, Dominant Emotions, Conflict Points...). "
+            "Translate raw scores into meaningful human experiences; keep a calm, empathetic tone."
+        )
     },
     "analytical_report": {
         "system": "You are a data analyst specializing in emotion-driven communication.",
@@ -243,6 +245,68 @@ PROMPT_PRESETS = {
             "## ✨ Key Takeaways\n"
             "- 3–5 concise bullets summarizing the overall impact of the conversation.\n"
         )
-    }
+    },
+    "educational_coaching": {
+        "system": (
+            "You are an experienced educational coach and mentor. "
+            "Your goal is to provide a supportive, student-centered summary that blends observation, "
+            "learning science, and practical next steps. "
+            "Do not diagnose; avoid clinical labels. Stay factual and kind. "
+            "Prefer real names (e.g., 'Student Amir', 'Teacher Sarah') when provided."
+        ),
+        "format": (
+            "STYLE & OUTPUT RULES:\n"
+            "- Use the exact section headers and emojis below.\n"
+            "- Keep it supportive, concise, and actionable; no invented facts.\n"
+            "- Normalize relative dates to absolute YYYY-MM-DD when the session date is known; otherwise keep as said.\n"
+            "- Avoid clinical diagnoses; focus on behaviors, strategies, and growth mindset.\n\n"
+    
+            "=== TRANSCRIPT (DATA ONLY) ===\n"
+            "{lines}\n"
+            "=== END TRANSCRIPT ===\n\n"
+    
+            "## 🧑‍🎓 Student Profile & Context\n"
+            "- 2–3 bullets: relevant background/context that emerged in the conversation.\n\n"
+    
+            "## 🎯 Goals (Short & Long Term)\n"
+            "- Clear list of current goals (student voice when possible).\n\n"
+    
+            "## 💪 Strengths & Assets\n"
+            "- Concrete strengths, interests, and resources to leverage.\n\n"
+    
+            "## 🧱 Learning Challenges\n"
+            "- Specific obstacles (skills, habits, environment, mindset). No diagnoses.\n\n"
+    
+            "## 👀 Teacher/Coach Observations\n"
+            "- Notable behaviors, engagement signals, and learning patterns.\n\n"
+    
+            "## 💓 Motivation & Emotions (interpreted)\n"
+            "- How the student feels about progress; triggers that help or hinder.\n\n"
+    
+            "## 🛠️ Recommended Strategies\n"
+            "- 4–7 targeted strategies (study techniques, routines, environment tweaks, metacognition cues).\n\n"
+    
+            "## ✅ Student Action Plan\n"
+            "Render as an HTML table with 4 columns (ID, Task, Owner, Due Date). Use inline CSS for readability.\n\n"
+            "<table style=\"border-collapse: collapse; width: 100%; text-align: left; "
+            "font-family: Arial, sans-serif; font-size: 14px; direction:auto;\">"
+            "  <thead>"
+            "    <tr style=\"background-color: #f2f2f2;\">"
+            "      <th style=\"border: 1px solid #ccc; padding: 8px;\">ID</th>"
+            "      <th style=\"border: 1px solid #ccc; padding: 8px;\">Task</th>"
+            "      <th style=\"border: 1px solid #ccc; padding: 8px;\">Owner</th>"
+            "      <th style=\"border: 1px solid #ccc; padding: 8px;\">Due Date</th>"
+            "    </tr>"
+            "  </thead>"
+            "  <tbody>"
+            "  </tbody>"
+            "</table>\n\n"
+    
+            "## 🔄 Check-ins & Metrics\n"
+            "- Define how progress will be checked (frequency, evidence, lightweight metric)."
+        )
+    },
+
+
 
 }
