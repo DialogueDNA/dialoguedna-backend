@@ -10,7 +10,7 @@ class PromptStyle(str, Enum):
     ANALYTICAL = "analytical_report"
     PER_SPEAKER = "per_speaker_summary"
     ALL_IN_ONE = "all_in_one"
-    EDUCATIONAL_COACHING = "educational_coaching",
+    EDUCATIONAL_COACHING = "educational_coaching"
     INSTRUCTIONAL_EXPLAINER = "instructional_explainer"
     PERSONAL_INTERESTS = "personal_interests_summary"
     # CS_CSAT = "customer_service_csat_predictor"
@@ -292,19 +292,8 @@ PROMPT_PRESETS = {
     
             "## ✅ Student Action Plan\n"
             "Render as an HTML table with 4 columns (ID, Task, Owner, Due Date). Use inline CSS for readability.\n\n"
-            "<table style=\"border-collapse: collapse; width: 100%; text-align: left; "
-            "font-family: Arial, sans-serif; font-size: 14px; direction:auto;\">"
-            "  <thead>"
-            "    <tr style=\"background-color: #f2f2f2;\">"
-            "      <th style=\"border: 1px solid #ccc; padding: 8px;\">ID</th>"
-            "      <th style=\"border: 1px solid #ccc; padding: 8px;\">Task</th>"
-            "      <th style=\"border: 1px solid #ccc; padding: 8px;\">Owner</th>"
-            "      <th style=\"border: 1px solid #ccc; padding: 8px;\">Due Date</th>"
-            "    </tr>"
-            "  </thead>"
-            "  <tbody>"
-            "  </tbody>"
-            "</table>\n\n"
+            f"{ACTION_ITEMS_TABLE_HTML}\n\n"
+
     
             "## 🔄 Check-ins & Metrics\n"
             "- Define how progress will be checked (frequency, evidence, lightweight metric)."
