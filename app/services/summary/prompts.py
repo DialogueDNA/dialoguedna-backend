@@ -13,9 +13,9 @@ class PromptStyle(str, Enum):
     EDUCATIONAL_COACHING = "educational_coaching"
     INSTRUCTIONAL_EXPLAINER = "instructional_explainer"
     PERSONAL_INTERESTS = "personal_interests_summary"
-    # CS_CSAT = "customer_service_csat_predictor"
-    # CS_FOLLOWUP = "customer_service_followup"
-    # CS_COACHING = "customer_service_coaching"
+    COACHING_GROW = "coaching_grow"
+
+
 
 
 PROMPT_LABELS = {
@@ -29,9 +29,8 @@ PROMPT_LABELS = {
     PromptStyle.EDUCATIONAL_COACHING: "Educational Coaching",
     PromptStyle.INSTRUCTIONAL_EXPLAINER: "Instructional Explainer (Grounded)",
     PromptStyle.PERSONAL_INTERESTS: "Personal Interests Chat",
-    # PromptStyle.CS_CSAT: "Customer Service — CSAT Predictor",
-    # PromptStyle.CS_FOLLOWUP: "Customer Service — Follow-up",
-    # PromptStyle.CS_COACHING: "Customer Service — Coaching",
+    PromptStyle.COACHING_GROW: "Coaching Session (GROW)",
+
 }
 
 # ---------------- Shared HTML (dedup) ----------------
@@ -120,7 +119,7 @@ PROMPT_PRESETS = {
             "{lines}\n"
             "=== END TRANSCRIPT ===\n\n"
     
-            "## 🔎 PART A – Structured Call Analysis\n\n"
+            "## **🔎 PART A – Structured Call Analysis**\n\n"
     
             "**🧭 1) Call Topic**\n"
             "- One concise sentence describing the main reason for the call.\n\n"
@@ -150,13 +149,13 @@ PROMPT_PRESETS = {
             "**📝 9) Summary & Next Steps**\n"
             "- Final status and immediate next actions.\n\n"
     
-            "## 📊 PART B – CSAT Prediction\n\n"
+            "## **📊 PART B – CSAT Prediction**\n\n"
             "**📊 CSAT (estimated)**\n"
             "- Score: X/5 • rationale (short)\n\n"
             "**🚀 Drivers & Improvements**\n"
             "- Positive drivers • friction points • 2 changes to lift CSAT.\n\n"
     
-            "## 🎓 PART C – Agent Coaching & Feedback\n\n"
+            "## **🎓 PART C – Agent Coaching & Feedback*8\n\n"
             "**🎯 What Worked Well**\n"
             "- 3–5 bullets with concrete behaviors that were effective.\n\n"
     
@@ -510,10 +509,53 @@ PROMPT_PRESETS = {
         )
     },
 
-
-
-
-
-
+    "coaching_grow": {
+        "system": (
+            "You are a coaching session summarizer using the GROW model (Goal, Reality, Options, Will). "
+            "GROUNDING: Use ONLY the provided transcript lines; do not invent facts, examples, or numbers. "
+            "If something is unclear or missing, write 'Not mentioned'. "
+            "Prefer real participant names if provided. Keep a supportive, practical tone."
+        ),
+        "format": (
+            "STYLE & OUTPUT RULES:\n"
+            "- Use ALL sections below with the exact bold headers.\n"
+            "- Base EVERY claim on the transcript; optional ≤12-word evidence quotes.\n"
+            "- No raw model scores, no diagnoses, no external knowledge.\n\n"
+    
+            "=== TRANSCRIPT (DATA ONLY) ===\n"
+            "{lines}\n"
+            "=== END TRANSCRIPT ===\n\n"
+    
+            "**🧭 Coaching Context & Focus**\n"
+            "- One–two sentences describing the overall focus of this coaching conversation.\n\n"
+    
+            "**🎯 G — Goal (What do you want to achieve?)**\n"
+            "- The coachee’s stated goal(s) in their own words where possible.\n"
+            "- Evidence quote(s) as needed (≤12 words).\n\n"
+    
+            "**🔎 R — Reality (Current situation & obstacles)**\n"
+            "- Current state, constraints, blockers, and resources mentioned.\n"
+            "- Evidence quotes as needed.\n\n"
+    
+            "**💡 O — Options (Strategies / alternatives)**\n"
+            "- Options explored or suggested; note pros/cons if stated.\n"
+            "- Distinguish ideas tried before vs. new ideas (only if said).\n\n"
+    
+            "**✅ W — Will / Action Plan**\n"
+            "- Commitments the coachee agreed to (who does what by when).\n"
+            "- Render as an HTML table with 4 columns (ID, Task, Owner, Due Date).\n\n"
+            f"{ACTION_ITEMS_TABLE_HTML}\n\n"
+    
+            "**🧱 Risks & Dependencies**\n"
+            "- Risks, needs, or dependencies explicitly mentioned. Otherwise 'Not mentioned'.\n\n"
+    
+            "**🔄 Check-ins & Metrics**\n"
+            "- How progress will be tracked (frequency, simple metric), if mentioned.\n"
+            "- Otherwise 'Not mentioned'.\n\n"
+    
+            "**✂️ TL;DR**\n"
+            "- 3 concise bullets capturing goal, key obstacle, and the immediate next step(s).\n"
+        )
+    }
 
 }
