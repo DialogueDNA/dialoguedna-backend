@@ -7,7 +7,7 @@ from typing import Any, Dict, List
 from transformers import pipeline
 from app.core.config import TEXT_EMOTION_MODEL, TOP_K_EMOTIONS
 
-EMOTIONS_6 = ["anger", "disgust", "fear", "joy", "sadness", "surprise"]
+EMOTIONS_7 = ["anger", "disgust", "fear", "joy", "sadness", "surprise", "neutral"]
 
 class TextBaseAnalyzer:
     def __init__(self) -> None:
@@ -30,12 +30,12 @@ class TextBaseAnalyzer:
             end_sec = float(entry.get("end_time", start_sec))
 
             if not text:
-                emotions = [{"label": lbl, "score": 1.0 / len(EMOTIONS_6)} for lbl in EMOTIONS_6]
+                emotions = [{"label": lbl, "score": 1.0 / len(EMOTIONS_7)} for lbl in EMOTIONS_7]
             else:
                 out = self.classifier(text)
                 items = out[0] if isinstance(out, list) and out and isinstance(out[0], list) else out
                 by_label = {str(it["label"]).lower(): float(it["score"]) for it in items}
-                emotions = [{"label": lbl, "score": float(by_label.get(lbl, 0.0))} for lbl in EMOTIONS_6]
+                emotions = [{"label": lbl, "score": float(by_label.get(lbl, 0.0))} for lbl in EMOTIONS_7]
                 emotions.sort(key=lambda x: x["score"], reverse=True)
 
             results.append({

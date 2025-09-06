@@ -2,7 +2,6 @@
 # Purpose: Numeric helpers for weighting and normalization (no business logic).
 
 from __future__ import annotations
-
 from typing import List
 
 
@@ -17,7 +16,7 @@ def renorm(vec: List[float]) -> List[float]:
 
 
 def weighted_sum(*terms: List[float], weights: List[float]) -> List[float]:
-    """Compute Σ w_i * term_i elementwise. Assumes equal length vectors."""
+    """Compute Σ w_i * term_i elementwise. Assumes equal-length vectors."""
     if not terms:
         return []
     n = len(terms[0])

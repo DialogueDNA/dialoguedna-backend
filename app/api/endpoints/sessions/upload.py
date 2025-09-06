@@ -21,7 +21,7 @@ async def create_session(
 
     # ✅ Upload file and get session_id + blob path
     try:
-        session_id, audio_path = processor.upload_audio_file(file=file)
+        session_id, audio_path,local_src = processor.upload_audio_file(file=file)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audio upload failed: {str(e)}")
 
@@ -63,11 +63,12 @@ async def create_session(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create session record: {str(e)}")
 
-    # ✅ Start background processing
+        # ✅ Start background processing (pass local_src so tone cuts locally)
     background_tasks.add_task(
         processor.process_audio,
         session_id=session_id,
-        audio_path=audio_path
+        audio_path=audio_path,
+        local_src=local_src,
     )
 
     # Soft-trigger (in case pipeline races and completes super-fast)

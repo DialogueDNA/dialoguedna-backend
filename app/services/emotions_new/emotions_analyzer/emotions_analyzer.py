@@ -29,6 +29,7 @@ class EmotionsAnalyzer:
             self,
             transcript_input: Union[Dict[str, Any], List[Dict[str, Any]]],
             audio_blob_path: Union[str, Path],
+            local_src=Union[str, Path],
     ) -> List[Dict[str, Any]]:
         # --- Normalize input ---
         if isinstance(transcript_input, dict):
@@ -43,7 +44,7 @@ class EmotionsAnalyzer:
         text_json: Dict[str, Any] = {"utterances": text_out}
 
         # --- 2) Tone (4-class + confidence + qc) ---
-        tone_json: Dict[str, Any] = self.tone_analyzer.analyze(audio_blob_path, tone_in)
+        tone_json: Dict[str, Any] = self.tone_analyzer.analyze(audio_blob_path, tone_in,local_src)
 
         # --- 3) Mix → ALL 6 as % (sorted) ---
         final_pct_results: List[Dict[str, Any]] = self.mixer.mix(text_json, tone_json)
