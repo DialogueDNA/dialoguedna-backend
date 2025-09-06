@@ -55,28 +55,7 @@ class EmotionsAnalyzer:
         except Exception as e:
             print(f"⚠️ save_results failed: {e}")
 
-        # --- 5) Adapt to legacy app format: Top-1 only (label + score 0..1) ---
-        legacy_results: List[Dict[str, Any]] = []
-        for item in final_pct_results:
-            emotions_pct = item.get("emotions", []) or []
-            if emotions_pct:
-                top = emotions_pct[0]  # already sorted desc
-                legacy_emotions = {
-                    "label": str(top.get("label", "")),
-                    "score": float(top.get("score_pct", 0.0)) / 100.0,  # back to 0..1
-                }
-            else:
-                legacy_emotions = {"label": "joy", "score": 0.0}  # safe fallback
-
-            legacy_results.append({
-                "speaker": item.get("speaker", "?"),
-                "text": item.get("text", ""),
-                "start_time": float(item.get("start_time", 0.0)),
-                "end_time": float(item.get("end_time", 0.0)),
-                "emotions": legacy_emotions,
-            })
-
-        return legacy_results
+        return final_pct_results
 
     def save_results(
         self,

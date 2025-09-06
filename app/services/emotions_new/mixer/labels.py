@@ -32,27 +32,15 @@ def vec_to_list(vec: List[float], order: List[str]) -> List[Dict[str, float]]:
     return pairs
 
 
-def vec_to_list_pct(vec: List[float], order: List[str], decimals: int = 4) -> List[Dict[str, float]]:
-    """
-    LEGACY: Convert probabilities (sum≈1) to [{"label","score"}] where score ∈ [0..1], sorted desc.
-    Drops 'neutral' and renormalizes to keep sum≈1 after rounding.
-    """
-    # 1) build as probabilities (no %)
-    pairs = [{"label": lbl, "score": round(float(p), decimals)} for lbl, p in zip(order, vec)]
-
-    # 2) drop neutral (legacy = 6 רגשות)
-    pairs = [x for x in pairs if x["label"] != "neutral"]
-
-    # 3) sort desc
+def vec_to_list_pct(vec: List[float], order: List[str], decimals: int = 1) -> List[Dict[str, float]]:
+    """Convert probs (sum=1) to [{"label","score"}] in percent, sorted desc."""
+    pairs = [{"label": lbl, "score": round(float(p) * 100.0, decimals)} for lbl, p in zip(order, vec)]
     pairs.sort(key=lambda x: x["score"], reverse=True)
-
-    # 4) renorm to 1.0 after rounding
     total = sum(x["score"] for x in pairs)
-    if total and abs(total - 1.0) > 1e-6:
-        scale = 1.0 / total
+    if total and abs(total - 100.0) > 0.5:
+        scale = 100.0 / total
         for x in pairs:
             x["score"] = round(x["score"] * scale, decimals)
-
     return pairs
 
 
