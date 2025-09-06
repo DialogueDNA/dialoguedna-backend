@@ -4,7 +4,7 @@ from app.core.constants.db.supabase_constants import SessionColumn, SessionStatu
 from app.logic.DialogueDNA.events.subscribers.base import BaseListener
 from app.logic.DialogueDNA.interfaces.capabilities import PipelineContext
 from app.logic.DialogueDNA.events import StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, \
-    FailedEvent, QueuedEvent, StoppedEvent, ProcessingEvent
+    FailedEvent, QueuedEvent, StoppedEvent, ProcessingEvent, AudioEvent, MetadataEvent
 
 
 class DBProgressSubscriber(BaseListener):
@@ -19,11 +19,11 @@ class DBProgressSubscriber(BaseListener):
         ctx.sessions.update(ctx.session_id, {
             SessionColumn.session_status: SessionStatus.queued
         })
-    def on_session_stopped(self, e: QueuedEvent, ctx: PipelineContext) -> None:
+    def on_session_stopped(self, e: StoppedEvent, ctx: PipelineContext) -> None:
         ctx.sessions.update(ctx.session_id, {
             SessionColumn.session_status: SessionStatus.stopped
         })
-    def on_session_processing(self, e: QueuedEvent, ctx: PipelineContext) -> None:
+    def on_session_processing(self, e: ProcessingEvent, ctx: PipelineContext) -> None:
         ctx.sessions.update(ctx.session_id, {
             SessionColumn.session_status: SessionStatus.processing
         })
@@ -34,6 +34,52 @@ class DBProgressSubscriber(BaseListener):
     def on_session_failed(self, e: FailedEvent, ctx: PipelineContext) -> None:
         ctx.sessions.update(ctx.session_id, {
             SessionColumn.session_status: SessionStatus.failed
+        })
+    def on_metadata_queued(self, e: QueuedEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.metadata_status: SessionStatus.queued
+        })
+    def on_metadata_stopped(self, e: StoppedEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.metadata_status: SessionStatus.stopped
+        })
+    def on_metadata_processing(self, e: ProcessingEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.metadata_status: SessionStatus.processing
+        })
+    def on_metadata_ready(self, e: MetadataEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.metadata_status: SessionStatus.completed,
+            SessionColumn.participants: e.participants,
+            SessionColumn.language: e.language,
+            SessionColumn.duration: e.duration,
+            SessionColumn.source: e.source,
+            SessionColumn.is_favorite: e.is_favorite,
+            SessionColumn.tags: e.tags
+        })
+    def on_metadata_failed(self, e: FailedEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.metadata_status: SessionStatus.failed
+        })
+    def on_audio_queued(self, e: QueuedEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.audio_file_status: SessionStatus.queued
+        })
+    def on_audio_stopped(self, e: StoppedEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.audio_file_status: SessionStatus.stopped
+        })
+    def on_audio_processing(self, e: ProcessingEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.audio_file_status: SessionStatus.processing
+        })
+    def on_audio_ready(self, e: AudioEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.audio_file_status: SessionStatus.completed
+        })
+    def on_audio_failed(self, e: FailedEvent, ctx: PipelineContext) -> None:
+        ctx.sessions.update(ctx.session_id, {
+            SessionColumn.audio_file_status: SessionStatus.failed
         })
     def on_transcription_queued(self, e: QueuedEvent, ctx: PipelineContext) -> None:
         ctx.sessions.update(ctx.session_id, {

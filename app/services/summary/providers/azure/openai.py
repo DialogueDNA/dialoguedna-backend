@@ -75,8 +75,8 @@ class AzureOpenAISummarizer(Summarizer):
         # Build lines: "Speaker: text [top_emotion]"
         lines: List[str] = []
         for s in req.segments:
-            spk = str(s.whom) if s.whom is not None else "SPEAKER"
-            txt = (s.text or "").strip()
+            spk = str(s.transcription.writer) if s.transcription.writer is not None else "SPEAKER"
+            txt = (s.transcription.text or "").strip()
 
             emo_hint = ""
             if s.mixed and s.mixed.emotions_intensity_dict:

@@ -10,6 +10,7 @@ class SessionDTO(BaseModel):
     id: str
     title: str
 
+    session_status: Optional[str] = None
     audio_status: Optional[str] = None
     transcript_status: Optional[str] = None
     emotion_status: Optional[str] = None

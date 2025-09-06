@@ -34,12 +34,8 @@ async def create_session(
             title=title,
             audio_local_path=tmp_path,
             inline_save=False,
-            queue=BackgroundTasksQueue(background) if not debug else None,
+            queue=BackgroundTasksQueue(background),
+            dispatch="sync"
         ))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        try:
-            os.remove(tmp_path)
-        except Exception:
-            pass

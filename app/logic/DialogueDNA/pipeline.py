@@ -1,7 +1,8 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any, Counter
 
+from app.core.constants.db.supabase_constants import SessionColumn
 from app.interfaces.logic.pipeline import Pipeline, PipelineOutput, PipelineInput
 from app.interfaces.services.audio.enhancer import AudioEnhancer
 from app.interfaces.services.emotions.mixed import EmotionAnalyzerMixerInput, EmotionAnalyzerMixerOutput
@@ -63,6 +64,7 @@ class DialogueDNAPipeline(Pipeline):
 
         reporter.session_processing() if reporter is not None else None
 
+        reporter.metadata_queued() if reporter is not None else None
         reporter.transcription_queued() if reporter is not None else None
         reporter.emotion_analyzation_queued() if reporter is not None else None
         reporter.summarization_queued() if reporter is not None else None
@@ -70,6 +72,18 @@ class DialogueDNAPipeline(Pipeline):
         try:
             transcription: TranscriptionOutput = self.transcribe(
                 audio=pipeline_input.audio,
+                reporter=pipeline_input.reporter
+            )
+        except Exception as e:
+            reporter.metadata_stopped() if reporter is not None else None
+            reporter.emotion_analyzation_stopped() if reporter is not None else None
+            reporter.summarization_stopped() if reporter is not None else None
+            reporter.session_failed(e) if reporter is not None else None
+            raise
+
+        try:
+            _ = self.extract_session_metadata(
+                transcription=transcription,
                 reporter=pipeline_input.reporter
             )
         except Exception as e:
@@ -142,6 +156,53 @@ class DialogueDNAPipeline(Pipeline):
 
         return transcription
 
+    @staticmethod
+    def extract_session_metadata(
+            *,
+            transcription: TranscriptionOutput,
+            reporter: PipelineReporter = None,
+    ) -> Dict[SessionColumn, Any]:
+
+        reporter.metadata_processing() if reporter is not None else None
+
+        # --- Duration from segments ---
+        starts: List[float] = []
+        ends: List[float] = []
+        for seg in transcription:
+            st = seg.start_time
+            en = seg.end_time
+            if st is not None:
+                starts.append(float(st))
+            if en is not None:
+                ends.append(float(en))
+        duration: Optional[float] = None
+        if starts and ends:
+            duration = max(ends) - min(starts)
+
+        # --- Participants from 'writer' ---
+        participants = sorted(
+            {"Speaker " + str(seg.writer) for seg in transcription if seg.writer is not None}
+        )
+
+        # --- Language majority vote (segment.language or audio.language) ---
+        langs: List[str] = []
+        for seg in transcription:
+            lang = seg.language
+            langs.append(lang.strip() if lang else None)
+        language: Optional[str] = None
+        if langs:
+            language = Counter([l.lower() for l in langs]).most_common(1)[0][0]
+
+        meta: Dict[SessionColumn, Any] = {
+            SessionColumn.duration: duration,
+            SessionColumn.participants: participants,
+            SessionColumn.language: language,
+        }
+
+        reporter.metadata_ready(language, participants, duration) if reporter is not None else None
+
+        return meta
+
     def analyze_emotions_on_transcript(self, *, audio: AudioType, transcription: TranscriptionOutput, reporter: PipelineReporter = None) -> EmotionAnalysisOutput:
 
         reporter.emotion_analyzation_processing() if reporter is not None else None
@@ -212,7 +273,8 @@ class DialogueDNAPipeline(Pipeline):
                 mixed=analyzed_mixed_segment,
                 whom=whom,
                 start_time=start_time,
-                end_time=end_time
+                end_time=end_time,
+                transcription=segment,
             )
 
             # Save the output

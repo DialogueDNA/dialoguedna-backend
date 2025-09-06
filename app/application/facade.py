@@ -70,6 +70,7 @@ class ApplicationFacade:
             audio_local_path: str) -> tuple[str, str]:
 
         session_id = str(uuid.uuid4())
+        # Build new session reporter
 
         blob_url: str = self._write.put_wav_path_get_url(
             container="sessions",
@@ -81,6 +82,7 @@ class ApplicationFacade:
             SessionColumn.session_id: session_id,
             SessionColumn.user_id: user_id,
             SessionColumn.title: title,
+            SessionColumn.audio_file_status: SessionStatus.completed,
             SessionColumn.audio_file_url: blob_url,
         }
         self._app.database.sessions_repo.create(record)
@@ -114,18 +116,30 @@ class ApplicationFacade:
                 inline_save=inline_save,
                 dispatch=dispatch
             )
+            self._delete_tmp_file(audio_path)
         else:
             #  Analyze in asynchronize way - Enqueue job (pure function signature -> serializable for external queues)
             queue.enqueue(
                 self._run_full_pipeline,
-                self._app,
                 session_id,
                 audio_path,
                 inline_save,
                 dispatch,
             )
 
+            queue.enqueue(
+                self._delete_tmp_file,
+                audio_path
+            )
         return self._app.database.sessions_repo.get_for_user(session_id, user_id)
+
+    @staticmethod
+    def _delete_tmp_file(file_path: str) -> None:
+        import os
+        try:
+            os.remove(file_path)
+        except Exception:
+            pass
 
     def _run_full_pipeline(
             self,
@@ -320,7 +334,7 @@ class ApplicationFacade:
         if audio_status is not SessionStatus.completed:
             return audio_status, None
 
-        audio_file_url: str = session.get(SessionColumn.audio_file_url, None)
+        audio_file_url: str = session.audio_file_url
 
         if not audio_file_url:
             raise ValueError("audio file url not found")
@@ -351,7 +365,7 @@ class ApplicationFacade:
         if transcript_status is not SessionStatus.completed:
             return transcript_status, None
 
-        transcript_url: str = session.get(SessionColumn.transcript_url, None)
+        transcript_url: str = session.transcript_url
 
         if not transcript_url:
             raise ValueError("transcript url not found")
@@ -382,7 +396,7 @@ class ApplicationFacade:
         if analyzed_emotions_status is not SessionStatus.completed:
             return analyzed_emotions_status, None
 
-        analyzed_emotions_url: str = session.get(SessionColumn.emotion_breakdown_url, None)
+        analyzed_emotions_url: str = session.emotion_breakdown_url
 
         if not analyzed_emotions_url:
             raise ValueError("analyzed emotions url not found")
@@ -413,7 +427,7 @@ class ApplicationFacade:
         if summary_status is not SessionStatus.completed:
             return summary_status, None
 
-        summary_url: str = session.get(SessionColumn.summary_url, None)
+        summary_url: str = session.summary_url
 
         if not summary_url:
             raise ValueError("analyzed emotions url not found")

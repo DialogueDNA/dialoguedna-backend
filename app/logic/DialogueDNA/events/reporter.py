@@ -9,7 +9,7 @@ from app.logic.DialogueDNA.events.subscribers.base import PipelineListener
 from app.logic.DialogueDNA.interfaces.capabilities import PipelineContext
 from app.logic.DialogueDNA.events import (
     StageEvent, TranscriptionEvent, EmotionsEvent, SummaryEvent, FailedEvent, QueuedEvent, StoppedEvent,
-    ProcessingEvent, SessionEvent
+    ProcessingEvent, SessionEvent, AudioEvent, MetadataEvent
 )
 
 log = logging.getLogger(__name__)
@@ -47,6 +47,16 @@ class PipelineReporter:
     def session_processing              (self):                                             self._emit("on_session_processing",             ProcessingEvent())
     def session_ready                   (self):                                             self._emit("on_session_ready",                  SessionEvent())
     def session_failed                  (self, error):                                      self._emit("on_session_failed",                 FailedEvent(error))
+    def metadata_queued                 (self):                                             self._emit("on_metadata_queued",                QueuedEvent())
+    def metadata_stopped                (self):                                             self._emit("on_metadata_stopped",               StoppedEvent())
+    def metadata_processing             (self):                                             self._emit("on_metadata_processing",            ProcessingEvent())
+    def metadata_ready                  (self, language, participants, duration):           self._emit("on_metadata_ready",                 MetadataEvent(language, participants, duration, None, None, None))
+    def metadata_failed                 (self, error):                                      self._emit("on_metadata_failed",                FailedEvent(error))
+    def audio_queued                    (self):                                             self._emit("on_audio_queued",                   QueuedEvent())
+    def audio_stopped                   (self):                                             self._emit("on_audio_stopped",                  StoppedEvent())
+    def audio_processing                (self):                                             self._emit("on_audio_processing",               ProcessingEvent())
+    def audio_ready                     (self, audio_path):                                 self._emit("on_audio_ready",                    AudioEvent(audio_path))
+    def audio_failed                    (self, error):                                      self._emit("on_audio_failed",                   FailedEvent(error))
     def transcription_queued            (self):                                             self._emit("on_transcription_queued",           QueuedEvent())
     def transcription_stopped           (self):                                             self._emit("on_transcription_stopped",          StoppedEvent())
     def transcription_processing        (self):                                             self._emit("on_transcription_processing",       ProcessingEvent())

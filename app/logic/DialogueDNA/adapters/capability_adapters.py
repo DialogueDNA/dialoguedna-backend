@@ -27,8 +27,7 @@ class StorageArtifactWriter(ArtifactWriter):
 
     def put_json_get_url(self, container: str, blob: str, some_json: List[Dict[str, Any]]) -> Optional[str]:
         data = json.dumps(some_json, ensure_ascii=False).encode("utf-8")
-        self.blob_storage.upload(container=container, blob=blob, data=data)
-        return None
+        return self.blob_storage.upload(container=container, blob=blob, data=data)
 
     def put_wav_path_get_url(self, container: str, blob: str, some_wav_path: str) -> Optional[str]:
         """

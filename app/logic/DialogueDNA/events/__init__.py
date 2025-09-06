@@ -15,6 +15,23 @@ class StageEvent:
     detail: Optional[str] = None
 
 @dataclass(frozen=True)
+class SessionEvent:
+    pass
+
+@dataclass(frozen=True)
+class AudioEvent:
+    audio_path: str
+
+@dataclass(frozen=True)
+class MetadataEvent:
+    language: str
+    participants: List[str]
+    duration: float
+    source: Optional[str]
+    is_favorite: Optional[bool]
+    tags: Optional[List[str]]
+
+@dataclass(frozen=True)
 class TranscriptionEvent:
     segments: TranscriptionOutput
 
@@ -25,10 +42,6 @@ class EmotionsEvent:
 @dataclass(frozen=True)
 class SummaryEvent:
     summary: SummaryOutput
-
-@dataclass(frozen=True)
-class SessionEvent:
-    pass
 
 @dataclass(frozen=True)
 class QueuedEvent:

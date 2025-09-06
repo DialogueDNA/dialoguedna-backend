@@ -11,13 +11,14 @@ def to_session_dto(db: SessionDB) -> SessionDTO:
         transcript_url=db.transcript_url,
         emotions_url=db.emotion_breakdown_url,
         summary_url=db.summary_url,
+        session_status=db.session_status,
+        audio_status=db.audio_file_status,
+        transcript_status=db.transcript_status,
+        emotion_status=db.emotion_breakdown_status,
+        summary_status=db.summary_status,
         duration=db.duration,
         language=db.language,
         participants=db.participants,
-        audio_status=db.audio_file_status,
-        emotion_status=db.emotion_breakdown_status,
-        transcript_status=db.transcript_status,
-        summary_status=db.summary_status,
         created_at=db.created_at,
     )
 

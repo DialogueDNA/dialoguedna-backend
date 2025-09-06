@@ -3,15 +3,25 @@ from dataclasses import asdict
 
 from app.core.constants.db.supabase_constants import SessionColumn
 from app.core.constants.storage.azure_constants import (
-    MAIN_CONTAINER, SESSION_TRANSCRIPT_PATH, SESSION_EMOTIONS_PATH, SESSION_SUMMARY_PATH
+    MAIN_CONTAINER, SESSION_TRANSCRIPT_PATH, SESSION_EMOTIONS_PATH, SESSION_SUMMARY_PATH, SESSION_AUDIO_PATH
 )
 from app.logic.DialogueDNA.events.subscribers.base import BaseListener
 from app.logic.DialogueDNA.interfaces.capabilities import PipelineContext
-from app.logic.DialogueDNA.events import TranscriptionEvent, EmotionsEvent, SummaryEvent
+from app.logic.DialogueDNA.events import TranscriptionEvent, EmotionsEvent, SummaryEvent, AudioEvent
+
 
 class BlobArtifactsSubscriber(BaseListener):
     def __init__(self):
         pass
+
+    def on_audio_ready(self, e: AudioEvent, ctx: PipelineContext) -> None:
+        if not ctx.artifacts: return
+        container = MAIN_CONTAINER
+        blob = f"{ctx.session_id}/{SESSION_AUDIO_PATH}"
+        payload = e.audio_path
+        url = ctx.artifacts.put_wav_path_get_url(container=container, blob=blob, some_wav_path=payload)
+        if url:
+            ctx.sessions.update(ctx.session_id, {SessionColumn.transcript_url: url})
 
     def on_transcription_ready(self, e: TranscriptionEvent, ctx: PipelineContext) -> None:
         if not ctx.artifacts: return
