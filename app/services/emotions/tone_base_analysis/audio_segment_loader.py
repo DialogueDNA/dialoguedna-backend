@@ -1,10 +1,9 @@
-# Purpose: Load/cut audio by start/end and return (samples, sample_rate, duration_sec, qc).
-from __future__ import annotations
+# app/services/emotions/tone_base_analysis/audio_segment_loader.py
+# Load audio from a local path, cut by start/end, and return (samples, sample_rate, duration_sec, qc).
 
+from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, Tuple, Union
-
-
 import numpy as np
 from pydub import AudioSegment
 
@@ -15,7 +14,7 @@ class AudioSegmentLoader:
 
     def load(
         self,
-        wav_path: Union[str, Path],   # כאן זה ה-local_src המקורי
+        wav_path: Union[str, Path],   # This is the original local_src path
         start_time: float,
         end_time: float,
     ) -> Tuple[np.ndarray, int, float, Dict[str, Any]]:
@@ -24,7 +23,7 @@ class AudioSegmentLoader:
         if end_time < start_time:
             end_time = start_time
 
-        # טוען מקור גולמי מכל פורמט, וחותך לפי מילישניות
+        # Load source from any audio format, then cut by millisecond boundaries
         src = str(wav_path)
         audio = AudioSegment.from_file(src)
 
@@ -32,14 +31,14 @@ class AudioSegmentLoader:
         end_ms = max(start_ms, int(end_time * 1000))
         seg = audio[start_ms:end_ms]
 
-        # הבטחת מינימום קטע קצר אם נחתך לריק (מקרה גבול)
+        # Ensure a minimal short segment if cutting produced empty audio (edge case)
         if len(seg) == 0:
             seg = AudioSegment.silent(duration=100, frame_rate=audio.frame_rate)
 
-        # מייצב ל-16kHz מונו, 16bit PCM
+        # Normalize to 16kHz mono, 16-bit PCM
         seg = seg.set_frame_rate(self.target_sr).set_channels(1).set_sample_width(2)
 
-        # המרה ל-numpy float32 בטווח [-1, 1]
+        # Convert to numpy float32 in [-1, 1]
         arr = np.frombuffer(seg.raw_data, dtype=np.int16)
         samples = (arr.astype(np.float32) / 32768.0)
         sr = self.target_sr

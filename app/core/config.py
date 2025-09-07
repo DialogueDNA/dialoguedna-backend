@@ -30,9 +30,7 @@ AZURE_CONTAINER_URL = os.getenv("AZURE_CONTAINER_URL")
 AZURE_STORAGE_CONNECTION_STRING = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
 AZURE_CONTAINER_NAME = os.getenv("AZURE_CONTAINER_NAME")
 
-# === Text-based emotion model ===
-TEXT_EMOTION_MODEL = os.getenv("TEXT_EMOTION_MODEL", "j-hartmann/emotion-english-distilroberta-base")
-TOP_K_EMOTIONS = os.getenv("TOP_K_EMOTIONS")  # can convert to int later if needed
+
 
 # === Azure OpenAI for Summary Generation ===
 AZURE_OPENAI_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
@@ -51,3 +49,14 @@ supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 AUDIO_TARGET_SAMPLE_RATE=16000
 AUDIO_TARGET_CHANNELS=1
 AUDIO_TARGET_BIT_DEPTH=16
+
+# === Emotion analysis settings ===
+
+# --- Audio-based emotion model ---
+EMOTIONS_4 = ["angry", "happy", "sad", "neutral"]
+AUDIO_EMOTION_MODEL = os.getenv("AUDIO_EMOTION_MODEL", "superb/hubert-large-superb-er")
+
+# === Text-based emotion model ===
+TEXT_EMOTION_MODEL = os.getenv("TEXT_EMOTION_MODEL", "j-hartmann/emotion-english-distilroberta-base")
+TOP_K_EMOTIONS = os.getenv("TOP_K_EMOTIONS")  # can convert to int later if needed
+EMOTIONS_7 = ["anger", "disgust", "fear", "joy", "sadness", "surprise", "neutral"]

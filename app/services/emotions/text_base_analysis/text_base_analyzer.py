@@ -1,13 +1,9 @@
-# Path: app/services/emotions_new/text_base_analysis/text_base_analyzer.py
-# Purpose: Wrapper around the HF text model → 6-emotion probabilities.
-# Method: analyze(text) → probs6 in fixed order.
-# Notes: Load model once and reuse; no mixer/state dependencies.
+# app/services/emotions/text_base_analysis/text_base_analyzer.py
+# Text-based emotion analysis using a Hugging Face classifier (outputs 7-class probabilities per utterance).
 
 from typing import Any, Dict, List
 from transformers import pipeline
-from app.core.config import TEXT_EMOTION_MODEL, TOP_K_EMOTIONS
-
-EMOTIONS_7 = ["anger", "disgust", "fear", "joy", "sadness", "surprise", "neutral"]
+from app.core.config import TEXT_EMOTION_MODEL, TOP_K_EMOTIONS,EMOTIONS_7
 
 class TextBaseAnalyzer:
     def __init__(self) -> None:
@@ -47,45 +43,3 @@ class TextBaseAnalyzer:
             })
 
         return results
-
-''' 
-from collections import defaultdict #for now
-
-class Emotioner:
-    def __init__(self):
-        self.overall_emotions = None
-        self.speaker_emotions = None
-
-    def get_emotions(self, transcript: list[dict[str, Any]]) -> list[dict[str, Any]]:
-        #print("🔍 Running text-based emotion analysis...")
-
-        #classifier = pipeline("text-classification", model=TEXT_EMOTION_MODEL, top_k=TOP_K_EMOTIONS)
-
-        results = []
-
-        self.speaker_emotions = defaultdict(lambda: defaultdict(float))
-        self.overall_emotions = defaultdict(float)
-
-        for entry in transcript:
-            speaker = str(entry.get("speaker", "?")).strip()
-            text = entry.get("text", "").strip()
-
-            if not text:
-                continue
-
-            start_sec = entry.get("start_time", 0)
-            end_sec = entry.get("end_time", 0)
-
-            emotions = classifier(text)
-
-            result_entry = {
-                "speaker": speaker,
-                "text": text,
-                "start_time": start_sec,
-                "end_time": end_sec,
-                "emotions": emotions[0],
-            }
-            results.append(result_entry)
-
-        return results
-'''
