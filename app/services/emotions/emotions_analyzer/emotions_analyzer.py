@@ -4,7 +4,7 @@
 # Flow: call text analyzer + tone analyzer + state store + mixer strategy.
 # Outputs: probs6 (sum=1), label, confidence, flags, updated speaker state.
 # Notes: Designed to replace a single pipeline line without changing I/O.
-# Path: app/services/emotions_new/emotions_analyzer/emotions_analyzer.py
+# Path: app/services/emotions/emotions_analyzer/emotions_analyzer.py
 import json
 from pathlib import Path
 from typing import Any, Dict, List, Union, IO, cast

@@ -10,7 +10,8 @@ from app.db.session_db import SessionDB
 from app.storage.session_storage import SessionStorage
 
 from app.services.transcript.transcriber import Transcriber
-from app.services.emotions_new.emotions_analyzer.emotions_analyzer import EmotionsAnalyzer
+#***********************************************************************************************
+from app.services.emotions.emotions_analyzer.emotions_analyzer import EmotionsAnalyzer
 from app.services.summary.summarizer import Summarizer
 from app.services.summary.runner import try_run_summary
 
