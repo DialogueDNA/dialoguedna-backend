@@ -126,6 +126,7 @@ def download_summary_pdf(session_id: str, current_user: dict = Depends(get_curre
 
     # Use the session metadata and summary text to generate the PDF
     pdf_path = generate_session_pdf({
+        "id": session_id,
         "title": session.get("title"),
         "created_at": session.get("created_at"),
         "duration": session.get("duration"),
@@ -133,4 +134,8 @@ def download_summary_pdf(session_id: str, current_user: dict = Depends(get_curre
         "summary": summary_text
     })
 
-    return FileResponse(pdf_path, media_type="application/pdf", filename=f"session-{session_id}.pdf")
+    safe_title = (session.get("title") or f"session-{session_id}").strip().replace("/", "-")
+    return FileResponse(
+     pdf_path,
+     media_type="application/pdf",
+     filename = f"{safe_title}.pdf")
