@@ -4,21 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="Add session event handling and improve session status updates">
+    <list default="true" id="934cc7bb-89f0-411a-8f7b-1279d96888b8" name="Changes" comment="Add event handling for audio and metadata processing in session management">
+      <change afterPath="$PROJECT_DIR$/app/api/routers/sessions/output/audio/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/routers/sessions/output/emotions/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/routers/sessions/output/emotions/rebuild.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/routers/sessions/output/summary/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/routers/sessions/output/summary/rebuild.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/routers/sessions/output/transcript/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/api/routers/sessions/output/transcript/rebuild.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/common/utils/blob_to_local_tmp_file.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/mappers/session_mapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/mappers/session_mapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/routers/sessions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/routers/sessions/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/routers/sessions/output/audio.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/routers/sessions/output/audio/get.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/routers/sessions/output/emotions.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/routers/sessions/output/emotions/get.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/routers/sessions/output/summary.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/routers/sessions/output/summary/get.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/api/routers/sessions/output/transcript.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/routers/sessions/output/transcript/get.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/api/routers/sessions/post.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/routers/sessions/post.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/schemas/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/schemas/schemas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/application/facade.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/application/facade.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/DialogueDNA/adapters/capability_adapters.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/DialogueDNA/adapters/capability_adapters.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/DialogueDNA/events/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/DialogueDNA/events/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/DialogueDNA/events/reporter.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/DialogueDNA/events/reporter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/DialogueDNA/events/subscribers/base.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/DialogueDNA/events/subscribers/base.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/DialogueDNA/events/subscribers/blob_artifacts.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/DialogueDNA/events/subscribers/blob_artifacts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/DialogueDNA/events/subscribers/db_progress.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/DialogueDNA/events/subscribers/db_progress.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/logic/DialogueDNA/interfaces/listeners.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/DialogueDNA/interfaces/listeners.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/logic/DialogueDNA/pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/logic/DialogueDNA/pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/summary/providers/azure/openai.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/summary/providers/azure/openai.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/audio/providers/hugging_face/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/audio/providers/hugging_face/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/emotions/audio/providers/hugging_face/superb_audio_emotion_analyzer.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/emotions/audio/providers/hugging_face/superb_audio_emotion_analyzer.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +97,7 @@
     "Python tests.Python tests in test_emotion.py.executor": "Run",
     "Python.emotion_test.executor": "Run",
     "Python.print result.executor": "Run",
-    "Python.run.executor": "Debug",
+    "Python.run.executor": "Run",
     "Python.run_pipeline.executor": "Run",
     "Python.transcribe_with_diarization_test.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
@@ -120,11 +125,11 @@
       <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\tests" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\api\routers\sessions\output\transcript" />
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\api\routers\sessions\output\summary" />
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\api\routers\sessions\output\emotions" />
+      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\api\routers\sessions\output\audio" />
       <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\api\routers\sessions\output" />
-      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\api\routers\sessions\input" />
-      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\api\routers\sessions\pipeline" />
-      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\infra\adapters" />
-      <recent name="C:\Users\USER\PycharmProjects\dialoguedna-backend\app\infra\interfaces" />
     </key>
   </component>
   <component name="RunManager" selected="Python.run">
@@ -316,7 +321,8 @@
       <workItem from="1755537862332" duration="36364000" />
       <workItem from="1755893689862" duration="61661000" />
       <workItem from="1757168218763" duration="973000" />
-      <workItem from="1757169324147" duration="14099000" />
+      <workItem from="1757169324147" duration="14515000" />
+      <workItem from="1757254461249" duration="18400000" />
     </task>
     <task id="LOCAL-00001" summary="Initial setup for audio file upload endpoint and directory structure">
       <option name="closed" value="true" />
@@ -654,7 +660,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757169116986</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="Add event handling for audio and metadata processing in session management">
+      <option name="closed" value="true" />
+      <created>1757195707518</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1757195707518</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -684,7 +698,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactor(facade): switch to SAS-based transcription pipeline using session_id" />
     <MESSAGE value="refactor(db_loader): update load_audio_from_file to return session_id and sas_url" />
     <MESSAGE value="feat(transcription): add support for container-level SAS and output to Azure" />
     <MESSAGE value="feat(config): add AZURE_CONTAINER_URL from environment" />
@@ -709,7 +722,8 @@
     <MESSAGE value="Made little connection between logic and api" />
     <MESSAGE value="Refactor configuration access and improve response mapping for session management" />
     <MESSAGE value="Add session event handling and improve session status updates" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add session event handling and improve session status updates" />
+    <MESSAGE value="Add event handling for audio and metadata processing in session management" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add event handling for audio and metadata processing in session management" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -730,11 +744,6 @@
           <option name="timeStamp" value="54" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/services/emotions/audio/providers/hugging_face/superb_audio_emotion_analyzer.py</url>
-          <line>32</line>
-          <option name="timeStamp" value="157" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/app/services/summary/providers/azure/openai.py</url>
           <line>52</line>
           <option name="timeStamp" value="164" />
@@ -747,7 +756,7 @@
     <SUITE FILE_PATH="coverage/dialoguedna_backend$print_result.coverage" NAME="print result Coverage Results" MODIFIED="1748727037359" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/tests" />
     <SUITE FILE_PATH="coverage/dialoguedna_backend$transcribe_with_diarization_test.coverage" NAME="transcribe_with_diarization_test Coverage Results" MODIFIED="1748720005831" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/tests" />
     <SUITE FILE_PATH="coverage/dialoguedna_backend$.coverage" NAME=" Coverage Results" MODIFIED="1748726316720" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/tests" />
-    <SUITE FILE_PATH="coverage/dialoguedna_backend$run.coverage" NAME="run Coverage Results" MODIFIED="1757195181680" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
+    <SUITE FILE_PATH="coverage/dialoguedna_backend$run.coverage" NAME="run Coverage Results" MODIFIED="1757343668579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app" />
     <SUITE FILE_PATH="coverage/dialoguedna_backend$emotion_test.coverage" NAME="emotion_test Coverage Results" MODIFIED="1748726921085" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/app/tests" />
   </component>
 </project>

@@ -1,6 +1,5 @@
 import os
 import shutil
-from distutils import debug
 from tempfile import NamedTemporaryFile
 
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends, BackgroundTasks
@@ -8,7 +7,7 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends, B
 from app.api.dependencies.app_facade import get_facade
 from app.api.dependencies.auth import UserContext
 from app.api.dependencies.authz import require_user
-from app.api.mappers.session_mapper import to_session_dto, to_session_response
+from app.api.mappers.session_mapper import to_session_response
 
 from app.api.schemas.schemas import SessionResponse
 from app.application.facade import ApplicationFacade

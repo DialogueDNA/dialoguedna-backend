@@ -15,6 +15,6 @@ def get_audio(
         facade: ApplicationFacade = Depends(get_facade),
         ctx: UserContext = Depends(require_user)):
     try:
-        return to_audio_response(facade.get_audio_view(session_id=session_id, user_id=ctx.id))
+        return to_audio_response(facade.get_audio_view(facade.get_audio_url(session_id=session_id, user_id=ctx.id)))
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))

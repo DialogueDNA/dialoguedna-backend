@@ -9,7 +9,7 @@ from app.application.facade import ApplicationFacade
 
 router = APIRouter()
 
-@router.get("/{session_id}/summary", response_model=SummaryResponse ,summary="Get summary for a session")
+@router.get("/{session_id}/summary/rebuild", response_model=SummaryResponse ,summary="Get summary for a session")
 def get_summary(
         session_id: str,
         facade: ApplicationFacade = Depends(get_facade),

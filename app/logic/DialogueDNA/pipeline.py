@@ -239,6 +239,7 @@ class DialogueDNAPipeline(Pipeline):
                 analyzed_text_segment = self._analyze_text_emotions_for_segment(
                     text_segment=segment
                 )
+                analyzed_text_segment.start_time, analyzed_text_segment.end_time, analyzed_text_segment.whom = segment.start_time, segment.end_time, segment.writer
             except Exception:
                 reporter.emotion_analyzation_failed("Text emotion analyzation failed") if reporter is not None else None
                 raise
@@ -251,6 +252,7 @@ class DialogueDNAPipeline(Pipeline):
                     overlaps=overlaps,
                     overlap_cache=overlap_cache,
                 )
+                analyzed_audio_segment.start_time, analyzed_audio_segment.end_time, analyzed_audio_segment.whom = segment.start_time, segment.end_time, segment.writer
             except Exception as e:
                 print(e)
                 reporter.emotion_analyzation_failed("Audio emotion analyzation failed") if reporter is not None else None
@@ -387,30 +389,34 @@ class DialogueDNAPipeline(Pipeline):
         return text_emotions
 
     def _analyze_audio_emotions_for_segment(
-        self,
-        *,
-        audio: AudioType,
-        text_segment: TextSegment,
-        overlaps: List[OverlapWindow],
-        overlap_cache: Dict[Tuple[float, float, Tuple[str, ...]], Dict[str, AudioSegment]],
-        always_enhance_non_overlap: bool = False
-    ) -> EmotionAnalyzerByAudioOutput:
+            self,
+            *,
+            audio: AudioType,
+            text_segment: TextSegment,
+            overlaps: List[OverlapWindow],
+            overlap_cache: Dict[Tuple[float, float, Tuple[str, ...]], Dict[str, AudioSegment]],
+            always_enhance_non_overlap: bool = False
+    ) -> EmotionAnalyzerOutput:
         """
-        For one transcript segment:
-          - Find intersecting overlap windows
-          - For overlap sub-windows, analyze on separated+enhanced audio *for that speaker*
-          - For non-overlap sub-windows, analyze on original (optionally enhanced) audio
-          - Return duration-weighted average distribution over the full segment.
+        Analyze **only the speaker of this TextSegment**.
+          - For overlap sub-windows: use separated+enhanced audio **only for this speaker** (skip if missing).
+          - For non-overlap sub-windows: use the original (optionally enhanced) audio.
+          - Return a duration-weighted average distribution over the segment (speaker-only).
         """
         audio_analyzer: EmotionAudioAnalyzer = self.services.emotion_analysis.by_audio
+        enhancer: AudioEnhancer = self.services.audio.enhancer
 
-        if audio_analyzer is None or text_segment.start_time is None or text_segment.end_time is None:
+        if (
+                audio_analyzer is None or
+                text_segment.start_time is None or
+                text_segment.end_time is None
+        ):
             raise ValueError("Audio emotion analyzer not found")
 
         segment_speaker = str(text_segment.writer) if text_segment.writer is not None else None
 
+        # No diarization → treat the whole chunk as this single (unknown) speaker
         if segment_speaker is None:
-            # no diarization → analyze the whole chunk on original audio
             return audio_analyzer.analyze(
                 AudioSegment(
                     audio=audio, speaker=None,
@@ -419,57 +425,69 @@ class DialogueDNAPipeline(Pipeline):
                 )
             )
 
-        # Collect sub-intervals: [(start,end, audio_segment_for_analysis)]
+        # Collect sub-intervals for THIS speaker only
         intervals: List[Tuple[float, float, AudioSegment]] = []
-        # First, mark the whole segment as "remaining"
+        # Start with the full segment as "remaining"
         remaining: List[Tuple[float, float]] = [(text_segment.start_time, text_segment.end_time)]
 
-        # Take intersecting overlap windows
+        # 1) Overlap parts → only analyze if we have separated audio for this speaker
         for overlap_window in overlaps:
             if overlap_window.end <= text_segment.start_time or overlap_window.start >= text_segment.end_time:
                 continue  # no intersection
             if segment_speaker not in overlap_window.speakers:
-                continue  # this segment's speaker not part of that overlap
+                continue  # this segment's speaker not in this overlap
 
             a = max(text_segment.start_time, overlap_window.start)
             b = min(text_segment.end_time, overlap_window.end)
+
             win_key = (overlap_window.start, overlap_window.end, overlap_window.speakers)
             speaker_map = overlap_cache.get(win_key, {})
-            # Use separated+enhanced audio for this speaker if present; otherwise fall back
+
+            # Only take the isolated track for THIS speaker; never analyze mixed audio here.
             src = speaker_map.get(segment_speaker)
             if src is not None:
-                # narrow to [a,b] if provider doesn't handle internal trimming
+                # Narrow to [a,b] to keep exact alignment
                 intervals.append((a, b, AudioSegment(segment_speaker, src.audio, a, b, None, None)))
-            # cut [a,b] out of remaining
+
+            # Remove [a,b] from remaining regardless; we never want to analyze mixed overlap
             remaining = _subtract_interval(remaining, (a, b))
 
-        # Non-overlap parts → original audio (optional enhance)
-        enhancer: AudioEnhancer = self.services.audio.enhancer
-
-        if enhancer is None:
-            raise ValueError("Audio enhancer not found")
+        # 2) Non-overlap parts → the diarization says only this speaker talks here
+        if enhancer is None and always_enhance_non_overlap:
+            # Enhancer requested but unavailable: keep going without enhancement
+            always_enhance_non_overlap = False
 
         for (a, b) in remaining:
             if b <= a:
                 continue
-            base = AudioSegment(segment_speaker, audio, a, b, None, None)
-            if enhancer is not None and always_enhance_non_overlap:
+            base = AudioSegment(
+                speaker=segment_speaker,
+                audio=audio,
+                start_time=a,
+                end_time=b,
+                language=None,
+                sample_rate=None
+            )
+            if always_enhance_non_overlap and enhancer is not None:
                 try:
                     base = enhancer.enhance(base)
                 except Exception:
+                    # Fail-open: if enhancement fails, analyze original
                     pass
             intervals.append((a, b, base))
 
-        # Analyze each interval and weight-average by duration
-        distribs: List[Tuple[float, EmotionAnalyzerOutput]] = []
+        # 3) Analyze each interval (speaker-only) and duration-weight average
+        parts: List[Tuple[float, Dict[str, float]]] = []
         for (a, b, audio_segment) in intervals:
-            dur = max(0.0, (b - a))
+            dur = max(0.0, b - a)
             if dur <= 0:
                 continue
-            d = audio_analyzer.analyze(audio_segment)
-            if d:
-                distribs.append((dur, d))
-        return _weighted_average_distributions(distribs)
+            out = audio_analyzer.analyze(audio_segment)
+            if out and out.emotions_intensity_dict:
+                parts.append((dur, out.emotions_intensity_dict))
+
+        merged = _weighted_average_distributions(parts)  # returns Dict[str, float] | None
+        return EmotionAnalyzerOutput(emotions_intensity_dict=(merged or {}))
 
     def _fuse_emotions(self,
             emotion_analyzed_by_text: EmotionAnalyzerByTextOutput,
@@ -580,7 +598,6 @@ def _subtract_interval(intervals: List[Tuple[float, float]], cut: Tuple[float, f
                 out.append((max(a, c1), b))
     # filter numerical noise
     return [(x, y) for (x, y) in out if y - x > 1e-6]
-
 
 def _weighted_average_distributions(parts: List[Tuple[float, Dict[str, float]]]) -> Optional[Dict[str, float]]:
     if not parts:

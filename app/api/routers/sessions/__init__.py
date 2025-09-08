@@ -2,10 +2,13 @@ from fastapi import APIRouter
 from .get import router as get_sessions_router
 from .post import router as post_sessions_router
 from .delete import router as delete_sessions_router
-from app.api.routers.sessions.output.transcript import router as transcript_router
-from app.api.routers.sessions.output.emotions import router as emotions_router
-from app.api.routers.sessions.output.summary import router as summary_router
-from app.api.routers.sessions.output.audio import router as audio_router
+from app.api.routers.sessions.output.transcript.get import router as transcript_router
+from app.api.routers.sessions.output.transcript.rebuild import router as transcript_router
+from app.api.routers.sessions.output.emotions.get import router as emotions_router
+from app.api.routers.sessions.output.emotions.rebuild import router as emotions_router
+from app.api.routers.sessions.output.summary.get import router as summary_router
+from app.api.routers.sessions.output.summary.rebuild import router as summary_router
+from app.api.routers.sessions.output.audio.get import router as audio_router
 
 
 router = APIRouter()

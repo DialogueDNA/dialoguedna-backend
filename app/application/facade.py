@@ -3,9 +3,8 @@ from __future__ import annotations
 import uuid
 from typing import Dict, Optional, List
 
-from sqlalchemy.exc import NoResultFound
-
 from app.application.queues import TaskQueue
+from app.common.utils.blob_to_local_tmp_file import download_to_tmp_file
 from app.core.constants.db.supabase_constants import SessionColumn, SessionStatus
 from app.core.constants.storage.azure_constants import MAIN_CONTAINER, SESSION_TRANSCRIPT_PATH, SESSION_SUMMARY_PATH, \
     SESSION_EMOTIONS_PATH, SESSION_AUDIO_PATH
@@ -157,58 +156,14 @@ class ApplicationFacade:
         )
 
         # Run DialogueDNA
-        pipeline_results = self._logic.run(PipelineInput(audio=audio_path, reporter=reporter))
-
-        # # (Optional) Final update in case we didn't provide reporter
-        # patch = {
-        #     "status": "ready",
-        #     "transcript":
-        #         [
-        #             {
-        #                 "writer": s.writer,
-        #                 "text": s.text,
-        #                 "start": s.start_time,
-        #                 "end": s.end_time
-        #             }
-        #             for s in pipeline_results.transcription
-        #         ]
-        #         if inline_save else None,
-        #     "emotions":
-        #         [
-        #             {
-        #                 "whom": s.whom,
-        #                 "start": s.start_time,
-        #                 "end": s.end_time,
-        #                 "text": s.text,
-        #                 "audio": s.audio,
-        #                 "mixed": s.mixed
-        #             }
-        #             for s in pipeline_results.emotion_analysis
-        #         ]
-        #         if inline_save else None,
-        #     "summary":
-        #         [
-        #             {
-        #                 "summary": pipeline_results.summarization.summary,
-        #                 "bullets": pipeline_results.summarization.bullets,
-        #                 "per_speaker": pipeline_results.summarization.per_speaker,
-        #                 "usage": pipeline_results.summarization.usage,
-        #             }
-        #         ]
-        #         if inline_save else None,
-        # }
-        #
-        # # Remove nones from patch
-        # patch = {k: v for k, v in patch.items() if v is not None}
-        # if patch:
-        #     self.app.database.sessions_repo.update(session_id, patch)
+        self._logic.run(PipelineInput(audio=audio_path, reporter=reporter))
 
     # ------------------------------------ Update ------------------------------------
 
     # ---------- Rebuilders ----------
 
     # REBUILD: only transcript on existing audio
-    def rebuild_transcript(self, *, session_id: str, user_id: str) -> str | None:
+    def rebuild_transcript(self, *, session_id: str, user_id: str) -> tuple[SessionStatus, Optional[str]]:
 
         audio_blob_path = self.get_audio_url(
             session_id=session_id,
@@ -218,20 +173,21 @@ class ApplicationFacade:
         if not audio_blob_path:
             raise ValueError("Audio file path not found")
 
-        # TODO: Download blob to temp file
-        audio_local_path = audio_blob_path
+        with download_to_tmp_file(audio_blob_path, suffix=".wav") as audio_local_path:
+            reporter = self._reporter.for_session(session_id=session_id)
 
-        reporter = self._reporter.for_session(session_id=session_id)
+            self._logic.transcribe(
+                audio=audio_local_path,
+                reporter=reporter
+            )
 
-        self._logic.transcribe(
-            audio=audio_local_path,
-            reporter=reporter
-        )
-
-        return self._app.database.sessions_repo.get_for_user(session_id, user_id).transcript_url
+        session: SessionDB = self._app.database.sessions_repo.get_for_user(session_id, user_id)
+        transcript_status: SessionStatus = SessionStatus(session.emotion_breakdown_status)
+        transcript_url: Optional[str] = session.transcript_url if transcript_status is SessionStatus.completed else None
+        return transcript_status, transcript_url
 
     # REBUILD: only emotions on existing audio and transcript
-    def rebuild_emotions(self, *, session_id: str, user_id: str) -> str | None:
+    def rebuild_emotions(self, *, session_id: str, user_id: str) -> tuple[SessionStatus, Optional[str]]:
 
         audio_blob_path = self.get_audio_url(
             session_id=session_id,
@@ -241,10 +197,7 @@ class ApplicationFacade:
         if not audio_blob_path:
             raise ValueError("Audio file path not found")
 
-        # TODO: Download blob to temp file
-        audio_local_path = audio_blob_path
-
-        transcription_url = self.get_transcript_url(
+        transcription_status, transcription_url = self.get_transcript_url(
             session_id=session_id,
             user_id=user_id
         )
@@ -266,22 +219,26 @@ class ApplicationFacade:
 
         reporter = self._reporter.for_session(session_id=session_id)
 
-        self._logic.analyze_emotions_on_transcript(
-            audio=audio_local_path,
-            transcription=transcription,
-            reporter=reporter
-        )
+        with download_to_tmp_file(audio_blob_path, suffix=".wav") as audio_local_path:
+            self._logic.analyze_emotions_on_transcript(
+                audio=audio_local_path,
+                transcription=transcription,
+                reporter=reporter
+            )
 
-        return self._app.database.sessions_repo.get_for_user(session_id, user_id).emotion_breakdown_url
+        session: SessionDB = self._app.database.sessions_repo.get_for_user(session_id, user_id)
+        emotions_status: SessionStatus = SessionStatus(session.emotion_breakdown_status)
+        emotions_url: Optional[str] = session.emotion_breakdown_url if emotions_status is SessionStatus.completed else None
+        return emotions_status, emotions_url
 
     # REBUILD: only summary on existing audio, transcript and emotions
     def rebuild_summary(self, *, session_id: str, user_id: str, style: str, max_token: Optional[int] = None,
                         language_hint: Optional[str] = None, inline_save: bool = False,
                         per_speaker: Optional[bool] = None, bullets: Optional[bool] = None,
                         metadata: Optional[Dict[str, str]] = None
-                        ) -> SessionDB | None:
+                        ) -> tuple[SessionStatus, Optional[str]]:
 
-        analyzed_emotions_url = self.get_analyzed_emotions_url(
+        analyzed_emotions_status, analyzed_emotions_url = self.get_analyzed_emotions_url(
             session_id=session_id,
             user_id=user_id,
         )
@@ -311,7 +268,10 @@ class ApplicationFacade:
             metadata=metadata
         )
 
-        return self._app.database.sessions_repo.get_for_user(session_id, user_id)
+        session: SessionDB = self._app.database.sessions_repo.get_for_user(session_id, user_id)
+        summary_status: SessionStatus = SessionStatus(session.summary_status)
+        summary_url: Optional[str] = session.summary_url if summary_status is SessionStatus.completed else None
+        return summary_status, summary_url
 
     # ------------------------------------ Read ------------------------------------
 
@@ -341,9 +301,9 @@ class ApplicationFacade:
 
         return audio_status, audio_file_url
 
-    def get_audio_view(self, session_id: str, user_id: str) -> dict:
+    def get_audio_view(self, audio: tuple[SessionStatus, Optional[str]]) -> dict:
 
-        audio_status, audio_url = self.get_audio_url(session_id=session_id, user_id=user_id)
+        audio_status, audio_url = audio
 
         sas_url, expires_at = self._app.storage.client.generate_read_sas_from_url(blob_url=audio_url) if audio_url else (None, None)
 
@@ -372,9 +332,9 @@ class ApplicationFacade:
 
         return transcript_status, transcript_url
 
-    def get_transcript_view(self, session_id: str, user_id: str) -> dict:
+    def get_transcript_view(self, transcript: tuple[SessionStatus, Optional[str]]) -> dict:
 
-        transcript_status, transcript_url = self.get_transcript_url(session_id=session_id, user_id=user_id)
+        transcript_status, transcript_url = transcript
 
         sas_url, expires_at = self._app.storage.client.generate_read_sas_from_url(blob_url=transcript_url) if transcript_url else (None, None)
 
@@ -403,9 +363,9 @@ class ApplicationFacade:
 
         return analyzed_emotions_status, analyzed_emotions_url
 
-    def get_analyzed_emotions_view(self, session_id: str, user_id: str) -> dict:
+    def get_analyzed_emotions_view(self, analyzed_emotions: tuple[SessionStatus, Optional[str]]) -> dict:
 
-        analyzed_emotions_status, analyzed_emotions_url = self.get_analyzed_emotions_url(session_id=session_id, user_id=user_id)
+        analyzed_emotions_status, analyzed_emotions_url = analyzed_emotions
 
         sas_url, expires_at = self._app.storage.client.generate_read_sas_from_url(blob_url=analyzed_emotions_url) if analyzed_emotions_url else (None, None)
 
@@ -434,9 +394,9 @@ class ApplicationFacade:
 
         return summary_status, summary_url
 
-    def get_summary_view(self, session_id: str, user_id: str) -> dict:
+    def get_summary_view(self, summary: tuple[SessionStatus, Optional[str]]) -> dict:
 
-        summary_status, summary_url = self.get_summary_url(session_id=session_id, user_id=user_id)
+        summary_status, summary_url = summary
 
         sas_url, expires_at = self._app.storage.client.generate_read_sas_from_url(blob_url=summary_url) if summary_url else (None, None)
 

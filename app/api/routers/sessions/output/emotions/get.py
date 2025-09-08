@@ -15,6 +15,6 @@ def get_emotions(
         facade: ApplicationFacade = Depends(get_facade),
         ctx: UserContext = Depends(require_user)):
     try:
-        return to_analyzed_emotions_response(facade.get_analyzed_emotions_view(session_id=session_id, user_id=ctx.id))
+        return to_analyzed_emotions_response(facade.get_analyzed_emotions_view(facade.get_analyzed_emotions_url(session_id=session_id, user_id=ctx.id)))
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
