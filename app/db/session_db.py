@@ -1,5 +1,5 @@
 from typing import Optional, Any
-from app.db.supabase.supabase_db import SupabaseDB
+from app.db.superbase.supabase_db import SupabaseDB
 
 class SessionDB:
     def __init__(self):

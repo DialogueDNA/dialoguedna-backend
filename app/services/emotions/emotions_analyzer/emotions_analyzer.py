@@ -4,11 +4,9 @@
 import json
 from pathlib import Path
 from typing import Any, Dict, List, Union, IO, cast
-
 from ..text_base_analysis.text_base_analyzer import TextBaseAnalyzer
 from ..tone_base_analysis.tone_base_analyzer import ToneBaseAnalyzer
 from ..mixer.mixer_strategy import MixerStrategy
-
 
 class EmotionsAnalyzer:
     def __init__(
