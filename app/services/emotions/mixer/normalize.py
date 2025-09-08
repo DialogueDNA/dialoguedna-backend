@@ -1,5 +1,5 @@
-# Path: app/services/emotions_new/mixer/normalize.py
-# Purpose: Numeric helpers for weighting and normalization (no business logic).
+# app/services/emotions_new/mixer/normalize.py
+# Numeric helpers for weighting and normalization (no business logic).
 
 from __future__ import annotations
 from typing import List

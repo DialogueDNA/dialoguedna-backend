@@ -1,18 +1,12 @@
-# Path: app/services/emotions_new/emotions_analyzer/emotions_analyzer.py
-# Purpose: Orchestrator ("commander") for per-utterance emotion analysis.
-# Inputs: utterance {speaker_id, text, start_time, end_time, audio_ref}; top_k.
-# Flow: call text analyzer + tone analyzer + state store + mixer strategy.
-# Outputs: probs6 (sum=1), label, confidence, flags, updated speaker state.
-# Notes: Designed to replace a single pipeline line without changing I/O.
-# Path: app/services/emotions_new/emotions_analyzer/emotions_analyzer.py
+# app/services/emotions/emotions_analyzer/emotions_analyzer.py
+# Orchestrator ("commander") for per-utterance emotion analysis.
+
 import json
 from pathlib import Path
 from typing import Any, Dict, List, Union, IO, cast
-
 from ..text_base_analysis.text_base_analyzer import TextBaseAnalyzer
 from ..tone_base_analysis.tone_base_analyzer import ToneBaseAnalyzer
 from ..mixer.mixer_strategy import MixerStrategy
-
 
 class EmotionsAnalyzer:
     def __init__(

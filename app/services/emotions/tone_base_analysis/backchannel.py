@@ -1,5 +1,6 @@
-# Path: app/services/emotions_new/tone_base_analysis/backchannel.py
-# Purpose: Detect backchannel/very short acknowledgments.
+# app/services/emotions_new/tone_base_analysis/backchannel.py
+# Detect back-channel/very short acknowledgments.
+
 from __future__ import annotations
 
 from typing import Iterable

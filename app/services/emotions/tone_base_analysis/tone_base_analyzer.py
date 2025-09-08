@@ -14,29 +14,18 @@
 #     "qc": {"duration_sec": float, "is_backchannel": bool, ...}
 #   }
 from __future__ import annotations
-from typing import Tuple
-
 from typing import Any, Dict, List, Union
-
 from .audio_segment_loader import AudioSegmentLoader
 from .backchannel import detect as detect_backchannel
-
-from urllib.parse import urlparse
 from pathlib import Path
-from hashlib import md5
-import requests
-from pydub import AudioSegment
+from app.core.config import EMOTIONS_4,AUDIO_EMOTION_MODEL
 
-
-EMOTIONS_4 = ["angry", "happy", "sad", "neutral"]
 _HF2API = {"ang": "angry", "hap": "happy", "sad": "sad", "neu": "neutral"}
-
-
 
 class ToneBaseAnalyzer:
     def __init__(
         self,
-        model_id: str = "superb/hubert-large-superb-er",
+        model_id: str = AUDIO_EMOTION_MODEL,
         device: str | None = None,
         loader: AudioSegmentLoader | None = None,
     ) -> None:

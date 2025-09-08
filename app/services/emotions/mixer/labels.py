@@ -1,13 +1,10 @@
-# Path: app/services/emotions_new/mixer/labels.py
-# Purpose: Canonical label orders + small helpers for conversions.
+# app/services/emotions_new/mixer/labels.py
+# Canonical label orders + small helpers for conversions.
 
 from __future__ import annotations
 from typing import Dict, List
 
-# Single source of truth for label order
-EMOTIONS_7 = ["anger", "disgust", "fear", "joy", "sadness", "surprise", "neutral"]
-EMOTIONS_4 = ["angry", "happy", "sad", "neutral"]
-
+from app.core.config import(EMOTIONS_7,EMOTIONS_4)
 
 def list_to_vec(labels_scores: List[Dict[str, float]], order: List[str]) -> List[float]:
     """
