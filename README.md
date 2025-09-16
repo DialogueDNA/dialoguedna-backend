@@ -50,38 +50,6 @@ main.py                                    # FastAPI app + CORS + router registr
 run.py                                     # Convenience launcher (uvicorn)
 ```
 
----
-
-## 🧩 Architecture
-
-```mermaid
-flowchart LR
-  FE[React/Vite Frontend] -- Bearer JWT --> API{{FastAPI}}
-  
-  subgraph API Layer
-    UP[/POST upload/] --> BG[BackgroundTasks]
-    MET[/GET metadata/] --> DB[(Supabase)]
-    SUM[/summary/] --> STOR[(Azure Blob)]
-    EMO[/emotions/] --> STOR
-    TRN[/transcript/] --> STOR
-    AUD[/audio/] --> STOR
-    SPK[/speakers/] --> DB
-    DEL[/delete/] --> DB & STOR
-  end
-
-  BG --> TRZ[Azure Speech v3.1]
-  BG --> TXT[Text Emotion (Transformers)]
-  BG --> TONE[Tone Emotion (HF)]
-  TXT & TONE --> MIX[MixerStrategy]
-  MIX --> STOR
-  TRZ --> STOR
-  STOR --> RUN[Summary Runner]
-  RUN --> OAI[Azure OpenAI]
-  OAI --> STOR
-  STOR --> PDF[PDF Generator]
-  DB <--> API
-
-
 ### Storage Layout (Azure Blob)
 
 ```
