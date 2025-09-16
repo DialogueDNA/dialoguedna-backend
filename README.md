@@ -57,29 +57,30 @@ run.py                                     # Convenience launcher (uvicorn)
 ```mermaid
 flowchart LR
   FE[React/Vite Frontend] -- Bearer JWT --> API{{FastAPI}}
+  
   subgraph API Layer
-    UP[/POST /api/sessions/upload/] --> BG[BackgroundTasks]
-    MET[/GET /api/sessions/metadata/] --> DB[(Supabase)]
-    SUMR[/GET/POST /api/sessions/summary/*] --> STOR[(Azure Blob)]
-    EMO[/GET /api/sessions/emotions/:id] --> STOR
-    TRN[/GET /api/sessions/transcript/:id] --> STOR
-    AUD[/GET /api/sessions/audio/:id] --> STOR
-    SPK[/GET/PUT /api/sessions/speakers/:id] --> DB
-    DEL[/DELETE|POST /api/sessions/delete] --> DB & STOR
+    UP[/POST upload/] --> BG[BackgroundTasks]
+    MET[/GET metadata/] --> DB[(Supabase)]
+    SUM[/summary/] --> STOR[(Azure Blob)]
+    EMO[/emotions/] --> STOR
+    TRN[/transcript/] --> STOR
+    AUD[/audio/] --> STOR
+    SPK[/speakers/] --> DB
+    DEL[/delete/] --> DB & STOR
   end
 
-  BG --> TRZ[Azure Speech v3.1 Transcribe + Diarize]
+  BG --> TRZ[Azure Speech v3.1]
   BG --> TXT[Text Emotion (Transformers)]
-  BG --> TONE[Tone Emotion (HF pipeline on audio segments)]
-  TXT & TONE --> MIX[ MixerStrategy (4→7 map, weights, QC) ]
+  BG --> TONE[Tone Emotion (HF)]
+  TXT & TONE --> MIX[MixerStrategy]
   MIX --> STOR
   TRZ --> STOR
-  STOR --> RUN[Summary Runner (idempotent trigger)]
-  RUN --> OAI[Azure OpenAI Chat Completions]
+  STOR --> RUN[Summary Runner]
+  RUN --> OAI[Azure OpenAI]
   OAI --> STOR
-  STOR --> PDF[PDF generator]
+  STOR --> PDF[PDF Generator]
   DB <--> API
-```
+
 
 ### Storage Layout (Azure Blob)
 
